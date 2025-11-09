@@ -1,10 +1,12 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "bundler",
     "isolatedModules": true
   },
   "angularCompilerOptions": {
@@ -15,6 +17,7 @@
     "strictTemplates": true
   },
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -22,6 +25,5 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ],
-  "extends": "./tsconfig.base.json"
+  ]
 }

@@ -1,0 +1,53 @@
+:root {
+  --bg: #0f1115;
+  --panel: #151821;
+  --panel-2: #1b2030;
+  --text: #e8eef7;
+  --muted: #9aa7b2;
+  --brand: #6aa6ff;
+  --brand-2: #7fd2ff;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --gap: 16px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 10% -10%, #192036 0%, transparent 60%),
+  radial-gradient(900px 700px at 100% 0%, #112030 0%, transparent 60%),
+  var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 980px;
+  margin: 48px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 24px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: var(--text);
+}

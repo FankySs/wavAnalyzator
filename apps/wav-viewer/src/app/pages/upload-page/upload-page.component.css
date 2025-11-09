@@ -1,0 +1,60 @@
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+label.file {
+  position: relative;
+  display: inline-block;
+}
+
+label.file input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.info {
+  margin-top: 20px;
+  line-height: 1.5;
+}
+
+small {
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #1e2639 0%, #182032 100%);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .15s ease;
+}
+.btn:hover {
+  border-color: rgba(255,255,255,.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+
+.btn-danger {
+  background: linear-gradient(145deg, #ff4444, #cc3333);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-left: 10px;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(145deg, #ff6666, #d83b3b);
+  box-shadow: 0 4px 12px rgba(255, 80, 80, 0.4);
+}

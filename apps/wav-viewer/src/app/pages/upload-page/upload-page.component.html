@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="card">
+    <button class="back-btn" [routerLink]="['/']">← Zpět</button>
+
+    <h1>Načíst WAV</h1>
+
+    <div class="actions">
+      <label class="file">
+        <span class="btn">Vybrat soubor</span>
+        <input type="file" accept=".wav,audio/wav" (change)="onFileSelected($event)" />
+      </label>
+
+      @if (fileName()) {
+        <button class="btn btn-danger" (click)="onClearClick()">Smazat soubor</button>
+      }
+    </div>
+
+    <div class="info">
+      @if (fileName()) {
+        <b>Soubor:</b> {{ fileName() }}<br />
+        @if (fileSize() !== null) {
+          <small>Velikost: {{ fileSize() }} B</small>
+        }
+      }
+    </div>
+
+    @if (objectUrl()) {
+      <div style="margin-top:16px">
+        <audio controls [src]="objectUrl()!" preload="metadata"></audio>
+      </div>
+    }
+  </div>
+</div>

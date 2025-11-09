@@ -1,0 +1,22 @@
+.btn {
+  background: linear-gradient(145deg, #0099ff, #0077cc);
+  border: none;
+  padding: 14px 28px;
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(145deg, #00b3ff, #0088dd);
+  box-shadow: 0 0 12px rgba(0, 153, 255, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}

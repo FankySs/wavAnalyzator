@@ -1,0 +1,133 @@
+<div class="container">
+  <div class="card">
+    <button class="back-btn" [routerLink]="['/']">← Zpět</button>
+    <h1>Analýza WAV</h1>
+
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
+    }
+
+    @if (isLoading()) {
+      <div class="muted">Načítám a analyzuji soubor…</div>
+    }
+
+    @if (!isLoading() && parsed()) {
+      <section class="meta">
+        <h2>Základní metadata</h2>
+        <table class="kv">
+          <tr>
+            <th>Audio format</th>
+            <td>{{ parsed()!.audioFormat }}</td>
+          </tr>
+          <tr>
+            <th>Kanály</th>
+            <td>{{ parsed()!.channels }}</td>
+          </tr>
+          <tr>
+            <th>Vzorkovací frekvence</th>
+            <td>{{ parsed()!.sampleRate | number }} Hz</td>
+          </tr>
+          <tr>
+            <th>Byte rate</th>
+            <td>{{ parsed()!.byteRate | number }} B/s</td>
+          </tr>
+          <tr>
+            <th>Block align</th>
+            <td>{{ parsed()!.blockAlign }} B</td>
+          </tr>
+          <tr>
+            <th>Bitů na vzorek</th>
+            <td>{{ parsed()!.bitsPerSample }} bit</td>
+          </tr>
+          <tr>
+            <th>Velikost dat</th>
+            <td>{{ parsed()!.dataSize | number }} B</td>
+          </tr>
+          <tr>
+            <th>Délka</th>
+            <td>{{ parsed()!.durationSec | number : '1.2-2' }} s</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="chunks">
+        <h2>Seznam chunků</h2>
+        <table class="chunks-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Offset</th>
+            <th>Payload offset</th>
+            <th>Velikost</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (c of parsed()!.chunks; track c.offset) {
+              <tr class="row-click" (click)="onSelectChunk(c)">
+                <td><code>{{ c.id }}</code></td>
+                <td>{{ c.offset | number }}</td>
+                <td>{{ c.payloadOffset | number }}</td>
+                <td>{{ c.size | number }} B</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      @if (selectedChunk()) {
+        <section class="chunk-detail">
+          <h2>Detail chunku</h2>
+          <div class="kv">
+            <div><b>ID:</b> <code>{{ selectedChunk()!.id }}</code></div>
+            <div><b>Offset:</b> {{ selectedChunk()!.offset | number }}</div>
+            <div><b>Payload offset:</b> {{ selectedChunk()!.payloadOffset | number }}</div>
+            <div><b>Velikost:</b> {{ selectedChunk()!.size | number }} B</div>
+          </div>
+
+          <h3>Náhled (prvních 256 B)</h3>
+          <pre class="hex">
+        @for (line of previewLines() ?? []; track $index) {
+          {{ line }}
+        }
+        </pre>
+        </section>
+      }
+
+      @if (parsed()?.info?.length) {
+        <h2>INFO metadata</h2>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Tag</th>
+            <th>Hodnota</th>
+            <th>Offset</th>
+            <th>Velikost</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (e of parsed()!.info!; track e.offset) {
+              <tr>
+                <td><code>{{ e.id }}</code></td>
+                <td>{{ e.value }}</td>
+                <td>{{ e.offset }}</td>
+                <td>{{ e.rawSize | number }} B</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+
+      @if (objectUrl()) {
+        <section class="player">
+          <h2>Náhled</h2>
+          <audio controls [src]="objectUrl()!"></audio>
+        </section>
+      }
+    }
+
+    @if (!isLoading() && !parsed() && !error()) {
+      <div class="muted">Nenahraný soubor – vrať se na „Nahrát WAV“.</div>
+    }
+  </div>
+</div>

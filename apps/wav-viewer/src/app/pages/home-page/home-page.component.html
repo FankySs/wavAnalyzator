@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="card">
+    <h1>WAV Analyzer</h1>
+
+    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+      <button class="btn" routerLink="/upload">Nahrát WAV soubor</button>
+
+      @if (file()) {
+        <button class="btn" routerLink="/analyze">Analyzovat WAV soubor</button>
+      }
+    </div>
+  </div>
+</div>

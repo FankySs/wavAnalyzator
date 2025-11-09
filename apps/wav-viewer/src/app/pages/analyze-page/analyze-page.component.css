@@ -1,0 +1,59 @@
+.kv th {
+  text-align: left;
+  padding: 6px 10px;
+  color: #b4c0d0;
+  font-weight: 600;
+}
+.kv td {
+  padding: 6px 10px;
+}
+
+.chunks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+}
+.chunks-table th, .chunks-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.chunks-table thead th {
+  text-align: left;
+  color: #b4c0d0;
+  font-weight: 600;
+}
+
+.player audio {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.muted { opacity: .7; }
+.error {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 72, 66, 0.12);
+  color: #ff847d;
+  margin-bottom: 10px;
+}
+
+.row-click { cursor: pointer; }
+.row-click:hover { background: rgba(255,255,255,0.04); }
+
+.chunk-detail .kv {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 6px 16px;
+  margin: 8px 0 10px;
+}
+
+pre.hex {
+  background: rgba(0,0,0,0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
