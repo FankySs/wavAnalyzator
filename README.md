@@ -27,15 +27,17 @@ HTML / CSS / SCSS	Stylování a rozvržení rozhraní
 Jest (v přípravě)	Jednotkové testy parseru WAV souborů
 ## 🚀 Spuštění projektu
 Vývojový server
+```bash
 ng serve
+```
 
-
-Po spuštění otevřete prohlížeč na adrese http://localhost:4200
-.
+Po spuštění otevřete prohlížeč na adrese http://localhost:4200 .
 Aplikace se automaticky přenačte při každé změně kódu.
 
 Build pro produkci
+```bash
 ng build
+```
 
 
 Kompilované soubory se uloží do složky dist/.
