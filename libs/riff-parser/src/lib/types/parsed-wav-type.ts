@@ -1,5 +1,5 @@
 export interface RiffChunk {
-  id: string;              // 4CC (např. 'fmt ', 'data', 'LIST', 'JUNK', ...)
+  id: string;              // 4CC ( 'fmt ', 'data', 'LIST', 'JUNK', ...)
   offset: number;          // absolutní offset chunku (na 4CC)
   payloadOffset: number;   // absolutní offset payloadu (offset + 8)
   size: number;            // velikost payloadu (bez paddingu)
@@ -37,8 +37,8 @@ export interface ParsedWav {
 
   fmtExtensible?: {
     cbSize: number;              // velikost „extra“ části
-    validBitsPerSample?: number; // často = bitsPerSample (ale nemusí)
+    validBitsPerSample?: number; // často = bitsPerSample
     channelMask?: number;        // bitová maska kanálů dle WAVEFORMATEXTENSIBLE
-    subFormatGuid?: string;      // GUID formátu (např. KSDATAFORMAT_SUBTYPE_PCM / IEEE_FLOAT)
+    subFormatGuid?: string;      // GUID formátu ( KSDATAFORMAT_SUBTYPE_PCM / IEEE_FLOAT)
   };
 }
