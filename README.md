@@ -25,7 +25,7 @@ Nx Monorepo	Strukturování projektu (frontend + knihovna riff-parser)
 Signals API	Reaktivní řízení stavu mezi komponentami
 HTML / CSS / SCSS	Stylování a rozvržení rozhraní
 Jest (v přípravě)	Jednotkové testy parseru WAV souborů
-🚀 Spuštění projektu
+## 🚀 Spuštění projektu
 Vývojový server
 ng serve
 
