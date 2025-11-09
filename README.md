@@ -1,59 +1,42 @@
-# WavAnalyzer
+## 🎵 WavAnalyzer
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+WavAnalyzer je webová aplikace vytvořená v rámci semestrální práce na VUT FEKT.
+Slouží k analýze struktury souborů formátu RIFF (WAV) – zobrazí jednotlivé chunky (bloky) zvukového souboru, jejich velikost, offsety a základní metadata.
 
-## Development server
+## 🧩 Funkce aplikace
 
-To start a local development server, run:
+Nahrání WAV souboru pomocí integrovaného vstupu.
 
-```bash
+Zobrazení všech chunků (RIFF, fmt , data, LIST, …) s jejich velikostmi a pozicemi.
+
+Parsování bloku fmt včetně rozšířené varianty WAVE_FORMAT_EXTENSIBLE.
+
+Zpracování a výpis LIST/INFO bloků – čtení textových metadat (INAM, IART, ICRD, …).
+
+Výpočet délky nahrávky z hodnot dataSize / byteRate.
+
+Moderní uživatelské rozhraní postavené na Angularu 19 a signálech (Signals API).
+
+## 🏗️ Použité technologie
+Technologie	Popis
+Angular 19	Frontend framework
+TypeScript	Logika parseru a silné typování
+Nx Monorepo	Strukturování projektu (frontend + knihovna riff-parser)
+Signals API	Reaktivní řízení stavu mezi komponentami
+HTML / CSS / SCSS	Stylování a rozvržení rozhraní
+Jest (v přípravě)	Jednotkové testy parseru WAV souborů
+🚀 Spuštění projektu
+Vývojový server
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
+Po spuštění otevřete prohlížeč na adrese http://localhost:4200
+.
+Aplikace se automaticky přenačte při každé změně kódu.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+Build pro produkci
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Kompilované soubory se uloží do složky dist/.
+Build je optimalizovaný pro výkon a rychlé načítání.
