@@ -26,9 +26,15 @@ Signals API	Reaktivní řízení stavu mezi komponentami
 HTML / CSS / SCSS	Stylování a rozvržení rozhraní
 Jest (v přípravě)	Jednotkové testy parseru WAV souborů
 ## Spuštění projektu
+Naklonovat projekt
+
+Spusti příkaz pro instalování dependencies
+```bash
+yarn
+```
 Vývojový server
 ```bash
-ng serve
+yarn nx serve
 ```
 
 Po spuštění otevřete prohlížeč na adrese http://localhost:4200 .
@@ -36,7 +42,7 @@ Aplikace se automaticky přenačte při každé změně kódu.
 
 Build pro produkci
 ```bash
-ng build
+yarn nx build
 ```
 
 
