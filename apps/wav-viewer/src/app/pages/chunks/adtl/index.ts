@@ -1,0 +1,1 @@
+export { AdtlDetailComponent } from './detail/adtl-detail.component';

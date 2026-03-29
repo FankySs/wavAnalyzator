@@ -1,0 +1,92 @@
+@if (mext(); as m) {
+
+  <div class="info-panel">
+    Chunk MEXT (Multiplexed Audio Extension) obsahuje informace pro
+    postprodukci a synchronizaci multikanálových souborů. Definuje
+    parametry pro správné přehrávání a zpracování audio streamu.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="card table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-field">Pole</th>
+            <th class="th-desc">Popis</th>
+            <th>Hodnota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell muted text-sm">Sound Information</td>
+            <td class="desc-cell muted text-sm">Informace o zvuku</td>
+            <td class="hex-cell">{{ toHex(m.soundInformation) }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Frame Count</td>
+            <td class="desc-cell muted text-sm">Počet snímků</td>
+            <td>{{ m.frameCount }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Ancillary Data Length</td>
+            <td class="desc-cell muted text-sm">Délka doplňkových dat</td>
+            <td>{{ m.ancillaryDataLength }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Ancillary Data Def</td>
+            <td class="desc-cell muted text-sm">Definice doplňkových dat</td>
+            <td class="hex-cell">{{ toHex(m.ancillaryDataDef) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card form-card">
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Sound Information</label>
+          <input class="form-input" type="number" min="0" max="65535"
+            [(ngModel)]="form.soundInformation" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Frame Count</label>
+          <input class="form-input" type="number" min="0" max="65535"
+            [(ngModel)]="form.frameCount" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Ancillary Data Length</label>
+          <input class="form-input" type="number" min="0" max="65535"
+            [(ngModel)]="form.ancillaryDataLength" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Ancillary Data Def</label>
+          <input class="form-input" type="number" min="0" max="65535"
+            [(ngModel)]="form.ancillaryDataDef" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

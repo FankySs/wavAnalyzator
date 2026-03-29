@@ -1,0 +1,22 @@
+<div class="card form-card">
+  <p class="muted text-sm" style="margin-bottom: 12px;">Každý cue point je definován pozicí ve vzorcích.</p>
+  @for (pt of points(); track $index) {
+    <div class="form-row entry-row">
+      <div class="form-group" style="flex:1;">
+        <label class="form-label">Cue #{{ $index + 1 }} – Sample Offset</label>
+        <input class="form-input" type="number" min="0" #inpSample
+          [value]="pt.sampleOffset"
+          (input)="updatePoint($index, +inpSample.value)"
+        />
+      </div>
+      <button class="btn btn-sm btn-danger entry-remove" (click)="removePoint($index)">✕</button>
+    </div>
+  }
+  <button class="btn btn-sm" (click)="addPoint()">＋ Přidat cue point</button>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

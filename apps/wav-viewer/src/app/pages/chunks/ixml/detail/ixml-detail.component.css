@@ -1,0 +1,19 @@
+.xml-card { padding: 16px; overflow: auto; }
+
+.xml-pre {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Edit mode */
+.xml-textarea {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+

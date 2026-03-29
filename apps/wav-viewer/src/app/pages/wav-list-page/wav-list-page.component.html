@@ -1,0 +1,131 @@
+<div class="container">
+
+  <!-- Hlavička -->
+  <div class="page-header">
+    <div>
+      <h1>WAV Analyzer</h1>
+      <p class="muted text-sm">Správa a analýza WAV souborů</p>
+    </div>
+    <button class="btn btn-primary" (click)="onOpenModal()">＋ Nahrát WAV soubor</button>
+  </div>
+
+  <!-- Chyba -->
+  @if (error()) {
+    <div class="error-msg">{{ error() }}</div>
+  }
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <p class="muted text-sm">Načítám seznam souborů…</p>
+  }
+
+  <!-- Prázdný stav -->
+  @if (!isLoading() && files().length === 0 && !error()) {
+    <div class="empty-state">
+      <div class="empty-icon">🎵</div>
+      <p class="empty-title">Žádné soubory v databázi</p>
+      <p class="muted text-sm">Nahrajte WAV soubor pro analýzu jeho struktury.</p>
+      <button class="btn btn-primary" (click)="onOpenModal()">Nahrát WAV soubor</button>
+    </div>
+  }
+
+  <!-- Tabulka souborů -->
+  @if (!isLoading() && files().length > 0) {
+    <div class="card table-card">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th>Název souboru</th>
+          <th>Velikost</th>
+          <th>Délka</th>
+          <th>Formát</th>
+          <th>Nahráno</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (file of files(); track file.id) {
+            <tr class="row-clickable" (click)="onRowClick(file.id)">
+              <td class="col-name">
+                <span class="file-name">{{ file.fileName }}</span>
+              </td>
+              <td>{{ formatFileSize(file.fileSize) }}</td>
+              <td>{{ formatDuration(file.durationSec) }}</td>
+              <td class="col-format">{{ formatAudioInfo(file) }}</td>
+              <td class="col-date muted text-sm">{{ formatDate(file.uploadedAt) }}</td>
+              <td class="col-actions" (click)="$event.stopPropagation()">
+                @if (pendingDeleteId() === file.id) {
+                  <app-confirm-inline
+                    (confirmed)="onDeleteConfirm()"
+                    (cancelled)="onDeleteCancel()"
+                  />
+                } @else {
+                  <button class="btn btn-sm" (click)="onRowClick(file.id)">Otevřít</button>
+                  <button
+                    class="btn btn-sm btn-danger"
+                    [disabled]="isDeleting()"
+                    (click)="onDeleteRequest(file.id, $event)"
+                  >🗑
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>
+
+<!-- Upload modal -->
+<app-modal [isOpen]="showModal()" title="Nahrát WAV soubor" (closed)="onCloseModal()">
+
+  <!-- Drag & drop zóna -->
+  <div
+    class="drop-zone"
+    [class.drop-zone-active]="isDragging()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    @if (!pendingFile()) {
+      <div class="drop-icon">🎵</div>
+      <p class="drop-text">Přetáhněte WAV soubor sem</p>
+      <p class="muted text-sm">nebo</p>
+      <label class="btn">
+        Vybrat soubor
+        <input type="file" accept=".wav,audio/wav" (change)="onFileInputChange($event)" hidden/>
+      </label>
+    } @else {
+      <div class="file-preview">
+        <div class="file-preview-icon">🎵</div>
+        <div>
+          <p class="file-preview-name">{{ pendingFile()!.name }}</p>
+          <p class="muted text-sm">{{ formatFileSize(pendingFile()!.size) }}</p>
+        </div>
+        <button class="btn btn-sm" (click)="onClearPendingFile()">✕</button>
+      </div>
+    }
+  </div>
+
+  @if (uploadError()) {
+    <div class="error-msg" style="margin-top: 12px;">{{ uploadError() }}</div>
+  }
+
+  <div class="modal-actions">
+    <button class="btn" (click)="onCloseModal()" [disabled]="isUploading()">Zrušit</button>
+    <button
+      class="btn btn-primary"
+      [disabled]="!pendingFile() || isUploading()"
+      (click)="onUpload()"
+    >
+      @if (isUploading()) {
+        Nahrávám…
+      } @else {
+        Nahrát
+      }
+    </button>
+  </div>
+
+</app-modal>

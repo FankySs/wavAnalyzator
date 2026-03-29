@@ -1,0 +1,126 @@
+@if (inst()) {
+
+  <!-- Info panel -->
+  <div class="info-panel">
+    Chunk inst obsahuje hudební parametry pro samplingové nástroje a syntezátory.
+    Definuje MIDI rozsah not a dynamiky, ve kterém má být nahrávka přehrávána,
+    a základní výšku tónu odpovídající záznamu. Využívá se v softwarových
+    nástrojích, samplerech a hudebních knihovnách.
+  </div>
+
+  <!-- View mode -->
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="params-grid">
+      <app-audio-param-card icon="" label="Základní nota"    [value]="unshiftedNoteLabel()" />
+      <app-audio-param-card icon="" label="Fine Tune"        [value]="fineTuneLabel()" />
+      <app-audio-param-card icon="" label="Zesílení"         [value]="gainLabel()" />
+      <app-audio-param-card icon="" label="Nejnižší nota"    [value]="lowNoteLabel()" />
+      <app-audio-param-card icon="" label="Nejvyšší nota"    [value]="highNoteLabel()" />
+      <app-audio-param-card icon="" label="Nejnižší velocity" [value]="lowVelocityLabel()" />
+      <app-audio-param-card icon="" label="Nejvyšší velocity" [value]="highVelocityLabel()" />
+    </div>
+
+    <!-- MIDI range bar -->
+    <div class="range-section">
+      <div class="range-label-row">
+        <span class="muted text-sm">Rozsah not (C-1 – G9)</span>
+      </div>
+      <div class="range-track">
+        <div class="range-fill" [style.left]="rangeLeft()" [style.width]="rangeWidth()">
+          <span class="range-note-label range-note-start">{{ rangeLowLabel() }}</span>
+          <span class="range-note-label range-note-end">{{ rangeHighLabel() }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Edit mode -->
+  @if (isEditing()) {
+
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card form-card">
+
+      <!-- Row 1: Unshifted note + Fine Tune + Gain -->
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Základní nota (0–127)</label>
+          <div class="note-input-row">
+            <input class="form-input" type="number" min="0" max="127"
+              [ngModel]="formUnshifted()"
+              (ngModelChange)="formUnshifted.set(+$event)"
+              [disabled]="isSaving()"
+            />
+            <span class="note-badge">{{ formUnshiftedName() }}</span>
+          </div>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Fine Tune (-50 – +50 centů)</label>
+          <input class="form-input" type="number" min="-50" max="50"
+            [(ngModel)]="formFineTune" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Zesílení (-64 – +64 dB)</label>
+          <input class="form-input" type="number" min="-64" max="64"
+            [(ngModel)]="formGain" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <!-- Row 2: Low note + High note -->
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Nejnižší nota (0–127)</label>
+          <div class="note-input-row">
+            <input class="form-input" type="number" min="0" max="127"
+              [ngModel]="formLowNote()"
+              (ngModelChange)="formLowNote.set(+$event)"
+              [disabled]="isSaving()"
+            />
+            <span class="note-badge">{{ formLowNoteName() }}</span>
+          </div>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Nejvyšší nota (0–127)</label>
+          <div class="note-input-row">
+            <input class="form-input" type="number" min="0" max="127"
+              [ngModel]="formHighNote()"
+              (ngModelChange)="formHighNote.set(+$event)"
+              [disabled]="isSaving()"
+            />
+            <span class="note-badge">{{ formHighNoteName() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Low velocity + High velocity -->
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Nejnižší velocity (0–127)</label>
+          <input class="form-input" type="number" min="0" max="127"
+            [(ngModel)]="formLowVelocity" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Nejvyšší velocity (0–127)</label>
+          <input class="form-input" type="number" min="0" max="127"
+            [(ngModel)]="formHighVelocity" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+
+  }
+
+}

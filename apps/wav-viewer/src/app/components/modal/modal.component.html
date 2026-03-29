@@ -1,0 +1,15 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="onOverlayClick()">
+    <div class="modal-box" (click)="onBoxClick($event)">
+      <div class="modal-header">
+        @if (title()) {
+          <span class="modal-title">{{ title() }}</span>
+        }
+        <button class="modal-close" (click)="closed.emit()">✕</button>
+      </div>
+      <div class="modal-body">
+        <ng-content />
+      </div>
+    </div>
+  </div>
+}

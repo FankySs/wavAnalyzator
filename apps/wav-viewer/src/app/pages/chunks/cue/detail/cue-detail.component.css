@@ -1,0 +1,107 @@
+/* Unsaved changes banner */
+.unsaved-banner {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,200,80,.08);
+  border: 1px solid rgba(255,200,80,.25);
+  color: var(--warning);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* Add mode hint */
+.add-mode-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255,208,80,.08);
+  border: 1px solid rgba(255,208,80,.35);
+  border-radius: var(--radius-sm);
+  color: var(--warning);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* Waveform card */
+.waveform-card {
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* Panel */
+.panel-card {
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.panel-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.panel-form { }
+
+.panel-form-title {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.panel-form-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Table */
+.table-card {
+  margin-bottom: 14px;
+}
+
+.table-row {
+  cursor: pointer;
+  transition: background .12s;
+}
+
+.table-row:hover {
+  background: rgba(255,255,255,.03);
+}
+
+.row-selected {
+  background: rgba(106,166,255,.08) !important;
+}
+
+/* Save bar */
+.save-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.save-error {
+  flex: 1;
+}

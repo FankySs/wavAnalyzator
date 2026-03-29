@@ -1,0 +1,76 @@
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 0 0 10px;
+}
+
+.table-card {
+  margin-bottom: 8px;
+}
+
+.note-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.note-name-badge {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  min-width: 36px;
+}
+
+/* Loops edit table */
+.loops-card {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.loops-table {
+  width: 100%;
+}
+
+.loop-select {
+  padding: 4px 6px;
+  font-size: 12px;
+  min-width: 90px;
+}
+
+.loop-input {
+  padding: 4px 6px;
+  font-size: 12px;
+  width: 90px;
+  min-width: 0;
+}
+
+.loop-pending {
+  opacity: .45;
+  pointer-events: none;
+}
+
+.loop-pending td:last-child {
+  pointer-events: all;
+}
+
+.add-loop-row {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* Actions */
+.edit-actions {
+  margin-top: 4px;
+}

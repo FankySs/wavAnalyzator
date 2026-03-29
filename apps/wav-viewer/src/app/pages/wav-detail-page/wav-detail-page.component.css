@@ -1,0 +1,39 @@
+.page-title { margin: 0 0 4px; word-break: break-all; }
+
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 700px) {
+  .params-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.player {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.row-pending { opacity: .6; pointer-events: none; }
+.row-pending .col-actions { pointer-events: all; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-download {
+  background: rgba(127, 210, 255, .12);
+  border-color: rgba(127, 210, 255, .3);
+  color: var(--brand-2);
+}
+.btn-download:hover:not(:disabled) {
+  background: rgba(127, 210, 255, .2);
+}
+
+.btn-placeholder {
+  height: 25px;
+}

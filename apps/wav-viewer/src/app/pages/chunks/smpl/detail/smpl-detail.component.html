@@ -1,0 +1,209 @@
+@if (smpl(); as s) {
+
+  <!-- Info panel -->
+  <div class="info-panel">
+    Chunk smpl obsahuje parametry pro samplingové nástroje a definici smyček.
+    Určuje MIDI výšku tónu odpovídající nahrávce, jemné ladění a seznam smyček
+    s jejich počátečními a koncovými pozicemi. Využívá se v samplerech,
+    softwarových nástrojích a hudebních knihovnách.
+  </div>
+
+  <!-- View mode -->
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="params-grid">
+      <app-audio-param-card icon="" label="MIDI nota"         [value]="midiNoteLabel()" />
+      <app-audio-param-card icon="" label="Sample Period"     [value]="samplePeriodLabel()" />
+      <app-audio-param-card icon="" label="Pitch Fraction"    [value]="pitchFractionLabel()" />
+      <app-audio-param-card icon="" label="SMPTE Format"      [value]="smpteFormatLabel()" />
+      <app-audio-param-card icon="" label="SMPTE Offset"      [value]="smpteOffsetLabel()" />
+      <app-audio-param-card icon="" label="Výrobce"           [value]="manufacturerLabel()" />
+      <app-audio-param-card icon="" label="Produkt"           [value]="productLabel()" />
+    </div>
+
+    <!-- Loops table -->
+    <div class="section-header">Smyčky</div>
+
+    @if (s.loops.length === 0) {
+      <p class="muted text-sm">Žádné smyčky definovány.</p>
+    } @else {
+      <div class="card table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Typ smyčky</th>
+              <th>Start (vzorky)</th>
+              <th>Konec (vzorky)</th>
+              <th>Fraction</th>
+              <th>Počet opakování</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (loop of s.loops; track $index) {
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ loopTypeLabel(loop.type) }}</td>
+                <td>{{ loop.start }}</td>
+                <td>{{ loop.end }}</td>
+                <td>{{ loop.fraction }}</td>
+                <td>{{ loop.playCount === 0 ? '∞' : loop.playCount }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- Edit mode -->
+  @if (isEditing()) {
+
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <!-- MIDI params form -->
+    <div class="card form-card">
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">MIDI Unity Note (0–127)</label>
+          <div class="note-input-row">
+            <input class="form-input"
+              type="number" min="0" max="127"
+              [ngModel]="formNote()"
+              (ngModelChange)="formNote.set(+$event)"
+              [disabled]="isSaving()"
+            />
+            <span class="note-name-badge">{{ formNoteName() }}</span>
+          </div>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">MIDI Pitch Fraction</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="formPitchFraction" [disabled]="isSaving()" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Sample Period (ns)</label>
+          <input class="form-input" type="number" min="1"
+            [(ngModel)]="formSamplePeriod" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">SMPTE Format (0–30)</label>
+          <input class="form-input" type="number" min="0" max="30"
+            [(ngModel)]="formSmpteFormat" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">SMPTE Offset</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="formSmpteOffset" [disabled]="isSaving()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Loops edit -->
+    <div class="section-header">Smyčky</div>
+
+    <div class="card loops-card">
+
+      @if (editLoops().length === 0) {
+        <p class="muted text-sm" style="padding: 12px 16px;">Žádné smyčky. Přidejte první níže.</p>
+      } @else {
+        <table class="data-table loops-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Typ</th>
+              <th>Start</th>
+              <th>Konec</th>
+              <th>Fraction</th>
+              <th>Opakování</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (loop of editLoops(); track loop._id) {
+              <tr [class.loop-pending]="pendingDeleteId() === loop._id">
+                <td>{{ $index + 1 }}</td>
+                <td>
+                  <select #loopTypeSel class="form-select loop-select"
+                    [value]="loop.type"
+                    [disabled]="isSaving() || pendingDeleteId() === loop._id"
+                    (change)="updateLoop(loop._id, 'type', +loopTypeSel.value)"
+                  >
+                    <option value="0">Forward</option>
+                    <option value="1">Ping-pong</option>
+                    <option value="2">Reverse</option>
+                  </select>
+                </td>
+                <td>
+                  <input #loopStartInp class="form-input loop-input" type="number" min="0"
+                    [value]="loop.start"
+                    [disabled]="isSaving() || pendingDeleteId() === loop._id"
+                    (input)="updateLoop(loop._id, 'start', +loopStartInp.value)"
+                  />
+                </td>
+                <td>
+                  <input #loopEndInp class="form-input loop-input" type="number" min="0"
+                    [value]="loop.end"
+                    [disabled]="isSaving() || pendingDeleteId() === loop._id"
+                    (input)="updateLoop(loop._id, 'end', +loopEndInp.value)"
+                  />
+                </td>
+                <td>
+                  <input #loopFracInp class="form-input loop-input" type="number" min="0"
+                    [value]="loop.fraction"
+                    [disabled]="isSaving() || pendingDeleteId() === loop._id"
+                    (input)="updateLoop(loop._id, 'fraction', +loopFracInp.value)"
+                  />
+                </td>
+                <td>
+                  <input #loopPlayInp class="form-input loop-input" type="number" min="0"
+                    [value]="loop.playCount"
+                    [disabled]="isSaving() || pendingDeleteId() === loop._id"
+                    (input)="updateLoop(loop._id, 'playCount', +loopPlayInp.value)"
+                    title="0 = nekonečno"
+                  />
+                </td>
+                <td>
+                  @if (pendingDeleteId() === loop._id) {
+                    <app-confirm-inline
+                      [message]="'Smazat smyčku #' + ($index + 1) + '?'"
+                      (confirmed)="onDeleteConfirm()"
+                      (cancelled)="onDeleteCancel()"
+                    />
+                  } @else {
+                    <button class="btn btn-sm btn-danger"
+                      [disabled]="isSaving() || !!pendingDeleteId()"
+                      (click)="onDeleteRequest(loop._id)"
+                    >✕</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+      <div class="add-loop-row">
+        <button class="btn btn-sm" [disabled]="isSaving()" (click)="addLoop()">＋ Přidat smyčku</button>
+      </div>
+
+    </div>
+
+    <!-- Save / cancel -->
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+
+  }
+
+}

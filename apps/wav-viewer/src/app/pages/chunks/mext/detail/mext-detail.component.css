@@ -1,0 +1,19 @@
+.th-field { width: 180px; }
+.th-desc { width: 200px; }
+
+.label-cell {
+  width: 180px;
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
+.desc-cell {
+  width: 200px;
+  padding-right: 16px;
+}
+
+.hex-cell {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+}
+

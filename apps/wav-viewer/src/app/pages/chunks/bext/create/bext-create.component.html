@@ -1,0 +1,42 @@
+<div class="card form-card">
+  <div class="form-group">
+    <label class="form-label">Popis (description)</label>
+    <input class="form-input" maxlength="256" [(ngModel)]="bext.description" />
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Originator</label>
+      <input class="form-input" maxlength="32" [(ngModel)]="bext.originator" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Originator Reference</label>
+      <input class="form-input" maxlength="32" [(ngModel)]="bext.originatorReference" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Datum vzniku</label>
+      <input class="form-input" type="date" [(ngModel)]="bext.originationDate" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Čas vzniku</label>
+      <input class="form-input" type="time" step="1" [(ngModel)]="bext.originationTime" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Time Reference Low</label>
+      <input class="form-input" type="number" min="0" [(ngModel)]="bext.timeReferenceLow" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Time Reference High</label>
+      <input class="form-input" type="number" min="0" [(ngModel)]="bext.timeReferenceHigh" />
+    </div>
+  </div>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

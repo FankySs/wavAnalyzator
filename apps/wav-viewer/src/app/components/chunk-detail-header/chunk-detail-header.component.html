@@ -1,0 +1,44 @@
+<div class="chunk-header">
+  <div class="chunk-header-nav">
+    @if (isSaving()) {
+      <span class="back-link back-link--disabled muted text-sm">← Zpět na detail souboru</span>
+    } @else {
+      <a class="back-link muted text-sm" [routerLink]="['/wav', wavId()]">← Zpět na detail souboru</a>
+    }
+  </div>
+
+  <div class="chunk-header-row">
+    <div class="chunk-header-info">
+      <div class="chunk-header-title">
+        <app-chunk-badge [chunkId]="chunk().chunkId" />
+        <h1 class="page-title">{{ chunkName(chunk().chunkId) }}</h1>
+      </div>
+      <p class="muted text-sm">
+        Velikost: {{ formatSize(chunk().size) }}
+        &nbsp;·&nbsp;
+        Offset: 0x{{ chunk().offset.toString(16).toUpperCase() }}
+      </p>
+    </div>
+
+    <div class="chunk-header-actions">
+      @if (deleteError()) {
+        <span class="muted text-sm" style="color: var(--danger)">{{ deleteError() }}</span>
+      }
+      @if (isDeletable()) {
+        @if (showConfirm()) {
+          <app-confirm-inline
+            message="Smazat tento chunk?"
+            (confirmed)="onDeleteConfirm()"
+            (cancelled)="onDeleteCancel()"
+          />
+        } @else {
+          <button
+            class="btn btn-sm btn-danger"
+            [disabled]="isDeleting()"
+            (click)="onDeleteRequest()"
+          >🗑 Smazat chunk</button>
+        }
+      }
+    </div>
+  </div>
+</div>

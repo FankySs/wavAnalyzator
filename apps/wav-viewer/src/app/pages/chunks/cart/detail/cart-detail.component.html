@@ -1,0 +1,251 @@
+@if (cart(); as c) {
+
+  <div class="info-panel">
+    Chunk cart obsahuje metadata definovaná standardem NAB (National Association
+    of Broadcasters) pro rozhlasové vysílání. Ukládá informace o vysílání jako
+    název, interpret, časy začátku a konce, kategorii a URL.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="card table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-field">Pole</th>
+            <th class="th-desc">Popis</th>
+            <th>Hodnota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell muted text-sm">Version</td>
+            <td class="desc-cell muted text-sm">Verze formátu</td>
+            <td>{{ c.version || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Title</td>
+            <td class="desc-cell muted text-sm">Název pořadu nebo skladby</td>
+            <td>{{ c.title || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Artist</td>
+            <td class="desc-cell muted text-sm">Interpret</td>
+            <td>{{ c.artist || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">CutId</td>
+            <td class="desc-cell muted text-sm">Identifikátor střihu</td>
+            <td>{{ c.cutId || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">ClientId</td>
+            <td class="desc-cell muted text-sm">Identifikátor klienta</td>
+            <td>{{ c.clientId || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Category</td>
+            <td class="desc-cell muted text-sm">Kategorie obsahu</td>
+            <td>{{ c.category || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Classification</td>
+            <td class="desc-cell muted text-sm">Klasifikace</td>
+            <td>{{ c.classification || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">OutCue</td>
+            <td class="desc-cell muted text-sm">Výstupní hláška</td>
+            <td>{{ c.outCue || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">StartDate</td>
+            <td class="desc-cell muted text-sm">Datum začátku vysílání</td>
+            <td>{{ c.startDate || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">StartTime</td>
+            <td class="desc-cell muted text-sm">Čas začátku vysílání</td>
+            <td>{{ c.startTime || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">EndDate</td>
+            <td class="desc-cell muted text-sm">Datum konce vysílání</td>
+            <td>{{ c.endDate || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">EndTime</td>
+            <td class="desc-cell muted text-sm">Čas konce vysílání</td>
+            <td>{{ c.endTime || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">ProducerAppId</td>
+            <td class="desc-cell muted text-sm">Aplikace producenta</td>
+            <td>{{ c.producerAppId || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">ProducerAppVersion</td>
+            <td class="desc-cell muted text-sm">Verze aplikace</td>
+            <td>{{ c.producerAppVersion || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">UserDef</td>
+            <td class="desc-cell muted text-sm">Uživatelské pole</td>
+            <td>{{ c.userDef || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">URL</td>
+            <td class="desc-cell muted text-sm">Odkaz</td>
+            <td>{{ c.url || '—' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Tag</td>
+            <td class="desc-cell muted text-sm">Dodatečné poznámky</td>
+            <td class="tag-cell">{{ c.tag || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card form-card">
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Title
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.title" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Artist
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.artist" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            CutId
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.cutId" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            ClientId
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.clientId" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Category
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.category" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Classification
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.classification" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          OutCue
+          <span class="char-hint muted text-sm">(max 64)</span>
+        </label>
+        <input class="form-input" maxlength="64" [(ngModel)]="form.outCue" [disabled]="isSaving()" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">StartDate</label>
+          <input class="form-input" type="date" [(ngModel)]="form.startDate" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">StartTime</label>
+          <input class="form-input" type="time" step="1" [(ngModel)]="form.startTime" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">EndDate</label>
+          <input class="form-input" type="date" [(ngModel)]="form.endDate" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">EndTime</label>
+          <input class="form-input" type="time" step="1" [(ngModel)]="form.endTime" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            ProducerAppId
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.producerAppId" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            ProducerAppVersion
+            <span class="char-hint muted text-sm">(max 64)</span>
+          </label>
+          <input class="form-input" maxlength="64" [(ngModel)]="form.producerAppVersion" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          UserDef
+          <span class="char-hint muted text-sm">(max 64)</span>
+        </label>
+        <input class="form-input" maxlength="64" [(ngModel)]="form.userDef" [disabled]="isSaving()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          URL
+          <span class="char-hint muted text-sm">(max 1024)</span>
+        </label>
+        <input class="form-input" maxlength="1024" [(ngModel)]="form.url" [disabled]="isSaving()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          Tag
+          <span class="char-hint muted text-sm">Dodatečné poznámky (max 300)</span>
+        </label>
+        <textarea class="form-textarea" rows="4" maxlength="300"
+          [(ngModel)]="form.tag" [disabled]="isSaving()"></textarea>
+      </div>
+
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

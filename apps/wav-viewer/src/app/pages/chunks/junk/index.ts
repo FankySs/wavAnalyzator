@@ -1,0 +1,1 @@
+export { JunkDetailComponent } from './detail/junk-detail.component';

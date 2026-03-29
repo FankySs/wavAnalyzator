@@ -1,0 +1,81 @@
+<div class="container container-sm">
+
+  @if (isLoading()) {
+    <p class="muted text-sm">Načítám chunk…</p>
+  }
+
+  @if (error()) {
+    <div class="error-msg">{{ error() }}</div>
+  }
+
+  @if (chunk()) {
+    <app-chunk-detail-header
+      [chunk]="chunk()!"
+      [wavId]="id()"
+      [isSaving]="isSaving()"
+      (deleted)="onChunkDeleted()"
+    />
+
+    @if (chunk()!.isAudioData) {
+      <app-data-detail [chunk]="chunk()!" [wavId]="id()" />
+    } @else {
+      @switch (chunk()!.parsed?.chunkType) {
+        @case ('fmt') {
+          <app-fmt-detail [chunk]="chunk()!" />
+        }
+        @case ('LIST_INFO') {
+          <app-list-info-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('bext') {
+          <app-bext-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('cue') {
+          <app-cue-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('smpl') {
+          <app-smpl-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('fact') {
+          <app-fact-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('peak') {
+          <app-peak-detail [chunk]="chunk()!" [wavId]="id()" [sampleRate]="sampleRate()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('inst') {
+          <app-inst-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('cart') {
+          <app-cart-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('DISP') {
+          <app-disp-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('ixml') {
+          <app-ixml-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('axml') {
+          <app-axml-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('umid') {
+          <app-umid-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('mext') {
+          <app-mext-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('levl') {
+          <app-levl-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('adtl') {
+          <app-adtl-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
+        }
+        @case ('junk') {
+          <app-junk-detail [chunk]="chunk()!" />
+        }
+        @default {
+          <app-unknown-detail [chunk]="chunk()!" />
+        }
+      }
+    }
+  }
+
+</div>

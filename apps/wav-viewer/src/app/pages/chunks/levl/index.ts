@@ -1,0 +1,1 @@
+export { LevlDetailComponent } from './detail/levl-detail.component';

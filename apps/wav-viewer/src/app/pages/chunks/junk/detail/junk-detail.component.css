@@ -1,0 +1,17 @@
+.junk-card {
+  padding: 20px;
+}
+
+.junk-title {
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.junk-desc {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.junk-size {
+  margin: 0;
+}

@@ -1,0 +1,157 @@
+<!-- Info panel -->
+<div class="info-panel">
+  Chunk cue obsahuje seznam časových značek (cue pointů) v nahrávce.
+  Každá značka označuje konkrétní pozici ve vzorcích a může mít textový popisek
+  uložený v přidruženém chunk adtl. Používá se v DAW aplikacích pro navigaci,
+  editaci a synchronizaci zvuku.
+</div>
+
+@if (hasUnsavedChanges()) {
+  <div class="unsaved-banner">
+    Jsou neuložené změny.
+  </div>
+}
+
+<!-- Add mode hint -->
+@if (isAddingPoint()) {
+  <div class="add-mode-hint">
+    <span>Klikněte na waveform pro umístění nového cue pointu</span>
+    <button class="btn btn-sm" (click)="onCancelAddPoint()">Zrušit</button>
+  </div>
+}
+
+<!-- Waveform Player -->
+<div class="card waveform-card">
+  <app-waveform-player
+    [wavId]="wavId()"
+    [showCuePoints]="true"
+    [cuePoints]="livePoints()"
+    [addPointMode]="isAddingPoint()"
+    [selectedPointId]="selectedId()"
+    (sampleRateChange)="onSampleRateChange($event)"
+    (pointAdded)="onPointAdded($event)"
+  />
+</div>
+
+<!-- CuePointPanel -->
+@if (panelMode() !== null) {
+  <div class="card panel-card">
+
+    @if (panelMode() === 'view' && selectedPoint(); as pt) {
+      <div class="panel-view">
+        <div class="panel-info">
+          <span class="panel-label">{{ pt.label }}</span>
+          <span class="muted text-sm">{{ pt.timeStr }} &nbsp;|&nbsp; {{ pt.sampleOffset }} vzorků</span>
+          @if (pt.adtlLabel) {
+            <span class="muted text-sm">{{ pt.adtlLabel }}</span>
+          }
+        </div>
+        <div class="panel-actions">
+          @if (pendingDeleteId() === pt.id) {
+            <app-confirm-inline
+              [message]="'Smazat ' + pt.label + '?'"
+              (confirmed)="onDeleteConfirm()"
+              (cancelled)="onDeleteCancel()"
+            />
+          } @else {
+            <button class="btn btn-sm" (click)="onPanelEdit()">✎ Upravit</button>
+            <button class="btn btn-sm btn-danger" (click)="onDeleteRequest(pt.id)">✕ Smazat</button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (panelMode() === 'edit' || panelMode() === 'new') {
+      <div class="panel-form">
+        <span class="panel-form-title muted text-sm">
+          {{ panelMode() === 'new' ? 'Nový cue point' : 'Upravit ' + (selectedPoint()?.label ?? '') }}
+        </span>
+
+        @if (formError()) {
+          <div class="error-msg" style="margin-bottom: 8px;">{{ formError() }}</div>
+        }
+
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Pozice (mm:ss.mmm)</label>
+            <input class="form-input"
+              [(ngModel)]="formTimeStr"
+              (ngModelChange)="onTimeStrInput()"
+              placeholder="00:00.000"
+            />
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Pozice (vzorky)</label>
+            <input class="form-input" type="number" min="0"
+              [(ngModel)]="formSamples"
+              (ngModelChange)="onSamplesInput()"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Popisek (adtl/labl)</label>
+          <input class="form-input" type="text"
+            [(ngModel)]="formLabel"
+            placeholder="volitelný popisek…"
+          />
+        </div>
+
+        <div class="panel-form-btns">
+          <button class="btn btn-sm" (click)="onPanelCancel()">Zrušit</button>
+          <button class="btn btn-sm btn-primary" (click)="onPanelSave()">
+            {{ panelMode() === 'new' ? 'Přidat' : 'Uložit' }}
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+}
+
+<!-- Table -->
+@if (markerPositions().length > 0) {
+  <div class="card table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Pozice (mm:ss.mmm)</th>
+          <th>Pozice (vzorky)</th>
+          <th>Popisek</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of markerPositions(); track m.id) {
+          <tr
+            class="table-row"
+            [class.row-selected]="m.isSelected"
+            (click)="onRowClick(m.id)"
+          >
+            <td>{{ m.label }}</td>
+            <td>{{ m.timeStr }}</td>
+            <td>{{ m.sampleOffset }}</td>
+            <td class="muted text-sm">{{ m.adtlLabel || '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="muted text-sm" style="margin-top: 8px;">Žádné cue pointy.</p>
+}
+
+<!-- Add button + Global save -->
+<div class="save-bar">
+  <button class="btn btn-sm" [disabled]="isAddingPoint()" (click)="onAddPointClick()">＋ Přidat cue point</button>
+  @if (saveError()) {
+    <div class="error-msg save-error">{{ saveError() }}</div>
+  }
+  <button
+    class="btn btn-primary"
+    [disabled]="!hasUnsavedChanges() || isSaving()"
+    (click)="onGlobalSave()"
+  >
+    @if (isSaving()) { Ukládám… } @else { Uložit změny }
+  </button>
+</div>

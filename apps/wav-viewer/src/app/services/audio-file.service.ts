@@ -4,13 +4,21 @@ import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 export class AudioFileService {
   private readonly _file: WritableSignal<File | null> = signal<File | null>(null);
   private readonly _objectUrl: WritableSignal<string | null> = signal<string | null>(null);
+  private readonly _wavFileId: WritableSignal<string | null> = signal<string | null>(null);
+  private readonly _wavSampleRate: WritableSignal<number | null> = signal<number | null>(null);
+  private readonly _wavDurationSec: WritableSignal<number | null> = signal<number | null>(null);
 
-  public readonly file: Signal<File | null> = this._file.asReadonly();
-  public readonly objectUrl: Signal<string | null> = this._objectUrl.asReadonly();
+  readonly file: Signal<File | null> = this._file.asReadonly();
+  readonly objectUrl: Signal<string | null> = this._objectUrl.asReadonly();
+  /** ID záznamu WavFile v DB po úspěšném uploadu na BE. */
+  readonly wavFileId: Signal<string | null> = this._wavFileId.asReadonly();
+  /** Sample rate aktivně zobrazeného WAV souboru (null pokud není načten). */
+  readonly wavSampleRate: Signal<number | null> = this._wavSampleRate.asReadonly();
+  /** Délka aktivně zobrazeného WAV souboru v sekundách (null pokud není načten). */
+  readonly wavDurationSec: Signal<number | null> = this._wavDurationSec.asReadonly();
 
-  /** Nastaví nový soubor a spravuje Object URL. */
-  public readonly setFile: (file: File | null) => void = (file: File | null): void => {
-    const oldUrl: string | null = this._objectUrl();
+  readonly setFile = (file: File | null): void => {
+    const oldUrl = this._objectUrl();
     if (oldUrl !== null) URL.revokeObjectURL(oldUrl);
 
     if (file === null) {
@@ -20,10 +28,22 @@ export class AudioFileService {
     }
 
     this._file.set(file);
-    const url: string = URL.createObjectURL(file);
-    this._objectUrl.set(url);
+    this._objectUrl.set(URL.createObjectURL(file));
   };
 
-  /** Vyčistí stav. */
-  public readonly clear: () => void = (): void => this.setFile(null);
+  readonly setWavFileId = (id: string | null): void => {
+    this._wavFileId.set(id);
+  };
+
+  readonly setWavMeta = (sampleRate: number | null, durationSec: number | null): void => {
+    this._wavSampleRate.set(sampleRate);
+    this._wavDurationSec.set(durationSec);
+  };
+
+  readonly clear = (): void => {
+    this.setFile(null);
+    this._wavFileId.set(null);
+    this._wavSampleRate.set(null);
+    this._wavDurationSec.set(null);
+  };
 }

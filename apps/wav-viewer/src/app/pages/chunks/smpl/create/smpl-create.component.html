@@ -1,0 +1,57 @@
+<div class="card form-card">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">MIDI Unity Note (0–127)</label>
+      <input class="form-input" type="number" min="0" max="127" [(ngModel)]="midiUnityNote" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sample Period (ns)</label>
+      <input class="form-input" type="number" min="1" [(ngModel)]="samplePeriod" />
+    </div>
+  </div>
+  <div class="section-header" style="margin: 16px 0 8px;">Smyčky</div>
+  @for (loop of loops(); track $index) {
+    <div class="loop-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start</label>
+          <input class="form-input" type="number" min="0" #inpStart
+            [value]="loop.start"
+            (input)="updateLoop($index, 'start', +inpStart.value)"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">End</label>
+          <input class="form-input" type="number" min="0" #inpEnd
+            [value]="loop.end"
+            (input)="updateLoop($index, 'end', +inpEnd.value)"
+          />
+        </div>
+      </div>
+      <div class="form-row" style="grid-template-columns: 1fr 1fr auto;">
+        <div class="form-group">
+          <label class="form-label">Typ</label>
+          <input class="form-input" type="number" min="0" max="2" #inpType
+            [value]="loop.type ?? 0"
+            (input)="updateLoop($index, 'type', +inpType.value)"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Play Count</label>
+          <input class="form-input" type="number" min="0" #inpPlay
+            [value]="loop.playCount ?? 0"
+            (input)="updateLoop($index, 'playCount', +inpPlay.value)"
+          />
+        </div>
+        <button class="btn btn-sm btn-danger entry-remove" (click)="removeLoop($index)">✕</button>
+      </div>
+    </div>
+  }
+  <button class="btn btn-sm" (click)="addLoop()">＋ Přidat smyčku</button>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

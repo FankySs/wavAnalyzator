@@ -1,0 +1,43 @@
+@if (disp(); as d) {
+
+  <div class="info-panel">
+    Chunk DISP obsahuje textový popis souboru zobrazitelný
+    v aplikacích podporujících schránku Windows.
+    Používá se pro krátké popisy nebo názvy projektů.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+    <div class="card text-card">
+      <span class="cf-badge muted text-sm">{{ cfTypeName() }}</span>
+      <p class="disp-text">{{ d.text || '—' }}</p>
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+    <div class="card form-card">
+      <div class="form-group">
+        <label class="form-label">
+          Text
+          @if (formText.length > 400) {
+            <span class="char-count">{{ formText.length }}/500</span>
+          }
+        </label>
+        <textarea class="form-textarea" rows="5" maxlength="500"
+          [(ngModel)]="formText" [disabled]="isSaving()"></textarea>
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

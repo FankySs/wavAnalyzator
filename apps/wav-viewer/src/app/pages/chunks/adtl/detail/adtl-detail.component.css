@@ -1,0 +1,30 @@
+.type-badge {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  background: rgba(106,166,255,.12);
+  border: 1px solid rgba(106,166,255,.22);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* Edit mode */
+.edit-card { padding: 16px 0 0; }
+
+.edit-table { margin-bottom: 0; }
+
+.th-cue { width: 80px; }
+.th-type { width: 90px; }
+.th-del { width: 80px; }
+
+.input-small { width: 100%; }
+
+.delete-cell { white-space: nowrap; }
+
+.add-row {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.edit-actions {
+  margin-top: 14px;
+}

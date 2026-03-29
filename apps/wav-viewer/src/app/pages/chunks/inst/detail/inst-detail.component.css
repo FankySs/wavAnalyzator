@@ -1,0 +1,64 @@
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* MIDI range bar */
+.range-section {
+  margin-bottom: 4px;
+}
+
+.range-label-row {
+  margin-bottom: 8px;
+}
+
+.range-track {
+  position: relative;
+  height: 20px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.range-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: rgba(106,166,255,.35);
+  border: 1px solid rgba(106,166,255,.55);
+  border-radius: 3px;
+  min-width: 2px;
+}
+
+.range-note-label {
+  position: absolute;
+  top: -18px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--brand);
+  white-space: nowrap;
+}
+
+.range-note-start {
+  left: 0;
+}
+
+.range-note-end {
+  right: 0;
+}
+
+.note-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.note-badge {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  min-width: 36px;
+}

@@ -1,0 +1,11 @@
+.confirm-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.confirm-msg {
+  font-size: 13px;
+  color: var(--danger);
+}

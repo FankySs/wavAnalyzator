@@ -1,0 +1,38 @@
+// To switch to PostgreSQL:
+// 1. Change provider to "postgresql"
+// 2. Update url in prisma.config.ts to a postgres connection string
+// 3. Run: npx prisma migrate deploy
+
+// Connection URL is configured in prisma.config.ts (Prisma 7+)
+datasource db {
+  provider = "sqlite"
+}
+
+// Output is set to @prisma/client/.prisma/client so TypeScript can resolve
+// the re-export from @prisma/client without needing a symlink (Windows compat)
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/@prisma/client/.prisma/client"
+}
+
+model WavFile {
+  id         String     @id @default(cuid())
+  fileName   String
+  fileSize   Int
+  uploadedAt DateTime   @default(now())
+  filePath   String
+  chunks     WavChunk[]
+}
+
+model WavChunk {
+  id            String  @id @default(cuid())
+  wavFileId     String
+  chunkId       String
+  offset        Int
+  payloadOffset Int
+  size          Int
+  isAudioData   Boolean @default(false)
+  rawData       Bytes?
+
+  wavFile WavFile @relation(fields: [wavFileId], references: [id], onDelete: Cascade)
+}

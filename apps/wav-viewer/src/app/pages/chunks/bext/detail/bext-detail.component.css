@@ -1,0 +1,19 @@
+.label-cell {
+  width: 200px;
+  white-space: nowrap;
+  padding-right: 16px;
+}
+
+.umid-cell {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.coding-history-cell {
+  white-space: pre-wrap;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.char-hint { margin-left: 6px; }

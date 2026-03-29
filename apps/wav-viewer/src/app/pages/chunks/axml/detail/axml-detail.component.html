@@ -1,0 +1,37 @@
+@if (axml(); as a) {
+
+  <div class="info-panel">
+    Chunk axml obsahuje metadata ve formátu EBU Core XML.
+    Používá se v profesionálních televizních a filmových audio workflows
+    pro strukturovaný popis mediálního obsahu podle standardu EBU.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+    <div class="card xml-card">
+      <pre class="xml-pre">{{ a.xml || '—' }}</pre>
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+    <div class="card form-card">
+      <div class="form-group">
+        <label class="form-label">XML obsah</label>
+        <textarea class="form-textarea xml-textarea" rows="16"
+          [(ngModel)]="formXml" [disabled]="isSaving()"></textarea>
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

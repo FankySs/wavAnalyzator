@@ -1,0 +1,40 @@
+<div class="waveform-player" #container>
+
+  @if (isLoading()) {
+    <div class="waveform-skeleton"></div>
+  }
+
+  @if (error()) {
+    <div class="waveform-error">{{ error() }}</div>
+  }
+
+  @if (!isLoading() && !error()) {
+    <canvas
+      #waveformCanvas
+      class="waveform-canvas"
+      [style.cursor]="cursorStyle()"
+      (click)="onCanvasClick($event)"
+    ></canvas>
+  }
+
+  <audio
+    #audioEl
+    [src]="streamUrl()"
+    (timeupdate)="onTimeUpdate()"
+    (loadedmetadata)="onMetadataLoaded()"
+    (ended)="onEnded()"
+    (play)="onPlay()"
+    (pause)="onPause()"
+    preload="metadata"
+  ></audio>
+
+  <div class="player-controls">
+    <button class="btn btn-play" [disabled]="isLoading()" (click)="onPlayPause()">
+      @if (isPlaying()) { Pauza } @else { Přehrát }
+    </button>
+    <span class="time-display">
+      {{ formatTime(currentTime()) }} / {{ formatTime(duration()) }}
+    </span>
+  </div>
+
+</div>

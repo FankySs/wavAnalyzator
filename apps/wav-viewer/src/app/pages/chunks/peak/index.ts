@@ -1,0 +1,1 @@
+export { PeakDetailComponent } from './detail/peak-detail.component';

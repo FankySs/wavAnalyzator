@@ -1,0 +1,157 @@
+@if (bext(); as b) {
+
+  <!-- Info panel – always visible -->
+  <div class="info-panel">
+    Broadcast Extension (BWF) – profesionální metadata pro vysílání a archivaci.
+    Verze {{ b.version }}@if (b.version >= 2) {, loudness (EBU R128)}.
+  </div>
+
+  <!-- View mode -->
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="card table-card">
+      <table class="data-table">
+        <tbody>
+          <tr>
+            <td class="label-cell muted text-sm">Description</td>
+            <td>{{ b.description || '–' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Originator</td>
+            <td>{{ b.originator || '–' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Originator Reference</td>
+            <td>{{ b.originatorReference || '–' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Origination Date</td>
+            <td>{{ b.originationDate || '–' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Origination Time</td>
+            <td>{{ b.originationTime || '–' }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Time Reference (low)</td>
+            <td>{{ b.timeReferenceLow }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Time Reference (high)</td>
+            <td>{{ b.timeReferenceHigh }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Version</td>
+            <td>{{ b.version }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">UMID</td>
+            <td class="umid-cell muted text-sm">{{ b.umid }}</td>
+          </tr>
+          @if (b.version >= 2) {
+            <tr>
+              <td class="label-cell muted text-sm">Loudness Value</td>
+              <td>{{ b.loudnessValue !== undefined ? (b.loudnessValue / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell muted text-sm">Loudness Range</td>
+              <td>{{ b.loudnessRange !== undefined ? (b.loudnessRange / 100 | number:'1.2-2') + ' LU' : '–' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell muted text-sm">Max True Peak</td>
+              <td>{{ b.maxTruePeakLevel !== undefined ? (b.maxTruePeakLevel / 100 | number:'1.2-2') + ' dBTP' : '–' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell muted text-sm">Max Momentary Loudness</td>
+              <td>{{ b.maxMomentaryLoudness !== undefined ? (b.maxMomentaryLoudness / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell muted text-sm">Max Short-term Loudness</td>
+              <td>{{ b.maxShortTermLoudness !== undefined ? (b.maxShortTermLoudness / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
+            </tr>
+          }
+          @if (b.codingHistory) {
+            <tr>
+              <td class="label-cell muted text-sm">Coding History</td>
+              <td class="coding-history-cell">{{ b.codingHistory }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Edit mode -->
+  @if (isEditing()) {
+
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card form-card">
+
+      <div class="form-group">
+        <label class="form-label">
+          Description
+          <span class="char-hint muted text-sm">(max 256 znaků)</span>
+        </label>
+        <input class="form-input" maxlength="256" [(ngModel)]="form.description" [disabled]="isSaving()" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Originator
+            <span class="char-hint muted text-sm">(max 32)</span>
+          </label>
+          <input class="form-input" maxlength="32" [(ngModel)]="form.originator" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">
+            Originator Reference
+            <span class="char-hint muted text-sm">(max 32)</span>
+          </label>
+          <input class="form-input" maxlength="32" [(ngModel)]="form.originatorReference" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Origination Date</label>
+          <input class="form-input" type="date" [(ngModel)]="form.originationDate" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Origination Time</label>
+          <input class="form-input" type="time" step="1" [(ngModel)]="form.originationTime" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          Time Reference (sample offset)
+          <span class="char-hint muted text-sm">kombinovaná 64-bit hodnota</span>
+        </label>
+        <input class="form-input" type="number" min="0" [(ngModel)]="form.timeReference" [disabled]="isSaving()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Coding History</label>
+        <textarea class="form-textarea" rows="4" [(ngModel)]="form.codingHistory" [disabled]="isSaving()"></textarea>
+        <p class="muted text-sm" style="margin-top: 4px;">Formát: A=PCM,F=44100,W=16,M=stereo,T=nahrávač</p>
+      </div>
+
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+
+  }
+
+}

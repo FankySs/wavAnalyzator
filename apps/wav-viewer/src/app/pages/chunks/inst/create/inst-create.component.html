@@ -1,0 +1,42 @@
+<div class="card form-card">
+  <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="form-group">
+      <label class="form-label">Unshifted Note (0–127)</label>
+      <input class="form-input" type="number" min="0" max="127" [(ngModel)]="inst.unshiftedNote" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fine Tune (-50–50)</label>
+      <input class="form-input" type="number" min="-50" max="50" [(ngModel)]="inst.fineTune" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Gain (dB)</label>
+      <input class="form-input" type="number" min="-64" max="64" [(ngModel)]="inst.gain" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Low Note (0–127)</label>
+      <input class="form-input" type="number" min="0" max="127" [(ngModel)]="inst.lowNote" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">High Note (0–127)</label>
+      <input class="form-input" type="number" min="0" max="127" [(ngModel)]="inst.highNote" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Low Velocity (1–127)</label>
+      <input class="form-input" type="number" min="1" max="127" [(ngModel)]="inst.lowVelocity" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">High Velocity (1–127)</label>
+      <input class="form-input" type="number" min="1" max="127" [(ngModel)]="inst.highVelocity" />
+    </div>
+  </div>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

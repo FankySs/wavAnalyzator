@@ -1,0 +1,127 @@
+<div class="container container-sm">
+
+  <!-- Hlavička -->
+  <div class="page-header">
+    <div>
+      <a class="back-link muted text-sm" [routerLink]="['/wav', id()]">← Zpět na detail</a>
+      <h1>Přidat chunk</h1>
+    </div>
+  </div>
+
+  <!-- Krok 1: Výběr typu -->
+  @if (step() === 1) {
+    @if (isLoadingChunks()) {
+      <p class="muted text-sm step-hint">Načítám existující chunky…</p>
+    } @else if (loadError()) {
+      <div class="error-msg">{{ loadError() }}</div>
+    } @else if (allUnavailable()) {
+      <div class="info-panel">
+        Tento soubor již obsahuje všechny podporované chunky.
+      </div>
+      <a class="btn" [routerLink]="['/wav', id()]">← Zpět na detail</a>
+    } @else {
+      <p class="muted text-sm step-hint">Vyberte typ chunku, který chcete přidat:</p>
+      <div class="type-grid">
+        @for (ct of availableTypes(); track ct.id) {
+          <button class="type-card" (click)="onSelectType(ct.id)">
+            <app-chunk-badge [chunkId]="ct.fourCC" />
+            <span class="type-label">{{ ct.label }}</span>
+            <span class="type-desc muted text-sm">{{ ct.description }}</span>
+          </button>
+        }
+      </div>
+    }
+  }
+
+  <!-- Krok 2: Formulář -->
+  @if (step() === 2) {
+    <div class="step2-header">
+      <button class="btn" (click)="onBack()">← Zpět</button>
+      <span class="step2-title">
+        @for (ct of availableTypes(); track ct.id) {
+          @if (ct.id === selectedType()) {
+            <app-chunk-badge [chunkId]="ct.fourCC" /> {{ ct.label }}
+          }
+        }
+      </span>
+    </div>
+
+    @if (error()) {
+      <div class="error-msg">{{ error() }}</div>
+    }
+
+    @switch (selectedType()) {
+      @case ('list-info') {
+        <app-list-info-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onListInfoSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('bext') {
+        <app-bext-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onBextSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('cue') {
+        <app-cue-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onCueSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('fact') {
+        <app-fact-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onFactSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('inst') {
+        <app-inst-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onInstSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('smpl') {
+        <app-smpl-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onSmplSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('cart') {
+        <app-cart-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onCartSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('disp') {
+        <app-disp-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onDispSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('ixml') {
+        <app-ixml-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onIxmlSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+      @case ('axml') {
+        <app-axml-create
+          [isDisabled]="isSubmitting()"
+          (submitted)="onAxmlSubmit($event)"
+          (cancelled)="onBack()"
+        />
+      }
+    }
+  }
+
+</div>

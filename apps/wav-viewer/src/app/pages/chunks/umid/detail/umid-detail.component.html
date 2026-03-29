@@ -1,0 +1,48 @@
+@if (umid()) {
+
+  <div class="info-panel">
+    Chunk umid obsahuje jedinečný identifikátor média (Unique Material Identifier)
+    podle standardu SMPTE. Používá se v profesionálních archivních systémech
+    pro jednoznačnou identifikaci mediálního obsahu.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+    <div class="card umid-card">
+      <p class="muted text-sm" style="margin-bottom: 6px;">SMPTE UMID (64 bajtů)</p>
+      <code class="umid-hex">{{ formattedHex() }}</code>
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+    <div class="card form-card">
+      <div class="form-group">
+        <label class="form-label">UMID (128 hex znaků)</label>
+        <input class="form-input umid-input"
+          [(ngModel)]="formUmid"
+          (ngModelChange)="onFormInput()"
+          [disabled]="isSaving()"
+          placeholder="0000000000000000000000000000000000000000000000000000000000000000..."
+          maxlength="128"
+          spellcheck="false"
+        />
+        @if (validationError()) {
+          <p class="form-error text-sm">{{ validationError() }}</p>
+        }
+        <p class="muted text-sm" style="margin-top: 4px;">Přesně 128 hexadecimálních znaků (0–9, A–F).</p>
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving() || !!validationError()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

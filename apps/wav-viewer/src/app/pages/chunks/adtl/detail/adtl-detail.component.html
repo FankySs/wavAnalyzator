@@ -1,0 +1,106 @@
+@if (adtl(); as a) {
+
+  <div class="info-panel">
+    Chunk adtl (Associated Data List) obsahuje textové anotace k cue pointům.
+    Každá anotace je přiřazena ke konkrétnímu cue pointu pomocí jeho ID
+    a může obsahovat název (labl), poznámku (note) nebo popis úseku (ltxt).
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    @if (a.entries.length === 0) {
+      <p class="muted text-sm">Žádné anotace</p>
+    } @else {
+      <div class="card table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cue ID</th>
+              <th>Typ</th>
+              <th>Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of a.entries; track entry.cuePointId + entry.id) {
+              <tr>
+                <td>{{ entry.cuePointId }}</td>
+                <td><span class="type-badge">{{ entry.id }}</span></td>
+                <td>{{ entry.text || '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card edit-card">
+      @if (rows().length === 0) {
+        <p class="muted text-sm">Žádné anotace. Přidejte novou.</p>
+      } @else {
+        <table class="data-table edit-table">
+          <thead>
+            <tr>
+              <th class="th-cue">Cue ID</th>
+              <th class="th-type">Typ</th>
+              <th>Text</th>
+              <th class="th-del"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row._id) {
+              <tr>
+                <td>
+                  <input class="form-input input-small" type="number" min="0"
+                    [(ngModel)]="row.cuePointId" [disabled]="isSaving()" />
+                </td>
+                <td>
+                  <select class="form-input input-small" [(ngModel)]="row.type" [disabled]="isSaving()">
+                    <option value="labl">labl</option>
+                    <option value="note">note</option>
+                    <option value="ltxt">ltxt</option>
+                  </select>
+                </td>
+                <td>
+                  <input class="form-input" [(ngModel)]="row.text" [disabled]="isSaving()" />
+                </td>
+                <td class="delete-cell">
+                  @if (row.pendingDelete) {
+                    <app-confirm-inline
+                      message="Smazat?"
+                      (confirmed)="onDeleteConfirm(row._id)"
+                      (cancelled)="onDeleteCancel(row._id)"
+                    />
+                  } @else {
+                    <button class="btn btn-sm btn-danger" [disabled]="isSaving()"
+                      (click)="onDeleteRequest(row._id)">✕</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+      <div class="add-row">
+        <button class="btn btn-sm" [disabled]="isSaving()" (click)="onAddRow()">+ Přidat anotaci</button>
+      </div>
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

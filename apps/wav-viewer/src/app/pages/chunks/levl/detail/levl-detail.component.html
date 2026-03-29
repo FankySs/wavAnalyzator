@@ -1,0 +1,112 @@
+@if (levl(); as l) {
+
+  <div class="info-panel">
+    Chunk levl (Level Structure Chunk) ukládá metadata o úrovních hlasitosti
+    nahrávky. Obsahuje informace o peak envelope datech používaných
+    v broadcastových systémech pro měření dynamiky audio signálu.
+    Envelope data nejsou editovatelná – zobrazují se pouze hlavičková metadata.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+
+    <div class="card table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-field">Pole</th>
+            <th class="th-desc">Popis</th>
+            <th>Hodnota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell muted text-sm">Version</td>
+            <td class="desc-cell muted text-sm">Verze formátu</td>
+            <td>{{ l.version }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Format</td>
+            <td class="desc-cell muted text-sm">Formát dat</td>
+            <td>{{ l.format }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Points</td>
+            <td class="desc-cell muted text-sm">Počet level points</td>
+            <td>{{ l.pointsPerValue }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Channel Count</td>
+            <td class="desc-cell muted text-sm">Počet kanálů</td>
+            <td>{{ l.channels }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Block Size</td>
+            <td class="desc-cell muted text-sm">Velikost bloku</td>
+            <td>{{ l.blockSize }}</td>
+          </tr>
+          <tr>
+            <td class="label-cell muted text-sm">Peak Envelope Version</td>
+            <td class="desc-cell muted text-sm">Verze peak envelope</td>
+            <td>{{ l.frameCount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="muted text-sm envelope-note">
+      Envelope data ({{ envelopeBytes() }} B) nejsou zobrazena.
+    </p>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+
+    <div class="card form-card">
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Version</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="form.version" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Format</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="form.format" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Channel Count</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="form.channelCount" [disabled]="isSaving()" />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Block Size</label>
+          <input class="form-input" type="number" min="0"
+            [(ngModel)]="form.blockSize" [disabled]="isSaving()" />
+        </div>
+      </div>
+
+      <div class="readonly-info muted text-sm">
+        <span>Points: {{ l.pointsPerValue }}</span>
+        <span>Peak Envelope Version: {{ l.frameCount }}</span>
+      </div>
+
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

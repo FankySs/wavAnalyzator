@@ -1,0 +1,46 @@
+<div class="card form-card">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Název (title)</label>
+      <input class="form-input" maxlength="64" [(ngModel)]="cart.title" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Interpret (artist)</label>
+      <input class="form-input" maxlength="64" [(ngModel)]="cart.artist" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Kategorie (category)</label>
+    <input class="form-input" maxlength="64" [(ngModel)]="cart.category" />
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Datum začátku</label>
+      <input class="form-input" type="date" [(ngModel)]="cart.startDate" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Čas začátku</label>
+      <input class="form-input" type="time" step="1" [(ngModel)]="cart.startTime" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Datum konce</label>
+      <input class="form-input" type="date" [(ngModel)]="cart.endDate" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Čas konce</label>
+      <input class="form-input" type="time" step="1" [(ngModel)]="cart.endTime" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">URL (volitelné)</label>
+    <input class="form-input" type="url" [(ngModel)]="cart.url" />
+  </div>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

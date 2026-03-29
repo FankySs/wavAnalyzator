@@ -1,0 +1,48 @@
+.chunk-header {
+  margin-bottom: 24px;
+}
+
+.chunk-header-nav {
+  margin-bottom: 8px;
+}
+
+.chunk-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.chunk-header-info {
+  min-width: 0;
+}
+
+.chunk-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.page-title {
+  margin: 0;
+}
+
+.chunk-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.back-link {
+  display: inline-block;
+  text-decoration: none;
+}
+.back-link:hover { color: var(--text); }
+
+.back-link--disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}

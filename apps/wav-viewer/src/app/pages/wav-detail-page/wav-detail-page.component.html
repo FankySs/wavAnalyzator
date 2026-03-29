@@ -1,0 +1,109 @@
+<div class="container">
+
+  <!-- Hlavička -->
+  <div class="page-header">
+    <div>
+      <a class="back-link muted text-sm" routerLink="/">← Zpět na seznam</a>
+      @if (detail()) {
+        <h1 class="page-title">{{ detail()!.fileName }}</h1>
+        <p class="muted text-sm">{{ formatSize(detail()!.fileSize) }} · nahráno {{ formatDate(detail()!.uploadedAt) }}</p>
+      } @else if (isLoading()) {
+        <h1 class="page-title muted">Načítám…</h1>
+      }
+    </div>
+    @if (detail()) {
+      <div class="header-actions">
+        <button
+          class="btn btn-download"
+          [disabled]="isDownloading()"
+          (click)="onDownloadClick()"
+        >
+          @if (isDownloading()) { Sestavuji soubor… } @else { Stáhnout WAV }
+        </button>
+        <a class="btn btn-primary" [routerLink]="['/wav', id(), 'chunks', 'new']">＋ Přidat chunk</a>
+      </div>
+    }
+  </div>
+
+  <!-- Chyba -->
+  @if (error()) {
+    <div class="error-msg">{{ error() }}</div>
+  }
+  @if (downloadError()) {
+    <div class="error-msg">{{ downloadError() }}</div>
+  }
+
+  @if (detail()) {
+    <!-- Audio parametry -->
+    <div class="params-grid">
+      <app-audio-param-card icon="🎵" label="Vzorkovací frekvence" [value]="sampleRateLabel()" />
+      <app-audio-param-card icon="🎚" label="Bitová hloubka" [value]="bitDepthLabel()" />
+      <app-audio-param-card icon="🔊" label="Kanály" [value]="channelsLabel()" />
+      <app-audio-param-card icon="⏱" label="Délka" [value]="durationLabel()" />
+    </div>
+
+    <!-- Audio přehrávač -->
+    <div class="section">
+      <div class="section-header">
+        <span>Přehrávač</span>
+      </div>
+      <app-waveform-player [wavId]="id()" />
+    </div>
+
+    <!-- Chunky -->
+    <div class="section">
+      <div class="section-header">
+        <span>Chunky ({{ detail()!.chunks.length }})</span>
+      </div>
+
+      @if (detail()!.chunks.length === 0) {
+        <p class="muted text-sm" style="padding: 16px 0;">Žádné chunky.</p>
+      } @else {
+        <div class="card table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Název</th>
+                <th>Velikost</th>
+                <th>Offset</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (chunk of detail()!.chunks; track chunk.id) {
+                <tr
+                  class="row-clickable"
+                  [class.row-pending]="pendingDeleteChunkId() === chunk.id"
+                  (click)="onChunkClick(chunk)"
+                >
+                  <td><app-chunk-badge [chunkId]="chunk.chunkId" /></td>
+                  <td>{{ chunkName(chunk.chunkId) }}</td>
+                  <td class="muted text-sm">{{ formatSize(chunk.size) }}</td>
+                  <td class="muted text-sm">0x{{ chunk.offset.toString(16).toUpperCase() }}</td>
+                  <td class="col-actions" (click)="$event.stopPropagation()">
+                    @if (pendingDeleteChunkId() === chunk.id) {
+                      <app-confirm-inline
+                        (confirmed)="onDeleteChunkConfirm()"
+                        (cancelled)="onDeleteChunkCancel()"
+                      />
+                    } @else if (chunk.chunkId !== 'fmt ' && !chunk.isAudioData) {
+                      <button
+                        class="btn btn-sm btn-danger"
+                        [disabled]="isDeletingChunk() || !!pendingDeleteChunkId()"
+                        (click)="onDeleteChunkRequest(chunk.id, $event)"
+                      >🗑</button>
+                    } @else {
+                      <div class="btn-placeholder"></div>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+</div>

@@ -1,0 +1,1 @@
+export { DataDetailComponent } from './detail/data-detail.component';

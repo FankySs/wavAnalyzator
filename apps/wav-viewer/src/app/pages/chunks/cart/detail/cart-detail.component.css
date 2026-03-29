@@ -1,0 +1,21 @@
+.th-field, .th-desc {
+  width: 160px;
+  white-space: nowrap;
+}
+
+.label-cell {
+  width: 160px;
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
+.desc-cell {
+  width: 200px;
+  padding-right: 16px;
+}
+
+.tag-cell {
+  white-space: pre-wrap;
+}
+
+.char-hint { margin-left: 6px; }

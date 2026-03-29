@@ -1,0 +1,1 @@
+export { UmidDetailComponent } from './detail/umid-detail.component';

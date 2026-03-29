@@ -1,44 +1,166 @@
-## WavAnalyzer
+# WAV Analyzer
 
-WavAnalyzer je webová aplikace vytvořená v rámci semestrální práce na VUT FEKT.
-Slouží k analýze struktury souborů formátu RIFF (WAV) – zobrazí jednotlivé chunky (bloky) zvukového souboru, jejich velikost, offsety a základní metadata.
+Webová aplikace pro analýzu a editaci zvukových souborů WAV.
+Bakalářská práce, VUT FEKT, Audio inženýrství.
 
-## Funkce aplikace
+---
 
-Nahrání WAV souboru pomocí integrovaného vstupu.
+## Co aplikace umí
 
-Zobrazení všech chunků (RIFF, fmt , data, LIST, …) s jejich velikostmi a pozicemi.
+- Nahrání a parsování WAV souborů
+- Zobrazení struktury chunků (typ, velikost, offset)
+- Editace metadat (LIST/INFO, bext, cue, smpl, inst, cart a další)
+- Přidávání a mazání chunků
+- Waveform vizualizace s audio přehrávačem
+- Download upraveného souboru jako platný WAV
 
-Parsování bloku fmt včetně rozšířené varianty WAVE_FORMAT_EXTENSIBLE.
+---
 
-Zpracování a výpis LIST/INFO bloků – čtení textových metadat (INAM, IART, ICRD, …).
+## Technologie
 
-Výpočet délky nahrávky z hodnot dataSize / byteRate.
+| Vrstva | Technologie |
+|---|---|
+| Frontend | Angular 20, TypeScript, Signals API |
+| Backend | NestJS, TypeScript |
+| Databáze | SQLite (via Prisma ORM) |
+| Monorepo | Nx 22 |
+| Správce balíčků | yarn |
 
-Moderní uživatelské rozhraní postavené na Angularu 19 a signálech (Signals API).
+---
 
-## Použité technologie
-Technologie	Popis
-Angular 19	Frontend framework
-TypeScript	Logika parseru a silné typování
-Nx Monorepo	Strukturování projektu (frontend + knihovna riff-parser)
-Signals API	Reaktivní řízení stavu mezi komponentami
-HTML / CSS / SCSS	Stylování a rozvržení rozhraní
-Jest (v přípravě)	Jednotkové testy parseru WAV souborů
-## Spuštění projektu
-Vývojový server
+## Požadavky
+
+Před spuštěním je potřeba mít nainstalované:
+
+- **Node.js 18+** – https://nodejs.org
+- **yarn** – nainstaluj přes npm:
+  ```bash
+  npm install -g yarn
+  ```
+- **Git** – https://git-scm.com
+
+Ověření instalace:
 ```bash
-ng serve
+node -v   # musí být v18 nebo vyšší
+yarn -v
+git --version
 ```
 
-Po spuštění otevřete prohlížeč na adrese http://localhost:4200 .
-Aplikace se automaticky přenačte při každé změně kódu.
+---
 
-Build pro produkci
+## Instalace a spuštění
+
+### Krok 1 – Klonování repozitáře
+
 ```bash
-ng build
+git clone https://github.com/FankySs/wavAnalyzator.git
+cd wavAnalyzator
 ```
 
+### Krok 2 – Instalace závislostí
 
-Kompilované soubory se uloží do složky dist/.
-Build je optimalizovaný pro výkon a rychlé načítání.
+```bash
+yarn install
+```
+
+### Krok 3 – Inicializace databáze
+
+```bash
+yarn nx run wav-api:prisma-migrate
+```
+
+Vytvoří SQLite databázi v `apps/wav-api/prisma/dev.db`.
+
+### Krok 4 – Spuštění backendu
+
+```bash
+yarn nx serve wav-api
+```
+
+Backend běží na **http://localhost:3000**
+
+### Krok 5 – Spuštění frontendu *(nový terminál)*
+
+```bash
+yarn nx serve wav-viewer
+```
+
+Frontend běží na **http://localhost:4200**
+
+### Krok 6 – Otevřít aplikaci
+
+Otevři **http://localhost:4200** v prohlížeči.
+
+---
+
+## Struktura projektu
+
+```
+apps/
+  wav-viewer/    ← Angular frontend (port 4200)
+  wav-api/       ← NestJS backend (port 3000)
+libs/
+  shared-types/  ← Sdílené TypeScript typy (DTOs)
+  riff-parser/   ← Parser a serializer WAV/RIFF souborů
+```
+
+---
+
+## Časté problémy
+
+### Backend se nespustí
+
+- Zkontroluj, že port 3000 není obsazený jiným procesem
+- Zkontroluj, že byla spuštěna migrace databáze (Krok 3)
+
+### Frontend hlásí chybu připojení k serveru
+
+- Zkontroluj, že backend běží na portu 3000 (Krok 4)
+- Zkontroluj výstup terminálu backendu na případné chyby
+
+### `yarn install` selže
+
+- Zkontroluj verzi Node.js: `node -v` (musí být 18+)
+- Vyčisti cache a zkus znovu:
+  ```bash
+  yarn cache clean && yarn install
+  ```
+
+---
+
+## Užitečné příkazy
+
+```bash
+# Spuštění obou aplikací najednou
+yarn nx run-many -t serve -p wav-api wav-viewer
+
+# Build pro produkci
+yarn nx build wav-api
+yarn nx build wav-viewer
+
+# Prisma Studio – správa databáze v prohlížeči
+yarn prisma:studio
+
+# Spuštění testů
+yarn nx test wav-api
+yarn nx test wav-viewer
+```
+
+---
+
+## API – přehled endpointů
+
+Všechny endpointy jsou dostupné na `http://localhost:3000/api`.
+
+```
+POST   /wav/upload               Nahrání WAV souboru
+GET    /wav                      Seznam všech nahraných souborů
+GET    /wav/:id                  Detail souboru (metadata + chunky)
+DELETE /wav/:id                  Smazání souboru
+GET    /wav/:id/download         Stažení upraveného souboru jako WAV
+GET    /wav/:id/stream           Audio stream (podporuje Range requests)
+GET    /wav/:id/waveform         Waveform data pro vizualizaci
+GET    /wav/:id/chunks           Seznam chunků souboru
+GET    /wav/:id/chunks/:chunkId  Detail chunku (včetně parsovaných dat)
+DELETE /wav/:id/chunks/:chunkId  Smazání chunku
+```

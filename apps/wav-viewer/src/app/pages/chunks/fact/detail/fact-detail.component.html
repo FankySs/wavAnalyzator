@@ -1,0 +1,37 @@
+@if (fact()) {
+
+  <div class="info-panel">
+    Chunk fact obsahuje počet dekódovaných vzorků na kanál.
+    Je povinný pro všechny komprimované WAV soubory (např. ADPCM)
+    a zajišťuje správné určení délky nahrávky bez nutnosti dekódování.
+  </div>
+
+  @if (!isEditing()) {
+    <div class="view-header">
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    </div>
+    <div class="params-grid">
+      <app-audio-param-card icon="" label="Počet vzorků" [value]="sampleLengthLabel()" />
+    </div>
+  }
+
+  @if (isEditing()) {
+    @if (saveError()) {
+      <div class="error-msg">{{ saveError() }}</div>
+    }
+    <div class="card form-card">
+      <div class="form-group">
+        <label class="form-label">Počet vzorků</label>
+        <input class="form-input" type="number" min="0"
+          [(ngModel)]="formSampleLength" [disabled]="isSaving()" />
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
+        @if (isSaving()) { Ukládám… } @else { Uložit }
+      </button>
+    </div>
+  }
+
+}

@@ -1,0 +1,1 @@
+export { UnknownDetailComponent } from './detail/unknown-detail.component';

@@ -1,0 +1,1 @@
+export { MextDetailComponent } from './detail/mext-detail.component';

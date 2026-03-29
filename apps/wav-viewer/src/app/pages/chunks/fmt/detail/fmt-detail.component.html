@@ -1,0 +1,46 @@
+@if (fmt()) {
+
+  <div class="params-grid">
+    <app-audio-param-card icon="" label="Audio formát"         [value]="audioFormatLabel()" />
+    <app-audio-param-card icon="" label="Kanály"               [value]="channelsLabel()" />
+    <app-audio-param-card icon="" label="Vzorkovací frekvence" [value]="sampleRateLabel()" />
+    <app-audio-param-card icon="" label="Bitová hloubka"       [value]="bitsPerSampleLabel()" />
+    <app-audio-param-card icon="" label="Byte rate"            [value]="byteRateLabel()" />
+    <app-audio-param-card icon="" label="Block align"          [value]="blockAlignLabel()" />
+  </div>
+
+  @if (byteRateMismatch()) {
+    <div class="warning-panel">
+      Upozornění: byteRate neodpovídá očekávané hodnotě (očekáváno: {{ expectedByteRateLabel() }})
+    </div>
+  }
+
+  @if (showExtensible()) {
+    <div class="section">
+      <p class="section-label">WAVE_FORMAT_EXTENSIBLE</p>
+      <div class="card ext-card">
+
+        <div class="ext-row">
+          <span class="ext-label">Valid bits per sample</span>
+          <span class="ext-value">{{ fmt()!.extensible!.validBitsPerSample }}</span>
+        </div>
+
+        @if (channelMaskHex() !== null) {
+          <div class="ext-row">
+            <span class="ext-label">Channel mask</span>
+            <span class="ext-value mono">{{ channelMaskHex() }}</span>
+          </div>
+        }
+
+        @if (fmt()!.extensible!.subFormatGuid) {
+          <div class="ext-row">
+            <span class="ext-label">SubFormat GUID</span>
+            <span class="ext-value mono">{{ fmt()!.extensible!.subFormatGuid }}</span>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+}

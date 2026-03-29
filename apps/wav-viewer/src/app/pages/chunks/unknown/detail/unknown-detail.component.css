@@ -1,0 +1,12 @@
+.hex-card {
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.hex-pre {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre;
+}

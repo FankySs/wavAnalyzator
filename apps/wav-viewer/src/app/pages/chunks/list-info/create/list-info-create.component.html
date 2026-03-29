@@ -1,0 +1,45 @@
+<div class="info-panel">
+  Chunk LIST/INFO ukládá textová metadata o zvukovém souboru.
+  Obsahuje standardizované textové tagy jako název nahrávky, interpret nebo datum vzniku.
+  Tato metadata jsou čitelná ve většině audio přehrávačů a editorů.
+</div>
+@if (formError()) {
+  <div class="error-msg">{{ formError() }}</div>
+}
+<div class="card form-card">
+  @for (entry of entries(); track $index) {
+    <div class="form-row entry-row">
+      <div class="form-group" style="flex: 0 0 200px;">
+        <label class="form-label">Tag</label>
+        <select class="form-select" #selTag
+          [value]="entry.id"
+          (change)="updateEntry($index, 'id', selTag.value)"
+        >
+          @for (tag of infoTags; track tag.id) {
+            <option [value]="tag.id">{{ tag.id }} – {{ tag.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group" style="flex: 1; position: relative;">
+        <label class="form-label">
+          Hodnota
+          @if (charCounts()[$index] > 400) {
+            <span class="char-count">{{ charCounts()[$index] }}/500</span>
+          }
+        </label>
+        <input class="form-input" #inpVal
+          [value]="entry.value"
+          (input)="updateEntry($index, 'value', inpVal.value)"
+        />
+      </div>
+      <button class="btn btn-sm btn-danger entry-remove" (click)="removeEntry($index)">✕</button>
+    </div>
+  }
+  <button class="btn btn-sm" (click)="addEntry()">＋ Přidat záznam</button>
+</div>
+<div class="form-actions">
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
+    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+  </button>
+</div>

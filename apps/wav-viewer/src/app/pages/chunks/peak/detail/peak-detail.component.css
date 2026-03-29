@@ -1,0 +1,47 @@
+.table-card { margin-bottom: 8px; }
+
+/* Peak bar */
+.peak-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.peak-bar-wrap {
+  width: 120px;
+  height: 10px;
+  background: rgba(255,255,255,.07);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.peak-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .2s;
+}
+
+.bar-green  { background: rgba(80, 210, 120, .75); }
+.bar-amber  { background: rgba(255, 200, 80, .75); }
+.bar-red    { background: rgba(255, 80, 80, .75); }
+
+.peak-value { white-space: nowrap; }
+
+/* Edit mode */
+.form-card { padding: 16px 20px; }
+
+.channel-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.channel-row:last-child { border-bottom: none; margin-bottom: 0; }
+
+.channel-label {
+  min-width: 60px;
+  padding-bottom: 8px;
+}

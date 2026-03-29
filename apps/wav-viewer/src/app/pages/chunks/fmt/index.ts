@@ -1,0 +1,1 @@
+export { FmtDetailComponent } from './detail/fmt-detail.component';

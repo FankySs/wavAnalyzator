@@ -1,0 +1,143 @@
+<!-- View mode -->
+@if (!isEditing()) {
+  <div class="view-header">
+    <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+  </div>
+
+  @if (entries().length === 0) {
+    <p class="muted text-sm">Žádné metadata.</p>
+  } @else {
+    <div class="card table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Tag</th>
+            <th>Popis tagu</th>
+            <th>Hodnota</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of entries(); track entry.id) {
+            <tr>
+              <td><span class="tag-badge">{{ entry.id }}</span></td>
+              <td class="muted text-sm" [title]="tagFullDesc(entry.id)">{{ tagName(entry.id) }}</td>
+              <td class="value-cell">{{ entry.value || '–' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}
+
+<!-- Edit mode -->
+@if (isEditing()) {
+
+  @if (saveError()) {
+    <div class="error-msg">{{ saveError() }}</div>
+  }
+
+  <div class="card edit-card">
+
+    @if (editEntries().length === 0) {
+      <p class="muted text-sm empty-msg">Žádné záznamy. Přidejte první tag níže.</p>
+    }
+
+    @for (entry of editEntries(); track $index) {
+      <div class="edit-row" [class.edit-row-pending]="pendingDeleteTagId() === entry.id">
+
+        <span class="tag-badge" [title]="tagFullDesc(entry.id)">{{ entry.id }}</span>
+
+        <span class="entry-name muted text-sm">{{ tagName(entry.id) }}</span>
+
+        <div class="entry-input-wrap">
+          <input
+            #entryInp
+            class="form-input"
+            [value]="entry.value"
+            [disabled]="pendingDeleteTagId() === entry.id || isSaving() || isDeletingTag()"
+            (input)="updateEditEntry($index, entryInp.value)"
+          />
+        </div>
+
+        <div class="entry-actions">
+          @if (pendingDeleteTagId() === entry.id) {
+            <app-confirm-inline
+              [message]="'Smazat tag ' + entry.id + '?'"
+              (confirmed)="onDeleteTagConfirm()"
+              (cancelled)="onDeleteTagCancel()"
+            />
+          } @else {
+            <button
+              class="btn btn-sm btn-danger"
+              [disabled]="isSaving() || isDeletingTag() || !!pendingDeleteTagId()"
+              (click)="onDeleteTagRequest(entry.id)"
+            >✕</button>
+          }
+        </div>
+
+      </div>
+    }
+
+    <!-- Přidat tag -->
+    @if (!isAddingTag()) {
+      <div class="add-trigger">
+        <button
+          class="btn btn-sm"
+          [disabled]="isSaving() || isDeletingTag() || !!pendingDeleteTagId()"
+          (click)="onShowAddTag()"
+        >＋ Přidat tag</button>
+      </div>
+    } @else {
+      <div class="add-form">
+        @if (postError()) {
+          <div class="error-msg" style="margin-bottom: 10px;">{{ postError() }}</div>
+        }
+        <div class="add-form-row">
+          <div class="add-select-wrap">
+            <select
+              #tagIdSel
+              class="form-select"
+              [value]="newTagId()"
+              (change)="onNewTagIdChange(tagIdSel.value)"
+            >
+              @for (tag of infoTags; track tag.id) {
+                <option [value]="tag.id">{{ tag.id }} – {{ tag.name }}</option>
+              }
+            </select>
+            @if (newTagDescription()) {
+              <p class="tag-desc muted text-sm">{{ newTagDescription() }}</p>
+            }
+          </div>
+          <input
+            #tagValInp
+            class="form-input"
+            placeholder="Hodnota"
+            [value]="newTagValue()"
+            [disabled]="isPosting()"
+            (input)="onNewTagValueChange(tagValInp.value)"
+          />
+        </div>
+        <div class="add-form-btns">
+          <button class="btn btn-sm" (click)="onCancelAddTag()" [disabled]="isPosting()">Zrušit</button>
+          <button
+            class="btn btn-sm btn-primary"
+            [disabled]="isPosting() || !newTagValue().trim()"
+            (click)="onAddTag()"
+          >
+            @if (isPosting()) { Přidávám… } @else { Přidat }
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+
+  <div class="edit-actions">
+    <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+    <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving() || isDeletingTag()">
+      @if (isSaving()) { Ukládám… } @else { Uložit }
+    </button>
+  </div>
+
+}
