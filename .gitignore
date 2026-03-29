@@ -53,3 +53,7 @@ Thumbs.db
 # WAV uploads
 apps/wav-api/uploads/*
 !apps/wav-api/uploads/.gitkeep
+
+# Prisma database
+apps/wav-api/prisma/dev.db
+apps/wav-api/prisma/dev.db-journal
