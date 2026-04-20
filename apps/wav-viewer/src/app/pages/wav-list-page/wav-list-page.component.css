@@ -1,5 +1,39 @@
 .col-name { min-width: 200px; }
-.file-name { font-weight: 500; }
+
+.file-name {
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+  transition: border-color .15s;
+}
+.file-name:hover {
+  border-bottom-color: var(--muted);
+}
+
+.rename-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rename-input {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 2px 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--brand, #6aa6ff);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  outline: none;
+}
+.rename-error {
+  font-size: 12px;
+  color: var(--danger, #f87171);
+}
+.rename-actions {
+  display: flex;
+  gap: 6px;
+}
 .col-format { color: var(--muted); font-size: 13px; }
 .col-date { white-space: nowrap; }
 

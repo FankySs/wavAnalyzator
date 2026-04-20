@@ -18,3 +18,7 @@ export type WavFileListDto = WavFileDto[];
 export type WavFileDetailDto = WavFileDto & {
   chunks: WavChunkDto[];
 };
+
+export type RenameWavFileDto = {
+  fileName: string; // musí končit .wav, max 255 znaků
+};

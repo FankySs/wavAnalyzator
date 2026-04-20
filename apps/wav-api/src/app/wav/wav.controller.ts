@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Query,
@@ -25,6 +26,7 @@ import type {
   WavChunkDto,
   WavChunkDetailDto,
   WaveformDto,
+  RenameWavFileDto,
   CreateAdtlDto,
   UpdateListInfoDto,
   UpdateBextDto,
@@ -89,6 +91,14 @@ export class WavController {
   @Get(':id')
   async findById(@Param('id') id: string): Promise<WavFileDetailDto> {
     return this.wavService.findById(id);
+  }
+
+  @Patch(':id/rename')
+  async renameFile(
+    @Param('id') id: string,
+    @Body() dto: RenameWavFileDto,
+  ): Promise<WavFileDto> {
+    return this.wavService.renameFile(id, dto);
   }
 
   @Delete(':id')

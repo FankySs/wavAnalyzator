@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import type { WavFileDto } from '@shared-types';
 import { WavApiService } from '../../services/wav-api.service';
 import { AudioFileService } from '../../services/audio-file.service';
+import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { ConfirmInlineComponent } from '../../components/confirm-inline/confirm-inline.component';
 import { formatFileSize, formatDate, formatDuration } from '../../utils/format.utils';
@@ -20,7 +21,7 @@ import { formatFileSize, formatDate, formatDuration } from '../../utils/format.u
   standalone: true,
   templateUrl: './wav-list-page.component.html',
   styleUrls: ['./wav-list-page.component.css'],
-  imports: [ModalComponent, ConfirmInlineComponent],
+  imports: [FormsModule, ModalComponent, ConfirmInlineComponent],
 })
 export class WavListPageComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -42,6 +43,12 @@ export class WavListPageComponent {
   // Inline delete confirm
   protected readonly pendingDeleteId: WritableSignal<string | null> = signal(null);
   protected readonly isDeleting: WritableSignal<boolean> = signal(false);
+
+  // Inline rename
+  protected readonly renamingId: WritableSignal<string | null> = signal(null);
+  protected renameValue = '';
+  protected readonly renameError: WritableSignal<string | null> = signal(null);
+  protected readonly isRenaming: WritableSignal<boolean> = signal(false);
 
   private readonly loadTrigger: WritableSignal<number> = signal(0);
 
@@ -167,6 +174,52 @@ export class WavListPageComponent {
 
   protected readonly onClearPendingFile = (): void => {
     this.pendingFile.set(null);
+  };
+
+  protected readonly onRenameStart = (file: WavFileDto, event: Event): void => {
+    event.stopPropagation();
+    this.renamingId.set(file.id);
+    this.renameValue = file.fileName;
+    this.renameError.set(null);
+  };
+
+  protected readonly onRenameConfirm = (id: string): void => {
+    const trimmed = this.renameValue.trim();
+    if (!trimmed) {
+      this.renameError.set('Název nesmí být prázdný.');
+      return;
+    }
+    if (!trimmed.toLowerCase().endsWith('.wav')) {
+      this.renameError.set('Název musí končit příponou .wav.');
+      return;
+    }
+
+    this.isRenaming.set(true);
+    this.renameError.set(null);
+    this.wavApiService
+      .renameWav(id, { fileName: trimmed })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updated) => {
+          this.files.update((files) => files.map((f) => (f.id === id ? updated : f)));
+          this.renamingId.set(null);
+          this.isRenaming.set(false);
+        },
+        error: (err: Error) => {
+          this.renameError.set(err.message);
+          this.isRenaming.set(false);
+        },
+      });
+  };
+
+  protected readonly onRenameCancel = (): void => {
+    this.renamingId.set(null);
+    this.renameError.set(null);
+  };
+
+  protected readonly onRenameKeydown = (event: KeyboardEvent, id: string): void => {
+    if (event.key === 'Enter') this.onRenameConfirm(id);
+    if (event.key === 'Escape') this.onRenameCancel();
   };
 
   protected readonly formatFileSize = formatFileSize;

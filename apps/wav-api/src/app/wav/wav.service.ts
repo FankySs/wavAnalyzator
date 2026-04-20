@@ -5,6 +5,7 @@ import type {
   WavChunkDto,
   WavChunkDetailDto,
   ParsedChunkData,
+  RenameWavFileDto,
 } from '@shared-types';
 import { PrismaService } from '../prisma';
 import { WavValidatorService } from './wav-validator.service';
@@ -208,6 +209,52 @@ export class WavService {
     return {
       ...toWavChunkDto(chunk),
       parsed,
+    };
+  }
+
+  async renameFile(id: string, dto: RenameWavFileDto): Promise<WavFileDto> {
+    const trimmed = dto.fileName.trim();
+    if (!trimmed) {
+      throw new BadRequestException('Název souboru nesmí být prázdný.');
+    }
+    if (!trimmed.toLowerCase().endsWith('.wav')) {
+      throw new BadRequestException('Název souboru musí končit příponou .wav.');
+    }
+    if (trimmed.length > 255) {
+      throw new BadRequestException('Název souboru nesmí překročit 255 znaků.');
+    }
+
+    const wavFile = await this.prisma.wavFile.findUnique({ where: { id } });
+    if (!wavFile) {
+      throw new NotFoundException(`WAV soubor s ID "${id}" nebyl nalezen.`);
+    }
+
+    const updated = await this.prisma.wavFile.update({
+      where: { id },
+      data: { fileName: trimmed },
+      include: {
+        _count: { select: { chunks: true } },
+        chunks: {
+          where: { OR: [{ chunkId: 'fmt ' }, { isAudioData: true }] },
+          select: { chunkId: true, size: true, rawData: true, isAudioData: true },
+        },
+      },
+    });
+
+    const fmtChunk = updated.chunks.find((c) => c.chunkId === 'fmt ');
+    const dataChunk = updated.chunks.find((c) => c.isAudioData);
+    const audioMeta = this.parseAudioMeta(
+      fmtChunk?.rawData ? Buffer.from(fmtChunk.rawData) : null,
+      dataChunk?.size ?? null,
+    );
+
+    return {
+      id: updated.id,
+      fileName: updated.fileName,
+      fileSize: updated.fileSize,
+      uploadedAt: updated.uploadedAt.toISOString(),
+      chunkCount: updated._count.chunks,
+      ...audioMeta,
     };
   }
 

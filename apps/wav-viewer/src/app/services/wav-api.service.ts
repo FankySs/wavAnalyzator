@@ -7,6 +7,7 @@ import type {
   WavChunkDto,
   WavChunkDetailDto,
   WaveformDto,
+  RenameWavFileDto,
   UpdateListInfoDto,
   UpdateBextDto,
   UpdateCueDto,
@@ -61,6 +62,12 @@ export class WavApiService {
   getWavDetail(id: string): Observable<WavFileDetailDto> {
     return this.http
       .get<WavFileDetailDto>(`${this.base}/api/wav/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  renameWav(id: string, dto: RenameWavFileDto): Observable<WavFileDto> {
+    return this.http
+      .patch<WavFileDto>(`${this.base}/api/wav/${id}/rename`, dto)
       .pipe(catchError(this.handleError));
   }
 

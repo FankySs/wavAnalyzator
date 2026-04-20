@@ -46,8 +46,28 @@
         <tbody>
           @for (file of files(); track file.id) {
             <tr class="row-clickable" (click)="onRowClick(file.id)">
-              <td class="col-name">
-                <span class="file-name">{{ file.fileName }}</span>
+              <td class="col-name" (click)="$event.stopPropagation()">
+                @if (renamingId() === file.id) {
+                  <div class="rename-form">
+                    <input
+                      class="rename-input"
+                      type="text"
+                      [(ngModel)]="renameValue"
+                      (keydown)="onRenameKeydown($event, file.id)"
+                      [disabled]="isRenaming()"
+                      autofocus
+                    />
+                    @if (renameError()) {
+                      <span class="rename-error">{{ renameError() }}</span>
+                    }
+                    <div class="rename-actions">
+                      <button class="btn btn-sm btn-primary" [disabled]="isRenaming()" (click)="onRenameConfirm(file.id)">Uložit</button>
+                      <button class="btn btn-sm" [disabled]="isRenaming()" (click)="onRenameCancel()">Zrušit</button>
+                    </div>
+                  </div>
+                } @else {
+                  <span class="file-name" title="Klikněte pro přejmenování" (click)="onRenameStart(file, $event)">{{ file.fileName }}</span>
+                }
               </td>
               <td>{{ formatFileSize(file.fileSize) }}</td>
               <td>{{ formatDuration(file.durationSec) }}</td>
