@@ -5,9 +5,15 @@ import { parseFmtChunk } from './parse-fmt';
 const tag = (dv: DataView, o: number) =>
   String.fromCharCode(dv.getUint8(o), dv.getUint8(o + 1), dv.getUint8(o + 2), dv.getUint8(o + 3));
 
+// ROZŠÍŘENÍ O DALŠÍ FORMÁTY:
+// Tato funkce je entry point parseru pro WAV/RIFF kontejner.
+// Pro MP3 by vznikla parseMp3ArrayBuffer(), pro FLAC parseFlacArrayBuffer() atd.
+// Každý formát má vlastní kontejnerovou strukturu – RIFF chunky jsou specifické pro WAV/AIFF.
 export function parseWavArrayBuffer(buffer: ArrayBuffer): ParsedWav {
   const dv = new DataView(buffer);
 
+  // Ověření RIFF kontejneru a WAVE podtypu – jediné místo kde libs/riff-parser
+  // tvrdě váže parsování na WAV formát.
   if (tag(dv, 0) !== 'RIFF') throw new Error('Soubor není RIFF.');
   if (tag(dv, 8) !== 'WAVE') throw new Error('Soubor není WAVE.');
 

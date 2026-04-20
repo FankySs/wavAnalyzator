@@ -9,6 +9,8 @@ export class WavStorageService {
 
   async save(file: Express.Multer.File): Promise<string> {
     await fs.mkdir(this.uploadsDir, { recursive: true });
+    // UUID prefix zabraňuje kolizím při nahrání dvou souborů se stejným názvem
+    // a zároveň znemožňuje hádání cesty k souboru podle původního jména.
     const uniqueName = `${randomUUID()}-${file.originalname}`;
     const filePath = path.join(this.uploadsDir, uniqueName);
     await fs.writeFile(filePath, file.buffer);

@@ -47,6 +47,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0; /* umožní flex položce zúžit se pod přirozenou šířku */
+}
+
+.panel-adtl-label {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .panel-label {
@@ -78,6 +85,12 @@
 /* Table */
 .table-card {
   margin-bottom: 14px;
+}
+
+.col-label {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 260px;
 }
 
 .table-row {

@@ -58,8 +58,10 @@ export class WavWaveformService {
 
     const bytesPerSample = Math.ceil(bitsPerSample / 8);
     const frameCount = Math.floor(buffer.length / (bytesPerSample * channels));
-    const monoSamples = new Float32Array(frameCount);
 
+    // Downmix na mono průměrováním kanálů – waveform zobrazujeme vždy jako jeden pruh,
+    // stereo rozdíl není pro vizualizaci struktury relevantní.
+    const monoSamples = new Float32Array(frameCount);
     for (let i = 0; i < frameCount; i++) {
       let sum = 0;
       for (let ch = 0; ch < channels; ch++) {
@@ -69,22 +71,21 @@ export class WavWaveformService {
       monoSamples[i] = sum / channels;
     }
 
+    // Waveform = `width` bucketů, každý bucket = min + max amplitudy svého úseku.
+    // Min/max zachovává tvar vlny lépe než průměr – průměr by tlumil špičky.
     const points: WaveformPointDto[] = [];
     const samplesPerBucket = frameCount / width;
-
     for (let b = 0; b < width; b++) {
       const startIdx = Math.floor(b * samplesPerBucket);
       const endIdx = Math.min(Math.floor((b + 1) * samplesPerBucket), frameCount);
 
       let min = 0;
       let max = 0;
-
       for (let s = startIdx; s < endIdx; s++) {
         const v = monoSamples[s];
         if (v < min) min = v;
         if (v > max) max = v;
       }
-
       points.push({ min, max });
     }
 

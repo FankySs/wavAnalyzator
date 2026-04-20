@@ -43,7 +43,7 @@
           <span class="panel-label">{{ pt.label }}</span>
           <span class="muted text-sm">{{ pt.timeStr }} &nbsp;|&nbsp; {{ pt.sampleOffset }} vzorků</span>
           @if (pt.adtlLabel) {
-            <span class="muted text-sm">{{ pt.adtlLabel }}</span>
+            <span class="muted text-sm panel-adtl-label">{{ pt.adtlLabel }}</span>
           }
         </div>
         <div class="panel-actions">
@@ -131,7 +131,7 @@
             <td>{{ m.label }}</td>
             <td>{{ m.timeStr }}</td>
             <td>{{ m.sampleOffset }}</td>
-            <td class="muted text-sm">{{ m.adtlLabel || '—' }}</td>
+            <td class="muted text-sm col-label">{{ m.adtlLabel || '—' }}</td>
           </tr>
         }
       </tbody>

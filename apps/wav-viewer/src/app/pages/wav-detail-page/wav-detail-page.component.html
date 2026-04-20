@@ -80,7 +80,7 @@
                   <td><app-chunk-badge [chunkId]="chunk.chunkId" /></td>
                   <td>{{ chunkName(chunk.chunkId) }}</td>
                   <td class="muted text-sm">{{ formatSize(chunk.size) }}</td>
-                  <td class="muted text-sm">0x{{ chunk.offset.toString(16).toUpperCase() }}</td>
+                  <td class="muted text-sm">0x{{ chunk.offset.toString(16).toUpperCase() }} <span class="offset-dec">({{ chunk.offset }})</span></td>
                   <td class="col-actions" (click)="$event.stopPropagation()">
                     @if (pendingDeleteChunkId() === chunk.id) {
                       <app-confirm-inline

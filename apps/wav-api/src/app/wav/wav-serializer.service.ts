@@ -20,6 +20,10 @@ export class WavSerializerService {
       orderBy: { offset: 'asc' },
     });
 
+    // Audio data chunk (isAudioData = true) není uložen v DB jako rawData –
+    // je příliš velký (stovky MB). Serializér ho proto čte přímo z disku
+    // pomocí filePath + dataOffset + dataSize (= payloadOffset v souboru).
+    // Všechny ostatní chunky mají rawData v DB a filePath nepotřebují.
     const records: WavChunkRecord[] = chunks.map((c) => ({
       chunkId: c.chunkId,
       rawData: c.rawData ? Buffer.from(c.rawData) : null,
