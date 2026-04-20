@@ -136,7 +136,10 @@ export class WavParserService {
         case 'ID3 ':  return this.parseId3(rawData);
         default:      return this.parseUnknown(rawData);
       }
-    } catch {
+    } catch (err) {
+      // Parsování selhalo – zobrazíme hex view místo pádu celého requestu.
+      // Chybu logujeme, aby byla viditelná v BE konzoli pro debugging.
+      console.error(`[WavParserService] Parsování chunku "${chunkId}" selhalo:`, err);
       return this.parseUnknown(rawData);
     }
   }

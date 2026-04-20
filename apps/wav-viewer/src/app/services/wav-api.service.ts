@@ -121,19 +121,27 @@ export class WavApiService {
   }
 
   updateFact(fileId: string, chunkDbId: string, dto: UpdateFactDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/fact`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/fact`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updatePeak(fileId: string, chunkDbId: string, dto: UpdatePeakDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/peak`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/peak`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateDisp(fileId: string, chunkDbId: string, dto: UpdateDispDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/disp`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/disp`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateUmid(fileId: string, chunkDbId: string, dto: UpdateUmidDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/umid`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/umid`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateInst(fileId: string, chunkDbId: string, dto: UpdateInstDto): Observable<WavChunkDetailDto> {
@@ -155,27 +163,39 @@ export class WavApiService {
   }
 
   updateAdtl(fileId: string, chunkDbId: string, dto: UpdateAdtlDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/adtl`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/adtl`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateMext(fileId: string, chunkDbId: string, dto: UpdateMextDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/mext`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/mext`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateLevl(fileId: string, chunkDbId: string, dto: UpdateLevlDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/levl`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/levl`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateCart(fileId: string, chunkDbId: string, dto: UpdateCartDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/cart`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/cart`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateIxml(fileId: string, chunkDbId: string, dto: UpdateIxmlDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/ixml`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/ixml`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   updateAxml(fileId: string, chunkDbId: string, dto: UpdateAxmlDto): Observable<WavChunkDetailDto> {
-    return this.http.put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/axml`, dto).pipe(catchError(this.handleError));
+    return this.http
+      .put<WavChunkDetailDto>(`${this.base}/api/wav/${fileId}/chunks/${chunkDbId}/axml`, dto)
+      .pipe(catchError(this.handleError));
   }
 
   // --- Vytváření chunků ---
@@ -264,21 +284,17 @@ export class WavApiService {
 
   private readonly handleError = (err: HttpErrorResponse): Observable<never> => {
     if (err.status === 0) {
-      // ProgressEvent = XHR was aborted (navigation, component destroyed)
-      // Not a real server error – silently complete
-      if (err.error instanceof ProgressEvent) {
-        return EMPTY;
-      }
-      return throwError(
-        () => new Error('Server není dostupný. Zkontroluj, zda běží BE na portu 3000.'),
-      );
+      // ProgressEvent = XHR bylo přerušeno (navigace, zničení komponenty) – není to chyba serveru
+      if (err.error instanceof ProgressEvent) return EMPTY;
+      return throwError(() => new Error('Server není dostupný. Zkontroluj, zda běží BE na portu 3000.'));
     }
-    const msg: unknown = err.error?.message;
-    const text = Array.isArray(msg)
-      ? msg.join(', ')
-      : typeof msg === 'string'
-        ? msg
-        : `Chyba ${err.status}`;
-    return throwError(() => new Error(text));
+    return throwError(() => new Error(this.extractApiErrorMessage(err)));
   };
+
+  private extractApiErrorMessage(err: HttpErrorResponse): string {
+    const msg: unknown = err.error?.message;
+    if (Array.isArray(msg)) return msg.join(', ');
+    if (typeof msg === 'string') return msg;
+    return `Chyba ${err.status}`;
+  }
 }

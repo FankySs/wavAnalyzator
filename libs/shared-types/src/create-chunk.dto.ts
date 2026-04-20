@@ -1,28 +1,41 @@
 import type { CreateInfoEntryDto } from './list-info-edit.dto';
 
+// ---------------------------------------------------------------------------
+// LIST/INFO
+// ---------------------------------------------------------------------------
+
 export type CreateListInfoDto = {
   entries: CreateInfoEntryDto[];
 };
 
-export type CreateBextDto = {
+// ---------------------------------------------------------------------------
+// bext (Broadcast Wave Extension)
+// ---------------------------------------------------------------------------
+
+/** Pole sdílená oběma variantami bext DTO. */
+type BextIdentityFields = {
   description: string;
   originator: string;
   originatorReference: string;
   originationDate: string; // YYYY-MM-DD
   originationTime: string; // HH:MM:SS
+};
+
+/** Při vytváření jsou low/high volitelné – serializér doplní nuly. */
+export type CreateBextDto = BextIdentityFields & {
   timeReferenceLow?: number;
   timeReferenceHigh?: number;
 };
 
-export type UpdateBextDto = {
-  description: string;
-  originator: string;
-  originatorReference: string;
-  originationDate: string; // YYYY-MM-DD
-  originationTime: string; // HH:MM:SS
-  timeReference: number;   // combined 64-bit sample offset (low + high * 2^32)
+/** Při editaci je timeReference kombinovaný 64bitový offset (low + high * 2^32). */
+export type UpdateBextDto = BextIdentityFields & {
+  timeReference: number;
   codingHistory: string;
 };
+
+// ---------------------------------------------------------------------------
+// cue
+// ---------------------------------------------------------------------------
 
 export type CuePointDto = {
   sampleOffset: number;
@@ -32,9 +45,23 @@ export type CreateCueDto = {
   points: CuePointDto[];
 };
 
+/** Create a Update mají stejnou strukturu – cue pointy se vždy nahrazují celé. */
+export type UpdateCueDto = CreateCueDto;
+
+// ---------------------------------------------------------------------------
+// fact
+// ---------------------------------------------------------------------------
+
 export type CreateFactDto = {
   sampleLength: number;
 };
+
+/** Create a Update jsou identické – fact obsahuje jediné pole. */
+export type UpdateFactDto = CreateFactDto;
+
+// ---------------------------------------------------------------------------
+// inst
+// ---------------------------------------------------------------------------
 
 export type CreateInstDto = {
   unshiftedNote: number;
@@ -45,6 +72,13 @@ export type CreateInstDto = {
   lowVelocity: number;
   highVelocity: number;
 };
+
+/** Create a Update jsou identické – inst má pevnou strukturu. */
+export type UpdateInstDto = CreateInstDto;
+
+// ---------------------------------------------------------------------------
+// smpl
+// ---------------------------------------------------------------------------
 
 export type SmplLoopDto = {
   start: number;
@@ -59,6 +93,59 @@ export type CreateSmplDto = {
   loops?: SmplLoopDto[];
 };
 
+export type UpdateSmplLoopDto = {
+  type: number;
+  start: number;
+  end: number;
+  fraction: number;
+  playCount: number;
+};
+
+export type UpdateSmplDto = {
+  midiUnityNote: number;
+  midiPitchFraction: number;
+  samplePeriod: number;
+  smpteFormat: number;
+  smpteOffset: number;
+  loops: UpdateSmplLoopDto[];
+};
+
+// ---------------------------------------------------------------------------
+// PEAK
+// ---------------------------------------------------------------------------
+
+export type UpdatePeakChannelDto = {
+  value: number;
+  position: number;
+};
+
+export type UpdatePeakDto = {
+  channels: UpdatePeakChannelDto[];
+};
+
+// ---------------------------------------------------------------------------
+// DISP
+// ---------------------------------------------------------------------------
+
+export type CreateDispDto = {
+  text: string;
+};
+
+/** Create a Update jsou identické – DISP obsahuje jediný textový payload. */
+export type UpdateDispDto = CreateDispDto;
+
+// ---------------------------------------------------------------------------
+// umid
+// ---------------------------------------------------------------------------
+
+export type UpdateUmidDto = {
+  umid: string; // 128 hex chars = 64 bytes
+};
+
+// ---------------------------------------------------------------------------
+// cart
+// ---------------------------------------------------------------------------
+
 export type CreateCartDto = {
   title: string;
   artist: string;
@@ -68,46 +155,6 @@ export type CreateCartDto = {
   endDate: string;
   endTime: string;
   url?: string;
-};
-
-export type CreateDispDto = {
-  text: string;
-};
-
-export type CreateIxmlDto = {
-  xml: string;
-};
-
-export type CreateAxmlDto = {
-  xml: string;
-};
-
-export type CreateAdtlDto = {
-  entries: UpdateAdtlEntryDto[];
-};
-
-export type UpdateAdtlEntryDto = {
-  cuePointId: number;
-  type: 'labl' | 'note' | 'ltxt';
-  text: string;
-};
-
-export type UpdateAdtlDto = {
-  entries: UpdateAdtlEntryDto[];
-};
-
-export type UpdateMextDto = {
-  soundInformation: number;
-  frameCount: number;
-  ancillaryDataLength: number;
-  ancillaryDataDef: number;
-};
-
-export type UpdateLevlDto = {
-  version: number;
-  format: number;
-  channelCount: number;
-  blockSize: number;
 };
 
 export type UpdateCartDto = {
@@ -129,62 +176,60 @@ export type UpdateCartDto = {
   tag: string;
 };
 
-export type UpdateIxmlDto = {
+// ---------------------------------------------------------------------------
+// ixml / axml
+// ---------------------------------------------------------------------------
+
+export type CreateIxmlDto = {
   xml: string;
 };
 
-export type UpdateAxmlDto = {
+/** Create a Update jsou identické – XML se vždy nahrazuje celé. */
+export type UpdateIxmlDto = CreateIxmlDto;
+
+export type CreateAxmlDto = {
   xml: string;
 };
 
-export type UpdateCueDto = {
-  points: CuePointDto[];
-};
+/** Create a Update jsou identické – XML se vždy nahrazuje celé. */
+export type UpdateAxmlDto = CreateAxmlDto;
 
-export type UpdateFactDto = {
-  sampleLength: number;
-};
+// ---------------------------------------------------------------------------
+// adtl (Associated Data List)
+// ---------------------------------------------------------------------------
 
-export type UpdatePeakChannelDto = {
-  value: number;
-  position: number;
-};
-
-export type UpdatePeakDto = {
-  channels: UpdatePeakChannelDto[];
-};
-
-export type UpdateDispDto = {
+export type UpdateAdtlEntryDto = {
+  cuePointId: number;
+  type: 'labl' | 'note' | 'ltxt';
   text: string;
 };
 
-export type UpdateUmidDto = {
-  umid: string; // 128 hex chars = 64 bytes
+export type CreateAdtlDto = {
+  entries: UpdateAdtlEntryDto[];
 };
 
-export type UpdateInstDto = {
-  unshiftedNote: number;
-  fineTune: number;
-  gain: number;
-  lowNote: number;
-  highNote: number;
-  lowVelocity: number;
-  highVelocity: number;
+export type UpdateAdtlDto = {
+  entries: UpdateAdtlEntryDto[];
 };
 
-export type UpdateSmplLoopDto = {
-  type: number;
-  start: number;
-  end: number;
-  fraction: number;
-  playCount: number;
+// ---------------------------------------------------------------------------
+// mext (MPEG Audio Extension)
+// ---------------------------------------------------------------------------
+
+export type UpdateMextDto = {
+  soundInformation: number;
+  frameCount: number;
+  ancillaryDataLength: number;
+  ancillaryDataDef: number;
 };
 
-export type UpdateSmplDto = {
-  midiUnityNote: number;
-  midiPitchFraction: number;
-  samplePeriod: number;
-  smpteFormat: number;
-  smpteOffset: number;
-  loops: UpdateSmplLoopDto[];
+// ---------------------------------------------------------------------------
+// levl (Peak Envelope)
+// ---------------------------------------------------------------------------
+
+export type UpdateLevlDto = {
+  version: number;
+  format: number;
+  channelCount: number;
+  blockSize: number;
 };

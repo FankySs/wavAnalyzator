@@ -345,7 +345,9 @@ export class CueDetailComponent {
           const parsed = updatedCue.parsed as CueParsed;
           const adtlChunkId = this.adtlChunkDbId();
 
-          // Both arrays sorted by sampleOffset – map by position index
+          // Server přiřadí novým cue pointům nová ID – původní dočasná ID (záporná)
+          // zaniknou. Labely re-mapujeme podle pozice v setříděném poli, protože
+          // pořadí je zachováno (obě strany třídí podle sampleOffset).
           const serverPts = [...parsed.points].sort((a, b) => a.sampleOffset - b.sampleOffset);
           const sortedSnapshot = [...liveSnapshot].sort((a, b) => a.sampleOffset - b.sampleOffset);
 

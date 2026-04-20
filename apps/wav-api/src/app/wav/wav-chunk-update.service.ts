@@ -55,7 +55,7 @@ export class WavChunkUpdateService {
 
   async updateListInfo(chunkDbId: string, dto: UpdateListInfoDto): Promise<WavChunkDetailDto> {
     validateListInfoEntries(dto.entries);
-    await this.loadChunkOfType(chunkDbId, 'LIST');
+    await this.loadChunk(chunkDbId, 'LIST');
 
     const newRawData = serializeListInfo(dto.entries);
     await this.prisma.wavChunk.update({
@@ -73,7 +73,7 @@ export class WavChunkUpdateService {
     assertDateField(dto.originationDate, 'Datum originátu');
     assertTimeField(dto.originationTime, 'Čas originátu');
     assertMaxLength(dto.codingHistory, 1024, 'Historie kódování');
-    const chunk = await this.loadChunkOfType(chunkDbId, 'bext');
+    const chunk = await this.loadChunk(chunkDbId, 'bext');
     const existingRaw = chunk.rawData ? Buffer.from(chunk.rawData) : undefined;
     const newRawData = serializeBextUpdate(dto, existingRaw);
 
@@ -86,7 +86,7 @@ export class WavChunkUpdateService {
   }
 
   async updateCue(chunkDbId: string, dto: UpdateCueDto): Promise<WavChunkDetailDto> {
-    await this.loadChunkOfType(chunkDbId, 'cue ');
+    await this.loadChunk(chunkDbId, 'cue ');
     const newRawData = serializeCue(dto);
 
     await this.prisma.wavChunk.update({
@@ -108,7 +108,7 @@ export class WavChunkUpdateService {
         throw new BadRequestException('Počet přehrání smyčky nesmí být záporný.');
       }
     }
-    await this.loadChunkOfType(chunkDbId, 'smpl');
+    await this.loadChunk(chunkDbId, 'smpl');
     const newRawData = serializeSmplUpdate(dto);
 
     await this.prisma.wavChunk.update({
@@ -133,7 +133,7 @@ export class WavChunkUpdateService {
     if (dto.lowVelocity > dto.highVelocity) {
       throw new BadRequestException('Nejnižší velocity nesmí být větší než nejvyšší velocity.');
     }
-    await this.loadChunkOfType(chunkDbId, 'inst');
+    await this.loadChunk(chunkDbId, 'inst');
     const newRawData = serializeInst(dto);
 
     await this.prisma.wavChunk.update({
@@ -148,7 +148,7 @@ export class WavChunkUpdateService {
     if (dto.sampleLength <= 0) {
       throw new BadRequestException('Délka vzorku musí být kladné číslo.');
     }
-    await this.loadChunkOfType(chunkDbId, 'fact');
+    await this.loadChunk(chunkDbId, 'fact');
     const newRaw = serializeFact(dto.sampleLength);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -164,7 +164,7 @@ export class WavChunkUpdateService {
         throw new BadRequestException('Pozice vzorku nesmí být záporná.');
       }
     }
-    const chunk = await this.loadChunkOfType(chunkDbId, 'PEAK');
+    const chunk = await this.loadChunk(chunkDbId, 'PEAK');
     const existing = chunk.rawData ? Buffer.from(chunk.rawData) : null;
     const version = existing && existing.length >= 8 ? existing.readUInt32LE(0) : 1;
     const timeStamp = existing && existing.length >= 8 ? existing.readUInt32LE(4) : 0;
@@ -179,7 +179,7 @@ export class WavChunkUpdateService {
   async updateDisp(chunkDbId: string, dto: UpdateDispDto): Promise<WavChunkDetailDto> {
     assertNotEmpty(dto.text, 'Text');
     assertMaxLength(dto.text, 500, 'Text');
-    await this.loadChunkOfType(chunkDbId, 'DISP');
+    await this.loadChunk(chunkDbId, 'DISP');
     const newRaw = serializeDisp(dto.text);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -189,7 +189,7 @@ export class WavChunkUpdateService {
   }
 
   async updateUmid(chunkDbId: string, dto: UpdateUmidDto): Promise<WavChunkDetailDto> {
-    await this.loadChunkOfType(chunkDbId, 'umid');
+    await this.loadChunk(chunkDbId, 'umid');
     if (!/^[0-9A-Fa-f]{128}$/.test(dto.umid)) {
       throw new BadRequestException('UMID musí být 128 hex znaků (64 bajtů).');
     }
@@ -202,7 +202,7 @@ export class WavChunkUpdateService {
   }
 
   async updateAdtl(chunkDbId: string, dto: UpdateAdtlDto): Promise<WavChunkDetailDto> {
-    const chunk = await this.loadChunkOfType(chunkDbId, 'LIST');
+    const chunk = await this.loadChunk(chunkDbId, 'LIST');
     const rawData = chunk.rawData ? Buffer.from(chunk.rawData) : null;
     if (!rawData || rawData.length < 4 || rawData.toString('ascii', 0, 4) !== 'adtl') {
       throw new BadRequestException('Chunk není adtl LIST.');
@@ -216,7 +216,7 @@ export class WavChunkUpdateService {
   }
 
   async updateMext(chunkDbId: string, dto: UpdateMextDto): Promise<WavChunkDetailDto> {
-    await this.loadChunkOfType(chunkDbId, 'mext');
+    await this.loadChunk(chunkDbId, 'mext');
     const newRaw = serializeMext(dto);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -226,7 +226,7 @@ export class WavChunkUpdateService {
   }
 
   async updateLevl(chunkDbId: string, dto: UpdateLevlDto): Promise<WavChunkDetailDto> {
-    const chunk = await this.loadChunkOfType(chunkDbId, 'levl');
+    const chunk = await this.loadChunk(chunkDbId, 'levl');
     if (!chunk.rawData || chunk.rawData.length < 24) {
       throw new BadRequestException('levl chunk neobsahuje dostatečná data hlavičky.');
     }
@@ -256,7 +256,7 @@ export class WavChunkUpdateService {
     assertMaxLength(dto.userDef, 64, 'Uživatelská definice');
     assertMaxLength(dto.url, 1024, 'URL');
     assertMaxLength(dto.tag, 300, 'Tag');
-    await this.loadChunkOfType(chunkDbId, 'cart');
+    await this.loadChunk(chunkDbId, 'cart');
     const newRaw = serializeCartUpdate(dto);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -266,7 +266,7 @@ export class WavChunkUpdateService {
   }
 
   async updateIxml(chunkDbId: string, dto: UpdateIxmlDto): Promise<WavChunkDetailDto> {
-    await this.loadChunkOfType(chunkDbId, 'ixml');
+    await this.loadChunk(chunkDbId, 'ixml');
     const newRaw = serializeXml(dto.xml);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -276,7 +276,7 @@ export class WavChunkUpdateService {
   }
 
   async updateAxml(chunkDbId: string, dto: UpdateAxmlDto): Promise<WavChunkDetailDto> {
-    await this.loadChunkOfType(chunkDbId, 'axml');
+    await this.loadChunk(chunkDbId, 'axml');
     const newRaw = serializeXml(dto.xml);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -289,7 +289,7 @@ export class WavChunkUpdateService {
     this.validateEntryId(dto.id);
     this.validateEntryValue(dto.value);
 
-    const chunk = await this.loadListChunk(chunkDbId);
+    const chunk = await this.loadListChunkWithRawData(chunkDbId);
     const parsed = this.parser.parseChunkData('LIST', Buffer.from(chunk.rawData!));
     const currentEntries =
       parsed.chunkType === 'LIST_INFO' ? parsed.entries : [];
@@ -310,7 +310,7 @@ export class WavChunkUpdateService {
   }
 
   async deleteInfoEntry(chunkDbId: string, tagId: string): Promise<WavChunkDetailDto> {
-    const chunk = await this.loadListChunk(chunkDbId);
+    const chunk = await this.loadListChunkWithRawData(chunkDbId);
 
     const parsed = this.parser.parseChunkData('LIST', Buffer.from(chunk.rawData!));
     const currentEntries =
@@ -329,23 +329,21 @@ export class WavChunkUpdateService {
 
   // -------------------------------------------------------------------------
 
-  private async loadChunkOfType(chunkDbId: string, expectedId: string) {
+  /** Načte chunk z DB a ověří, že má očekávaný 4CC identifikátor. */
+  private async loadChunk(chunkDbId: string, expectedChunkId: string) {
     const chunk = await this.prisma.wavChunk.findUnique({ where: { id: chunkDbId } });
     if (!chunk) throw new NotFoundException(`Chunk "${chunkDbId}" nebyl nalezen.`);
-    if (chunk.chunkId !== expectedId) {
+    if (chunk.chunkId !== expectedChunkId) {
       throw new BadRequestException(
-        `Očekáván chunk '${expectedId}', nalezen '${chunk.chunkId}'.`,
+        `Očekáván chunk '${expectedChunkId}', nalezen '${chunk.chunkId}'.`,
       );
     }
     return chunk;
   }
 
-  private async loadListChunk(chunkDbId: string) {
-    const chunk = await this.prisma.wavChunk.findUnique({ where: { id: chunkDbId } });
-    if (!chunk) throw new NotFoundException(`Chunk "${chunkDbId}" nebyl nalezen.`);
-    if (chunk.chunkId !== 'LIST') {
-      throw new BadRequestException(`Chunk "${chunk.chunkId}" není LIST chunk.`);
-    }
+  /** Načte LIST chunk a navíc ověří, že obsahuje rawData (nutné pro parsování). */
+  private async loadListChunkWithRawData(chunkDbId: string) {
+    const chunk = await this.loadChunk(chunkDbId, 'LIST');
     if (!chunk.rawData) {
       throw new BadRequestException('LIST chunk neobsahuje žádná data.');
     }
