@@ -93,6 +93,20 @@
   max-width: 260px;
 }
 
+.adtl-link {
+  margin-left: 6px;
+  font-size: 14px;
+  opacity: .45;
+  color: var(--brand);
+  text-decoration: none;
+  vertical-align: middle;
+  padding: 2px 4px;
+  transition: opacity .15s;
+}
+.adtl-link:hover {
+  opacity: 1;
+}
+
 .table-row {
   cursor: pointer;
   transition: background .12s;

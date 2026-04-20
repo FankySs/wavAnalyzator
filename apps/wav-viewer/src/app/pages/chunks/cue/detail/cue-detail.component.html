@@ -131,7 +131,18 @@
             <td>{{ m.label }}</td>
             <td>{{ m.timeStr }}</td>
             <td>{{ m.sampleOffset }}</td>
-            <td class="muted text-sm col-label">{{ m.adtlLabel || '—' }}</td>
+            <td class="muted text-sm col-label">
+              {{ m.adtlLabel || '—' }}
+              @if (adtlChunkDbId()) {
+                <a
+                  class="adtl-link"
+                  [routerLink]="['/wav', wavId(), 'chunks', adtlChunkDbId()]"
+                  [fragment]="'cue-' + m.id"
+                  title="Otevřít adtl chunk"
+                  (click)="$event.stopPropagation()"
+                >↗</a>
+              }
+            </td>
           </tr>
         }
       </tbody>

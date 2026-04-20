@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Observable, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import type {
   AdtlParsed,
@@ -39,7 +40,7 @@ type PanelMode = 'view' | 'edit' | 'new';
   standalone: true,
   templateUrl: './cue-detail.component.html',
   styleUrls: ['./cue-detail.component.css'],
-  imports: [FormsModule, ConfirmInlineComponent, WaveformPlayerComponent],
+  imports: [FormsModule, RouterLink, ConfirmInlineComponent, WaveformPlayerComponent],
 })
 export class CueDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -54,7 +55,7 @@ export class CueDetailComponent {
   protected readonly savedPoints: WritableSignal<LocalPoint[]> = signal([]);
 
   // Adtl state – labels keyed by LocalPoint.id (= server cuePointId for existing points)
-  private readonly adtlChunkDbId: WritableSignal<string | null> = signal(null);
+  protected readonly adtlChunkDbId: WritableSignal<string | null> = signal(null);
   private readonly localLabels: WritableSignal<Map<number, string>> = signal(new Map());
   private readonly savedLabels: WritableSignal<Map<number, string>> = signal(new Map());
 
