@@ -266,7 +266,7 @@ export class WavChunkUpdateService {
   }
 
   async updateIxml(chunkDbId: string, dto: UpdateIxmlDto): Promise<WavChunkDetailDto> {
-    await this.loadChunk(chunkDbId, 'ixml');
+    await this.loadChunk(chunkDbId, ['ixml', 'iXML']);
     const newRaw = serializeXml(dto.xml);
     await this.prisma.wavChunk.update({
       where: { id: chunkDbId },
@@ -329,13 +329,15 @@ export class WavChunkUpdateService {
 
   // -------------------------------------------------------------------------
 
-  /** Načte chunk z DB a ověří, že má očekávaný 4CC identifikátor. */
-  private async loadChunk(chunkDbId: string, expectedChunkId: string) {
+  /** Načte chunk z DB a ověří, že má očekávaný 4CC identifikátor.
+   *  Přijímá i pole aliasů pro chunk IDs kde spec připouští více variant (např. ixml / iXML). */
+  private async loadChunk(chunkDbId: string, expectedChunkId: string | string[]) {
     const chunk = await this.prisma.wavChunk.findUnique({ where: { id: chunkDbId } });
     if (!chunk) throw new NotFoundException(`Chunk "${chunkDbId}" nebyl nalezen.`);
-    if (chunk.chunkId !== expectedChunkId) {
+    const allowed = Array.isArray(expectedChunkId) ? expectedChunkId : [expectedChunkId];
+    if (!allowed.includes(chunk.chunkId)) {
       throw new BadRequestException(
-        `Očekáván chunk '${expectedChunkId}', nalezen '${chunk.chunkId}'.`,
+        `Očekáván chunk '${allowed[0]}', nalezen '${chunk.chunkId}'.`,
       );
     }
     return chunk;

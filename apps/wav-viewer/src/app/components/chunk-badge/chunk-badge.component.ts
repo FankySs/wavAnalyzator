@@ -12,6 +12,7 @@ const BADGE_COLORS: Record<string, string> = {
   'cart': 'purple',
   'DISP': 'blue',
   'ixml': 'green',
+  'iXML': 'green',
   'axml': 'green',
   'PEAK': 'orange',
   'levl': 'orange',

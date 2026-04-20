@@ -11,6 +11,7 @@ export const CHUNK_NAMES: Record<string, string> = {
   'cart': 'Broadcast Cart',
   'DISP': 'Popis souboru',
   'ixml': 'iXML Metadata',
+  'iXML': 'iXML Metadata',
   'axml': 'EBU Core XML',
   'umid': 'Unique Material ID',
   'mext': 'MPEG Extension',

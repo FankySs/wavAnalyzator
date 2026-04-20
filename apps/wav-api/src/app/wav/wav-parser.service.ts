@@ -127,7 +127,8 @@ export class WavParserService {
         case 'inst':  return this.parseInst(rawData);
         case 'cart':  return this.parseCart(rawData);
         case 'axml':  return this.parseXml(rawData, 'axml');
-        case 'ixml':  return this.parseXml(rawData, 'ixml');
+        case 'ixml':
+        case 'iXML':  return this.parseXml(rawData, 'ixml');
         case 'mext':  return this.parseMext(rawData);
         case 'levl':  return this.parseLevl(rawData);
         case 'umid':  return this.parseUmid(rawData);
