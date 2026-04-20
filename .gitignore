@@ -52,6 +52,7 @@ Thumbs.db
 .claude
 
 # WAV uploads
+uploads/
 apps/wav-api/uploads/*
 !apps/wav-api/uploads/.gitkeep
 
