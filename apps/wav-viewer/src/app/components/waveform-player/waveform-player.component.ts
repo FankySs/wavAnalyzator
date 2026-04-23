@@ -15,7 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { WaveformDto } from '@shared-types';
 import { WavApiService } from '../../services/wav-api.service';
 
-export type CueMarker = { id: number; sampleOffset: number };
+export type CueMarker = { id: number; sampleOffset: number; label: string };
 
 @Component({
   selector: 'app-waveform-player',
@@ -211,7 +211,7 @@ export class WaveformPlayerComponent {
         const timeSec = point.sampleOffset / sr;
         const x = (timeSec / this.duration()) * width;
         const isSelected = point.id === selId;
-        const label = `#${point.id}`;
+        const label = point.label;
 
         // Dark outline for visibility on both blue and gray backgrounds
         ctx.strokeStyle = 'rgba(0,0,0,0.5)';

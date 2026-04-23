@@ -25,7 +25,7 @@ import type {
 } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
 import { ConfirmInlineComponent } from '../../../../components/confirm-inline/confirm-inline.component';
-import { WaveformPlayerComponent } from '../../../../components/waveform-player/waveform-player.component';
+import { WaveformPlayerComponent, CueMarker } from '../../../../components/waveform-player/waveform-player.component';
 import { samplesToTime, timeToSamples } from '../../../../utils/time.utils';
 
 type LocalPoint = {
@@ -82,6 +82,14 @@ export class CueDetailComponent {
 
   // Add-point mode
   protected readonly isAddingPoint: WritableSignal<boolean> = signal(false);
+
+  protected readonly cueMarkersForWaveform = computed<CueMarker[]>(() =>
+    this.livePoints().map((pt, idx) => ({
+      id: pt.id,
+      sampleOffset: pt.sampleOffset,
+      label: `#${idx + 1}`,
+    })),
+  );
 
   private nextTempId = -1;
 

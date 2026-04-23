@@ -25,7 +25,7 @@
   <app-waveform-player
     [wavId]="wavId()"
     [showCuePoints]="true"
-    [cuePoints]="livePoints()"
+    [cuePoints]="cueMarkersForWaveform()"
     [addPointMode]="isAddingPoint()"
     [selectedPointId]="selectedId()"
     (sampleRateChange)="onSampleRateChange($event)"
