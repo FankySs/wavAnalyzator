@@ -29,6 +29,8 @@ COPY --from=builder /app/dist/apps/wav-api ./dist/apps/wav-api
 # .prisma is included here – it holds the compiled query engine binaries.
 COPY --from=builder /app/node_modules ./node_modules
 
+COPY --from=builder /app/apps/wav-api/prisma ./apps/wav-api/prisma
+
 EXPOSE 3000
 
 CMD ["node", "dist/apps/wav-api/main.js"]
