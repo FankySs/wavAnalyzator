@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: '', // relativní URL – FE a BE servovány ze stejného originu
+  apiUrl: '__API_URL__',
 };
