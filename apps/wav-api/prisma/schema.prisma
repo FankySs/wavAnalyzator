@@ -12,7 +12,7 @@ datasource db {
 // the re-export from @prisma/client without needing a symlink (Windows compat)
 generator client {
   provider = "prisma-client-js"
-  output   = "../../../node_modules/@prisma/client/.prisma/client"
+  output = "../../../node_modules/.prisma/client"
 }
 
 model WavFile {
