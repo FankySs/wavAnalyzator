@@ -8,10 +8,12 @@ import { WavChunkUpdateService } from './wav-chunk-update.service';
 import { WavChunkCreateService } from './wav-chunk-create.service';
 import { WavSerializerService } from './wav-serializer.service';
 import { WavWaveformService } from './wav-waveform.service';
+import { R2StorageService } from './r2-storage.service';
 
 @Module({
   controllers: [WavController],
   providers: [
+    R2StorageService,
     WavService,
     WavValidatorService,
     WavStorageService,

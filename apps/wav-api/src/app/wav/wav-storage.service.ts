@@ -1,27 +1,19 @@
-import path from 'node:path';
-import { promises as fs } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
+import { R2StorageService } from './r2-storage.service';
 
 @Injectable()
 export class WavStorageService {
-  private readonly uploadsDir = path.join(process.cwd(), 'uploads');
+  constructor(private readonly r2: R2StorageService) {}
 
   async save(file: Express.Multer.File): Promise<string> {
-    await fs.mkdir(this.uploadsDir, { recursive: true });
-    // UUID prefix zabraňuje kolizím při nahrání dvou souborů se stejným názvem
-    // a zároveň znemožňuje hádání cesty k souboru podle původního jména.
-    const uniqueName = `${randomUUID()}-${file.originalname}`;
-    const filePath = path.join(this.uploadsDir, uniqueName);
-    await fs.writeFile(filePath, file.buffer);
-    return filePath;
+    // UUID prefix prevents collisions and makes storage keys unguessable
+    const key = `${randomUUID()}-${file.originalname}`;
+    await this.r2.uploadFile(key, file.buffer, 'audio/wav');
+    return key;
   }
 
-  async remove(filePath: string): Promise<void> {
-    try {
-      await fs.unlink(filePath);
-    } catch {
-      // Ignore – soubor nemusel být uložen
-    }
+  async remove(key: string): Promise<void> {
+    await this.r2.deleteFile(key);
   }
 }

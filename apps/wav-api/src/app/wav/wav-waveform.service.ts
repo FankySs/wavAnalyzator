@@ -1,17 +1,17 @@
-import * as fs from 'node:fs';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type { WaveformDto, WaveformPointDto } from '@shared-types';
 import { PrismaService } from '../prisma';
 import { WavParserService } from './wav-parser.service';
+import { R2StorageService } from './r2-storage.service';
 
 @Injectable()
 export class WavWaveformService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly parser: WavParserService,
+    private readonly r2: R2StorageService,
   ) {}
 
-  // TODO: For large files (100MB+), consider streaming optimization instead of full buffer read
   async getWaveform(wavFileId: string, width: number): Promise<WaveformDto> {
     const wavFile = await this.prisma.wavFile.findUnique({
       where: { id: wavFileId },
@@ -48,19 +48,16 @@ export class WavWaveformService {
     const { sampleRate, channels, bitsPerSample, byteRate } = fmtParsed;
     const durationSec = byteRate > 0 ? dataChunk.size / byteRate : 0;
 
-    const buffer = Buffer.alloc(dataChunk.size);
-    const fd = fs.openSync(wavFile.filePath, 'r');
-    try {
-      fs.readSync(fd, buffer, 0, dataChunk.size, dataChunk.payloadOffset);
-    } finally {
-      fs.closeSync(fd);
-    }
+    const buffer = await this.r2.downloadFileRange(
+      wavFile.filePath,
+      dataChunk.payloadOffset,
+      dataChunk.payloadOffset + dataChunk.size - 1,
+    );
 
     const bytesPerSample = Math.ceil(bitsPerSample / 8);
     const frameCount = Math.floor(buffer.length / (bytesPerSample * channels));
 
-    // Downmix na mono průměrováním kanálů – waveform zobrazujeme vždy jako jeden pruh,
-    // stereo rozdíl není pro vizualizaci struktury relevantní.
+    // Downmix to mono by averaging channels — waveform is always shown as a single bar
     const monoSamples = new Float32Array(frameCount);
     for (let i = 0; i < frameCount; i++) {
       let sum = 0;
@@ -71,8 +68,7 @@ export class WavWaveformService {
       monoSamples[i] = sum / channels;
     }
 
-    // Waveform = `width` bucketů, každý bucket = min + max amplitudy svého úseku.
-    // Min/max zachovává tvar vlny lépe než průměr – průměr by tlumil špičky.
+    // Each bucket = min + max amplitude of its segment; preserves peaks better than averaging
     const points: WaveformPointDto[] = [];
     const samplesPerBucket = frameCount / width;
     for (let b = 0; b < width; b++) {

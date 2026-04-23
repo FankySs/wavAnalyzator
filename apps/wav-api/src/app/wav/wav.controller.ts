@@ -1,4 +1,3 @@
-import * as fs from 'node:fs';
 import {
   Controller,
   Get,
@@ -60,6 +59,7 @@ import { WavChunkUpdateService } from './wav-chunk-update.service';
 import { WavChunkCreateService } from './wav-chunk-create.service';
 import { WavSerializerService } from './wav-serializer.service';
 import { WavWaveformService } from './wav-waveform.service';
+import { R2StorageService } from './r2-storage.service';
 
 @Controller('wav')
 export class WavController {
@@ -69,6 +69,7 @@ export class WavController {
     private readonly chunkCreateService: WavChunkCreateService,
     private readonly wavSerializerService: WavSerializerService,
     private readonly wavWaveformService: WavWaveformService,
+    private readonly r2Storage: R2StorageService,
   ) {}
 
   // --- Soubory ---
@@ -147,7 +148,7 @@ export class WavController {
     @Headers('range') range?: string,
   ): Promise<void> {
     try {
-      const { filePath, fileName, fileSize } = await this.wavService.getFilePath(id);
+      const { storageKey, fileName, fileSize } = await this.wavService.getFileInfo(id);
 
       res.setHeader('Content-Type', 'audio/wav');
       res.setHeader('Accept-Ranges', 'bytes');
@@ -158,10 +159,12 @@ export class WavController {
         res.status(206);
         res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
         res.setHeader('Content-Length', String(end - start + 1));
-        fs.createReadStream(filePath, { start, end }).pipe(res);
+        const stream = await this.r2Storage.createReadStream(storageKey, start, end);
+        stream.pipe(res);
       } else {
         res.setHeader('Content-Length', String(fileSize));
-        fs.createReadStream(filePath).pipe(res);
+        const stream = await this.r2Storage.createReadStream(storageKey);
+        stream.pipe(res);
       }
     } catch (err) {
       if (err instanceof NotFoundException) {

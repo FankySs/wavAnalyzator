@@ -261,16 +261,17 @@ export class WavService {
   async deleteById(id: string): Promise<void> {
     const wavFile = await this.prisma.wavFile.findUnique({
       where: { id },
-      select: { id: true },
+      select: { id: true, filePath: true },
     });
     if (!wavFile) {
       throw new NotFoundException(`WAV soubor s ID "${id}" nebyl nalezen.`);
     }
     // WavChunk záznamy jsou smazány kaskádně (onDelete: Cascade)
     await this.prisma.wavFile.delete({ where: { id } });
+    await this.storage.remove(wavFile.filePath);
   }
 
-  async getFilePath(id: string): Promise<{ filePath: string; fileName: string; fileSize: number }> {
+  async getFileInfo(id: string): Promise<{ storageKey: string; fileName: string; fileSize: number }> {
     const wavFile = await this.prisma.wavFile.findUnique({
       where: { id },
       select: { filePath: true, fileName: true, fileSize: true },
@@ -278,7 +279,7 @@ export class WavService {
     if (!wavFile) {
       throw new NotFoundException(`WAV soubor s ID "${id}" nebyl nalezen.`);
     }
-    return wavFile;
+    return { storageKey: wavFile.filePath, fileName: wavFile.fileName, fileSize: wavFile.fileSize };
   }
 
   async deleteChunk(wavFileId: string, chunkDbId: string): Promise<void> {

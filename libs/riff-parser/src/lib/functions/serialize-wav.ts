@@ -32,8 +32,12 @@ export function serializeWav(chunks: WavChunkRecord[]): Buffer {
     let payload: Buffer;
 
     if (chunk.isAudioData) {
-      const fileBuf = readFileSync(chunk.filePath!);
-      payload = fileBuf.slice(chunk.dataOffset!, chunk.dataOffset! + chunk.dataSize!);
+      if (chunk.rawData) {
+        payload = chunk.rawData;
+      } else {
+        const fileBuf = readFileSync(chunk.filePath!);
+        payload = fileBuf.slice(chunk.dataOffset!, chunk.dataOffset! + chunk.dataSize!);
+      }
     } else {
       payload = chunk.rawData ?? Buffer.alloc(0);
     }
