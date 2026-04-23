@@ -6,6 +6,7 @@ import { PrismaLibSql } from '@prisma/adapter-libsql';
 
 function createAdapter(config: ConfigService): PrismaLibSql {
   const tursoUrl = config.get<string>('TURSO_DATABASE_URL');
+  console.log('TURSO_DATABASE_URL:', tursoUrl ? 'SET' : 'NOT SET');
   if (tursoUrl) {
     return new PrismaLibSql({
       url: tursoUrl,
