@@ -8,7 +8,8 @@
     "watch": "nx build --watch --configuration development",
     "test": "nx test",
     "prisma:migrate": "nx run wav-api:prisma-migrate",
-    "prisma:studio": "nx run wav-api:prisma-studio"
+    "prisma:studio": "nx run wav-api:prisma-studio",
+    "postinstall": "prisma generate --schema=apps/wav-api/prisma/schema.prisma"
   },
   "prettier": {
     "printWidth": 100,
