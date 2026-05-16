@@ -53,6 +53,7 @@ export class ChunkHexViewerComponent {
   protected readonly bytes: WritableSignal<Uint8Array | null> = signal(null);
   protected readonly isLoading: WritableSignal<boolean> = signal(false);
   protected readonly error: WritableSignal<string | null> = signal(null);
+  protected readonly isExpanded: WritableSignal<boolean> = signal(false);
 
   private readonly internalHighlight: WritableSignal<string | null> = signal(null);
 

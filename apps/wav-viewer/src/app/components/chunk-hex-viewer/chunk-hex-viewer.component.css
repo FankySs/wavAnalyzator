@@ -16,8 +16,23 @@
 .hex-viewer-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 12px;
+  align-items: center;
+}
+
+.hex-viewer-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hex-toggle-btn {
+  font-size: 12px;
+}
+
+.hex-legend,
+.hex-grid,
+.hex-active-label {
+  margin-top: 12px;
 }
 
 .hex-viewer-title {
@@ -33,7 +48,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 10px;
 }
 
 .hex-legend-chip {
