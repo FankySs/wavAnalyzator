@@ -40,13 +40,25 @@ export class WaveformPlayerComponent {
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');
   private readonly audioEl = viewChild<ElementRef<HTMLAudioElement>>('audioEl');
 
-  private readonly waveform = signal<WaveformDto | null>(null);
+  protected readonly waveform = signal<WaveformDto | null>(null);
   protected readonly isLoading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly currentTime = signal(0);
   protected readonly duration = signal(0);
   protected readonly isPlaying = signal(false);
   private readonly canvasWidth = signal(800);
+
+  protected readonly canvasHeight = computed(() => {
+    const channelCount = this.waveform()?.channels.length ?? 1;
+    if (channelCount === 1) return 80;
+    return channelCount * 100;
+  });
+
+  protected readonly channelBandHeight = computed(() => {
+    const channelCount = this.waveform()?.channels.length ?? 1;
+    if (channelCount === 1) return 80;
+    return 100;
+  });
 
   protected readonly streamUrl = computed(() =>
     this.wavApiService.getStreamUrl(this.wavId()),
@@ -154,6 +166,11 @@ export class WaveformPlayerComponent {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
+  protected channelLabel(index: number, total: number): string {
+    if (total === 2) return index === 0 ? 'L' : 'R';
+    return String(index + 1);
+  }
+
   private drawWaveform(): void {
     const canvasRef = this.waveformCanvas();
     if (!canvasRef) return;
@@ -163,7 +180,7 @@ export class WaveformPlayerComponent {
 
     const dpr = window.devicePixelRatio || 1;
     const width = canvas.clientWidth || this.canvasWidth();
-    const height = canvas.clientHeight || 80;
+    const height = canvas.clientHeight || this.canvasHeight();
 
     canvas.width = width * dpr;
     canvas.height = height * dpr;
@@ -172,26 +189,48 @@ export class WaveformPlayerComponent {
     if (!ctx) return;
     ctx.scale(dpr, dpr);
 
-    const points = wf.points;
-    const paddingY = 12;
-    const innerHeight = height - paddingY * 2;
-    const midY = paddingY + innerHeight / 2;
-    const barWidth = width / points.length;
-
     ctx.clearRect(0, 0, width, height);
 
+    const channelCount = wf.channels.length;
+    const bandHeight = this.channelBandHeight();
+    const paddingY = channelCount === 1 ? 12 : 6;
     const playedFraction = this.duration() > 0 ? this.currentTime() / this.duration() : 0;
 
-    points.forEach((point, i) => {
-      const x = i * barWidth;
-      const maxY = midY - point.max * (innerHeight / 2);
-      const minY = midY - point.min * (innerHeight / 2);
-      const barHeight = minY - maxY;
+    wf.channels.forEach((channel, i) => {
+      const points = channel.points;
+      const bandTop = i * bandHeight;
+      const innerHeight = bandHeight - paddingY * 2;
+      const midY = bandTop + bandHeight / 2;
+      const barWidth = width / points.length;
 
-      ctx.fillStyle =
-        i / points.length < playedFraction ? 'var(--brand)' : 'rgba(255,255,255,0.3)';
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, bandTop, width, bandHeight);
+      ctx.clip();
 
-      ctx.fillRect(x, maxY, Math.max(1, barWidth - 0.5), Math.max(1, barHeight));
+      points.forEach((point, j) => {
+        const x = j * barWidth;
+        const maxY = midY - point.max * (innerHeight / 2);
+        const minY = midY - point.min * (innerHeight / 2);
+        const bh = minY - maxY;
+
+        ctx.fillStyle =
+          j / points.length < playedFraction ? 'var(--brand)' : 'rgba(255,255,255,0.3)';
+
+        ctx.fillRect(x, maxY, Math.max(1, barWidth - 0.5), Math.max(1, bh));
+      });
+
+      ctx.restore();
+
+      // Separator between channels, not after the last one
+      if (i < channelCount - 1) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, (i + 1) * bandHeight);
+        ctx.lineTo(width, (i + 1) * bandHeight);
+        ctx.stroke();
+      }
     });
 
     if (this.duration() > 0) {

@@ -1,7 +1,7 @@
 <div class="waveform-player" #container>
 
   @if (isLoading()) {
-    <div class="waveform-skeleton"></div>
+    <div class="waveform-skeleton" [style.height.px]="canvasHeight()"></div>
   }
 
   @if (error()) {
@@ -9,12 +9,25 @@
   }
 
   @if (!isLoading() && !error()) {
-    <canvas
-      #waveformCanvas
-      class="waveform-canvas"
-      [style.cursor]="cursorStyle()"
-      (click)="onCanvasClick($event)"
-    ></canvas>
+    <div class="waveform-canvas-wrapper">
+      <canvas
+        #waveformCanvas
+        class="waveform-canvas"
+        [style.height.px]="canvasHeight()"
+        [style.cursor]="cursorStyle()"
+        (click)="onCanvasClick($event)"
+      ></canvas>
+      <div class="waveform-channel-labels">
+        @for (ch of waveform()?.channels ?? []; track $index; let i = $index) {
+          @if ((waveform()?.channels?.length ?? 1) > 1) {
+            <span
+              class="channel-label"
+              [style.top.px]="i * channelBandHeight() + channelBandHeight() / 2 - 6"
+            >{{ channelLabel(i, waveform()!.channels.length) }}</span>
+          }
+        }
+      </div>
+    </div>
   }
 
   <audio

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import type { WaveformDto, WaveformPointDto } from '@shared-types';
+import type { WaveformChannelDto, WaveformDto, WaveformPointDto } from '@shared-types';
 import { PrismaService } from '../../../prisma';
 import { WavParserService } from '../io/wav-parser.service';
 import { R2StorageService } from '../io/r2-storage.service';
@@ -56,36 +56,30 @@ export class WavWaveformService {
 
     const bytesPerSample = Math.ceil(bitsPerSample / 8);
     const frameCount = Math.floor(buffer.length / (bytesPerSample * channels));
-
-    // Downmix to mono by averaging channels — waveform is always shown as a single bar
-    const monoSamples = new Float32Array(frameCount);
-    for (let i = 0; i < frameCount; i++) {
-      let sum = 0;
-      for (let ch = 0; ch < channels; ch++) {
-        const offset = (i * channels + ch) * bytesPerSample;
-        sum += this.readSample(buffer, offset, bitsPerSample);
-      }
-      monoSamples[i] = sum / channels;
-    }
-
-    // Each bucket = min + max amplitude of its segment; preserves peaks better than averaging
-    const points: WaveformPointDto[] = [];
     const samplesPerBucket = frameCount / width;
-    for (let b = 0; b < width; b++) {
-      const startIdx = Math.floor(b * samplesPerBucket);
-      const endIdx = Math.min(Math.floor((b + 1) * samplesPerBucket), frameCount);
 
-      let min = 0;
-      let max = 0;
-      for (let s = startIdx; s < endIdx; s++) {
-        const v = monoSamples[s];
-        if (v < min) min = v;
-        if (v > max) max = v;
+    // Build per-channel peak data; each bucket keeps min + max amplitude
+    const channelsData: WaveformChannelDto[] = [];
+    for (let ch = 0; ch < channels; ch++) {
+      const points: WaveformPointDto[] = [];
+      for (let b = 0; b < width; b++) {
+        const startIdx = Math.floor(b * samplesPerBucket);
+        const endIdx = Math.min(Math.floor((b + 1) * samplesPerBucket), frameCount);
+
+        let min = 0;
+        let max = 0;
+        for (let s = startIdx; s < endIdx; s++) {
+          const offset = (s * channels + ch) * bytesPerSample;
+          const v = this.readSample(buffer, offset, bitsPerSample);
+          if (v < min) min = v;
+          if (v > max) max = v;
+        }
+        points.push({ min, max });
       }
-      points.push({ min, max });
+      channelsData.push({ points });
     }
 
-    return { points, durationSec, sampleRate };
+    return { channels: channelsData, durationSec, sampleRate };
   }
 
   private readSample(buffer: Buffer, offset: number, bitsPerSample: number): number {
