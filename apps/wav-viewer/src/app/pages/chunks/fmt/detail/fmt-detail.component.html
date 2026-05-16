@@ -35,20 +35,29 @@
       <p class="section-label">WAVE_FORMAT_EXTENSIBLE</p>
       <div class="card ext-card">
 
-        <div class="ext-row">
+        <div class="ext-row"
+          (mouseenter)="activeHighlight.set('cbSize')" (mouseleave)="activeHighlight.set(null)">
+          <span class="ext-label">cbSize</span>
+          <span class="ext-value">{{ fmt()!.extensible!.cbSize }}</span>
+        </div>
+
+        <div class="ext-row"
+          (mouseenter)="activeHighlight.set('Valid Bits/Sample')" (mouseleave)="activeHighlight.set(null)">
           <span class="ext-label">Valid bits per sample</span>
           <span class="ext-value">{{ fmt()!.extensible!.validBitsPerSample }}</span>
         </div>
 
         @if (channelMaskHex() !== null) {
-          <div class="ext-row">
+          <div class="ext-row"
+            (mouseenter)="activeHighlight.set('Channel Mask')" (mouseleave)="activeHighlight.set(null)">
             <span class="ext-label">Channel mask</span>
             <span class="ext-value mono">{{ channelMaskHex() }}</span>
           </div>
         }
 
         @if (fmt()!.extensible!.subFormatGuid) {
-          <div class="ext-row">
+          <div class="ext-row"
+            (mouseenter)="activeHighlight.set('SubFormat GUID')" (mouseleave)="activeHighlight.set(null)">
             <span class="ext-label">SubFormat GUID</span>
             <span class="ext-value mono">{{ fmt()!.extensible!.subFormatGuid }}</span>
           </div>
