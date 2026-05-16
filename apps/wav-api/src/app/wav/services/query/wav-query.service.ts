@@ -192,7 +192,7 @@ export class WavQueryService {
   async findChunkRawData(wavFileId: string, chunkDbId: string): Promise<Buffer> {
     const chunk = await this.prisma.wavChunk.findFirst({
       where: { id: chunkDbId, wavFileId },
-      select: { rawData: true, isAudioData: true },
+      select: { rawData: true, isAudioData: true, chunkId: true, size: true },
     });
 
     if (!chunk) {
@@ -202,7 +202,13 @@ export class WavQueryService {
       throw new BadRequestException('Audio data chunk nelze exportovat přímým endpointem. Použij /stream.');
     }
 
-    return chunk.rawData ? Buffer.from(chunk.rawData) : Buffer.alloc(0);
+    const header4cc = Buffer.alloc(4);
+    Buffer.from(chunk.chunkId, 'ascii').copy(header4cc, 0, 0, 4);
+
+    const headerSize = Buffer.alloc(4);
+    headerSize.writeUInt32LE(chunk.size, 0);
+
+    return Buffer.concat([header4cc, headerSize, chunk.rawData ? Buffer.from(chunk.rawData) : Buffer.alloc(0)]);
   }
 
   // -------------------------------------------------------------------------

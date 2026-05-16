@@ -17,6 +17,7 @@ export interface ChunkHighlight {
   byteOffset: number;
   byteLength: number;
   color: string;
+  description?: string;
 }
 
 type HexCell = {
@@ -28,7 +29,6 @@ type HexCell = {
 type HexRow = {
   offset: string;
   cells: HexCell[];
-  ascii: string;
 };
 
 @Component({
@@ -54,22 +54,32 @@ export class ChunkHexViewerComponent {
   protected readonly isLoading: WritableSignal<boolean> = signal(false);
   protected readonly error: WritableSignal<string | null> = signal(null);
 
+  private readonly internalHighlight: WritableSignal<string | null> = signal(null);
+
+  protected readonly effectiveActive = computed((): string | null =>
+    this.internalHighlight() ?? this.activeHighlight() ?? null,
+  );
+
+  private readonly hlMap = computed((): Map<number, ChunkHighlight> => {
+    const map = new Map<number, ChunkHighlight>();
+    for (const h of this.highlights()) {
+      for (let i = h.byteOffset; i < h.byteOffset + h.byteLength; i++) {
+        map.set(i, h);
+      }
+    }
+    return map;
+  });
+
   protected readonly rows = computed((): HexRow[] => {
     const bytes = this.bytes();
     if (!bytes) return [];
 
-    const active = this.activeHighlight();
-    const hlMap = new Map<number, ChunkHighlight>();
-    for (const h of this.highlights()) {
-      for (let i = h.byteOffset; i < h.byteOffset + h.byteLength; i++) {
-        hlMap.set(i, h);
-      }
-    }
+    const active = this.effectiveActive();
+    const hlMap = this.hlMap();
 
     const result: HexRow[] = [];
     for (let rowStart = 0; rowStart < bytes.length; rowStart += 16) {
       const cells: HexCell[] = [];
-      let ascii = '';
 
       for (let col = 0; col < 16; col++) {
         const idx = rowStart + col;
@@ -80,21 +90,31 @@ export class ChunkHexViewerComponent {
         const byte = bytes[idx];
         const hl = hlMap.get(idx);
         const isActive = hl !== undefined && hl.label === active;
-        const pct = isActive ? '60%' : '25%';
-        const style: Record<string, string> = hl
-          ? { 'background-color': `color-mix(in srgb, ${hl.color} ${pct}, transparent)` }
+        const style: Record<string, string> = (hl && isActive)
+          ? { 'background-color': `color-mix(in srgb, ${hl.color} 40%, transparent)` }
           : {};
-        ascii += byte >= 32 && byte <= 126 ? String.fromCharCode(byte) : '.';
         cells.push({ index: idx, hex: byte.toString(16).padStart(2, '0').toUpperCase(), style });
       }
 
-      result.push({
-        offset: rowStart.toString(16).toUpperCase().padStart(4, '0'),
-        cells,
-        ascii,
-      });
+      result.push({ offset: rowStart.toString(16).toUpperCase().padStart(4, '0'), cells });
     }
     return result;
+  });
+
+  protected readonly activeByteRange = computed((): string => {
+    const active = this.effectiveActive();
+    if (!active) return '';
+    const hl = this.highlights().find((h) => h.label === active);
+    if (!hl) return '';
+    const start = `0x${hl.byteOffset.toString(16).toUpperCase().padStart(2, '0')}`;
+    const end = `0x${(hl.byteOffset + hl.byteLength - 1).toString(16).toUpperCase().padStart(2, '0')}`;
+    return `${start}–${end}`;
+  });
+
+  protected readonly activeDescription = computed((): string => {
+    const active = this.effectiveActive();
+    if (!active) return '';
+    return this.highlights().find((h) => h.label === active)?.description ?? '';
   });
 
   protected readonly colHeaders = Array.from({ length: 16 }, (_, i) =>
@@ -131,10 +151,23 @@ export class ChunkHexViewerComponent {
   }
 
   protected readonly onByteEnter = (index: number): void => {
-    if (index >= 0) this.hoveredByte.emit(index);
+    if (index >= 0) {
+      this.hoveredByte.emit(index);
+      const hl = this.hlMap().get(index);
+      this.internalHighlight.set(hl?.label ?? null);
+    }
   };
 
   protected readonly onByteLeave = (): void => {
     this.hoveredByte.emit(null);
+    this.internalHighlight.set(null);
+  };
+
+  protected readonly onChipEnter = (label: string): void => {
+    this.internalHighlight.set(label);
+  };
+
+  protected readonly onChipLeave = (): void => {
+    this.internalHighlight.set(null);
   };
 }
