@@ -5,12 +5,16 @@ import type {
   WavChunkDto,
   WavChunkDetailDto,
   ParsedChunkData,
-  RenameWavFileDto,
 } from '@shared-types';
-import { PrismaService } from '../prisma';
-import { WavValidatorService } from './wav-validator.service';
-import { WavStorageService } from './wav-storage.service';
-import { WavParserService } from './wav-parser.service';
+import { PrismaService } from '../../../prisma';
+import { WavParserService } from '../io/wav-parser.service';
+
+export interface WavFindAllParams {
+  name?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  chunkTypes?: string[];
+}
 
 function toWavChunkDto(chunk: {
   id: string;
@@ -30,19 +34,10 @@ function toWavChunkDto(chunk: {
   };
 }
 
-interface WavFindAllParams {
-  name?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  chunkTypes?: string[];
-}
-
 @Injectable()
-export class WavService {
+export class WavQueryService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly storage: WavStorageService,
-    private readonly validator: WavValidatorService,
     private readonly parser: WavParserService,
   ) {}
 
@@ -87,55 +82,6 @@ export class WavService {
         ...audioMeta,
       };
     });
-  }
-
-  async upload(file: Express.Multer.File): Promise<WavFileDto> {
-    let filePath: string | null = null;
-
-    try {
-      filePath = await this.storage.save(file);
-      this.validator.validate(file);
-      const chunks = this.parser.parse(file.buffer);
-
-      const wavFile = await this.prisma.$transaction(async (tx) => {
-        return tx.wavFile.create({
-          data: {
-            fileName: file.originalname,
-            fileSize: file.size,
-            filePath,
-            chunks: {
-              create: chunks.map((chunk) => ({
-                chunkId: chunk.chunkId,
-                offset: chunk.offset,
-                payloadOffset: chunk.payloadOffset,
-                size: chunk.size,
-                isAudioData: chunk.isAudioData,
-                rawData: chunk.rawData ? Buffer.from(chunk.rawData) : null,
-              })),
-            },
-          },
-        });
-      });
-
-      const fmtChunkResult = chunks.find((c) => c.chunkId === 'fmt ');
-      const dataChunkResult = chunks.find((c) => c.isAudioData);
-      const audioMeta = this.parseAudioMeta(
-        fmtChunkResult?.rawData ?? null,
-        dataChunkResult?.size ?? null,
-      );
-
-      return {
-        id: wavFile.id,
-        fileName: wavFile.fileName,
-        fileSize: wavFile.fileSize,
-        uploadedAt: wavFile.uploadedAt.toISOString(),
-        chunkCount: chunks.length,
-        ...audioMeta,
-      };
-    } catch (err) {
-      if (filePath !== null) await this.storage.remove(filePath);
-      throw err;
-    }
   }
 
   async findById(id: string): Promise<WavFileDetailDto> {
@@ -232,65 +178,6 @@ export class WavService {
     };
   }
 
-  async renameFile(id: string, dto: RenameWavFileDto): Promise<WavFileDto> {
-    const trimmed = dto.fileName.trim();
-    if (!trimmed) {
-      throw new BadRequestException('Název souboru nesmí být prázdný.');
-    }
-    if (!trimmed.toLowerCase().endsWith('.wav')) {
-      throw new BadRequestException('Název souboru musí končit příponou .wav.');
-    }
-    if (trimmed.length > 255) {
-      throw new BadRequestException('Název souboru nesmí překročit 255 znaků.');
-    }
-
-    const wavFile = await this.prisma.wavFile.findUnique({ where: { id } });
-    if (!wavFile) {
-      throw new NotFoundException(`WAV soubor s ID "${id}" nebyl nalezen.`);
-    }
-
-    const updated = await this.prisma.wavFile.update({
-      where: { id },
-      data: { fileName: trimmed },
-      include: {
-        _count: { select: { chunks: true } },
-        chunks: {
-          where: { OR: [{ chunkId: 'fmt ' }, { isAudioData: true }] },
-          select: { chunkId: true, size: true, rawData: true, isAudioData: true },
-        },
-      },
-    });
-
-    const fmtChunk = updated.chunks.find((c) => c.chunkId === 'fmt ');
-    const dataChunk = updated.chunks.find((c) => c.isAudioData);
-    const audioMeta = this.parseAudioMeta(
-      fmtChunk?.rawData ? Buffer.from(fmtChunk.rawData) : null,
-      dataChunk?.size ?? null,
-    );
-
-    return {
-      id: updated.id,
-      fileName: updated.fileName,
-      fileSize: updated.fileSize,
-      uploadedAt: updated.uploadedAt.toISOString(),
-      chunkCount: updated._count.chunks,
-      ...audioMeta,
-    };
-  }
-
-  async deleteById(id: string): Promise<void> {
-    const wavFile = await this.prisma.wavFile.findUnique({
-      where: { id },
-      select: { id: true, filePath: true },
-    });
-    if (!wavFile) {
-      throw new NotFoundException(`WAV soubor s ID "${id}" nebyl nalezen.`);
-    }
-    // WavChunk záznamy jsou smazány kaskádně (onDelete: Cascade)
-    await this.prisma.wavFile.delete({ where: { id } });
-    await this.storage.remove(wavFile.filePath);
-  }
-
   async getFileInfo(id: string): Promise<{ storageKey: string; fileName: string; fileSize: number }> {
     const wavFile = await this.prisma.wavFile.findUnique({
       where: { id },
@@ -302,17 +189,20 @@ export class WavService {
     return { storageKey: wavFile.filePath, fileName: wavFile.fileName, fileSize: wavFile.fileSize };
   }
 
-  async deleteChunk(wavFileId: string, chunkDbId: string): Promise<void> {
+  async findChunkRawData(wavFileId: string, chunkDbId: string): Promise<Buffer> {
     const chunk = await this.prisma.wavChunk.findFirst({
       where: { id: chunkDbId, wavFileId },
+      select: { rawData: true, isAudioData: true },
     });
+
     if (!chunk) {
       throw new NotFoundException(`Chunk s ID "${chunkDbId}" nebyl nalezen.`);
     }
     if (chunk.isAudioData) {
-      throw new BadRequestException('Audio data chunk nelze smazat.');
+      throw new BadRequestException('Audio data chunk nelze exportovat přímým endpointem. Použij /stream.');
     }
-    await this.prisma.wavChunk.delete({ where: { id: chunkDbId } });
+
+    return chunk.rawData ? Buffer.from(chunk.rawData) : Buffer.alloc(0);
   }
 
   // -------------------------------------------------------------------------

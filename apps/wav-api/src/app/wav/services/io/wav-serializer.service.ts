@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { serializeWav, type WavChunkRecord } from '@riff-parser';
-import { PrismaService } from '../prisma';
+import { PrismaService } from '../../../prisma';
 import { R2StorageService } from './r2-storage.service';
 
 @Injectable()

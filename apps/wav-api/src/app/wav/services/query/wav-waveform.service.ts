@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type { WaveformDto, WaveformPointDto } from '@shared-types';
-import { PrismaService } from '../prisma';
-import { WavParserService } from './wav-parser.service';
-import { R2StorageService } from './r2-storage.service';
+import { PrismaService } from '../../../prisma';
+import { WavParserService } from '../io/wav-parser.service';
+import { R2StorageService } from '../io/r2-storage.service';
 
 @Injectable()
 export class WavWaveformService {

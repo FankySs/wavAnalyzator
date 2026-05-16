@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
-import { WavController } from './wav.controller';
-import { WavService } from './wav.service';
-import { WavValidatorService } from './wav-validator.service';
-import { WavStorageService } from './wav-storage.service';
-import { WavParserService } from './wav-parser.service';
-import { WavChunkUpdateService } from './wav-chunk-update.service';
-import { WavChunkCreateService } from './wav-chunk-create.service';
-import { WavSerializerService } from './wav-serializer.service';
-import { WavWaveformService } from './wav-waveform.service';
-import { R2StorageService } from './r2-storage.service';
+import { WavController } from './controllers/wav.controller';
+import { WavQueryService } from './services/query/wav-query.service';
+import { WavMutationService } from './services/mutation/wav-mutation.service';
+import { WavValidatorService } from './validation/wav-validator.service';
+import { WavStorageService } from './services/io/wav-storage.service';
+import { WavParserService } from './services/io/wav-parser.service';
+import { WavChunkUpdateService } from './services/mutation/wav-chunk-update.service';
+import { WavChunkCreateService } from './services/mutation/wav-chunk-create.service';
+import { WavSerializerService } from './services/io/wav-serializer.service';
+import { WavWaveformService } from './services/query/wav-waveform.service';
+import { R2StorageService } from './services/io/r2-storage.service';
 
 @Module({
   controllers: [WavController],
   providers: [
     R2StorageService,
-    WavService,
+    WavQueryService,
+    WavMutationService,
     WavValidatorService,
     WavStorageService,
     WavParserService,

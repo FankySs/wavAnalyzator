@@ -6,7 +6,7 @@ import {
   assertDateField,
   assertTimeField,
   validateListInfoEntries,
-} from './wav-validation.helpers';
+} from '../../validation/wav-validation.helpers';
 import type {
   WavChunkDetailDto,
   UpdateListInfoDto,
@@ -43,8 +43,8 @@ import {
   serializeLevlHeader,
   type ListInfoEntry,
 } from '@riff-parser';
-import { PrismaService } from '../prisma';
-import { WavParserService } from './wav-parser.service';
+import { PrismaService } from '../../../prisma';
+import { WavParserService } from '../io/wav-parser.service';
 
 @Injectable()
 export class WavChunkUpdateService {
