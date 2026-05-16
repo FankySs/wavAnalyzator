@@ -11,55 +11,55 @@
   />
 
   <div class="info-panel">
-    Chunk levl (Level Structure Chunk) ukládá metadata o úrovních hlasitosti
-    nahrávky. Obsahuje informace o peak envelope datech používaných
-    v broadcastových systémech pro měření dynamiky audio signálu.
-    Envelope data nejsou editovatelná – zobrazují se pouze hlavičková metadata.
+    The levl (Level Structure Chunk) stores metadata about the loudness levels
+    of the recording. It contains information about peak envelope data used
+    in broadcast systems to measure the dynamics of an audio signal.
+    Envelope data are not editable – only the header metadata is displayed.
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
 
     <div class="card table-card">
       <table class="data-table">
         <thead>
           <tr>
-            <th class="th-field">Pole</th>
-            <th class="th-desc">Popis</th>
-            <th>Hodnota</th>
+            <th class="th-field">Field</th>
+            <th class="th-desc">Description</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
           <tr (mouseenter)="activeHighlight.set('Version')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Version</td>
-            <td class="desc-cell muted text-sm">Verze formátu</td>
+            <td class="desc-cell muted text-sm">Format version</td>
             <td>{{ l.version }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Format')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Format</td>
-            <td class="desc-cell muted text-sm">Formát dat</td>
+            <td class="desc-cell muted text-sm">Data format</td>
             <td>{{ l.format }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Points/Value')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Points</td>
-            <td class="desc-cell muted text-sm">Počet level points</td>
+            <td class="desc-cell muted text-sm">Level points count</td>
             <td>{{ l.pointsPerValue }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Channel Count')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Channel Count</td>
-            <td class="desc-cell muted text-sm">Počet kanálů</td>
+            <td class="desc-cell muted text-sm">Channel count</td>
             <td>{{ l.channels }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Peak Frames')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Block Size</td>
-            <td class="desc-cell muted text-sm">Velikost bloku</td>
+            <td class="desc-cell muted text-sm">Block size</td>
             <td>{{ l.blockSize }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Sample Frame Count')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Peak Envelope Version</td>
-            <td class="desc-cell muted text-sm">Verze peak envelope</td>
+            <td class="desc-cell muted text-sm">Peak envelope version</td>
             <td>{{ l.frameCount }}</td>
           </tr>
         </tbody>
@@ -67,7 +67,7 @@
     </div>
 
     <p class="muted text-sm envelope-note">
-      Envelope data ({{ envelopeBytes() }} B) nejsou zobrazena.
+      Envelope data ({{ envelopeBytes() }} B) are not shown.
     </p>
   }
 
@@ -112,9 +112,9 @@
     </div>
 
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

@@ -16,9 +16,9 @@ import { WavApiService } from '../../../../services/wav-api.service';
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const UMID_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',   byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size', byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'UMID', byteOffset: 8, byteLength: 64, color: 'var(--warning)', description: 'Unique Material Identifier dle SMPTE 330M – 32 bajtů basic UMID + 32 bajtů extended UMID' },
+  { label: 'ID',   byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size', byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'UMID', byteOffset: 8, byteLength: 64, color: 'var(--warning)', description: 'Unique Material Identifier per SMPTE 330M – 32 bytes basic UMID + 32 bytes extended UMID' },
 ];
 
 const UMID_HEX_RE = /^[0-9A-Fa-f]{128}$/;
@@ -83,7 +83,7 @@ export class UmidDetailComponent {
 
   protected readonly onFormInput = (): void => {
     if (this.formUmid && !UMID_HEX_RE.test(this.formUmid)) {
-      this.validationError.set('UMID musí obsahovat přesně 128 hex znaků (0-9, A-F).');
+      this.validationError.set('UMID must contain exactly 128 hex characters (0-9, A-F).');
     } else {
       this.validationError.set(null);
     }
@@ -91,7 +91,7 @@ export class UmidDetailComponent {
 
   protected readonly onSaveClick = (): void => {
     if (!UMID_HEX_RE.test(this.formUmid)) {
-      this.validationError.set('UMID musí obsahovat přesně 128 hex znaků (0-9, A-F).');
+      this.validationError.set('UMID must contain exactly 128 hex characters (0-9, A-F).');
       return;
     }
 

@@ -11,14 +11,14 @@
   />
 
   <div class="info-panel">
-    Chunk DISP obsahuje textový popis souboru zobrazitelný
-    v aplikacích podporujících schránku Windows.
-    Používá se pro krátké popisy nebo názvy projektů.
+    The DISP chunk contains a text description of the file that can be displayed
+    in applications supporting the Windows clipboard.
+    Used for short descriptions or project names.
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
     <div class="card text-card"
       (mouseenter)="activeHighlight.set('Data')" (mouseleave)="activeHighlight.set(null)">
@@ -45,9 +45,9 @@
       </div>
     </div>
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

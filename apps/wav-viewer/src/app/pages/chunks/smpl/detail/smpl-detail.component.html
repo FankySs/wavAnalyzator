@@ -12,20 +12,20 @@
 
   <!-- Info panel -->
   <div class="info-panel">
-    Chunk smpl obsahuje parametry pro samplingové nástroje a definici smyček.
-    Určuje MIDI výšku tónu odpovídající nahrávce, jemné ladění a seznam smyček
-    s jejich počátečními a koncovými pozicemi. Využívá se v samplerech,
-    softwarových nástrojích a hudebních knihovnách.
+    The smpl chunk contains parameters for sampling instruments and loop definitions.
+    It specifies the MIDI pitch corresponding to the recording, fine tuning and a list of loops
+    with their start and end positions. Used in samplers,
+    software instruments and music libraries.
   </div>
 
   <!-- View mode -->
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
 
     <div class="params-grid">
-      <app-audio-param-card icon="" label="MIDI nota"         [value]="midiNoteLabel()"
+      <app-audio-param-card icon="" label="MIDI note"         [value]="midiNoteLabel()"
         (mouseenter)="activeHighlight.set('MIDI Unity Note')" (mouseleave)="activeHighlight.set(null)" />
       <app-audio-param-card icon="" label="Sample Period"     [value]="samplePeriodLabel()"
         (mouseenter)="activeHighlight.set('Sample Period')" (mouseleave)="activeHighlight.set(null)" />
@@ -35,28 +35,28 @@
         (mouseenter)="activeHighlight.set('SMPTE Format')" (mouseleave)="activeHighlight.set(null)" />
       <app-audio-param-card icon="" label="SMPTE Offset"      [value]="smpteOffsetLabel()"
         (mouseenter)="activeHighlight.set('SMPTE Offset')" (mouseleave)="activeHighlight.set(null)" />
-      <app-audio-param-card icon="" label="Výrobce"           [value]="manufacturerLabel()"
+      <app-audio-param-card icon="" label="Manufacturer"      [value]="manufacturerLabel()"
         (mouseenter)="activeHighlight.set('Manufacturer')" (mouseleave)="activeHighlight.set(null)" />
-      <app-audio-param-card icon="" label="Produkt"           [value]="productLabel()"
+      <app-audio-param-card icon="" label="Product"           [value]="productLabel()"
         (mouseenter)="activeHighlight.set('Product')" (mouseleave)="activeHighlight.set(null)" />
     </div>
 
     <!-- Loops table -->
-    <div class="section-header">Smyčky</div>
+    <div class="section-header">Loops</div>
 
     @if (s.loops.length === 0) {
-      <p class="muted text-sm">Žádné smyčky definovány.</p>
+      <p class="muted text-sm">No loops defined.</p>
     } @else {
       <div class="card table-card">
         <table class="data-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Typ smyčky</th>
-              <th>Start (vzorky)</th>
-              <th>Konec (vzorky)</th>
+              <th>Loop type</th>
+              <th>Start (samples)</th>
+              <th>End (samples)</th>
               <th>Fraction</th>
-              <th>Počet opakování</th>
+              <th>Play count</th>
             </tr>
           </thead>
           <tbody>
@@ -126,22 +126,22 @@
     </div>
 
     <!-- Loops edit -->
-    <div class="section-header">Smyčky</div>
+    <div class="section-header">Loops</div>
 
     <div class="card loops-card">
 
       @if (editLoops().length === 0) {
-        <p class="muted text-sm" style="padding: 12px 16px;">Žádné smyčky. Přidejte první níže.</p>
+        <p class="muted text-sm" style="padding: 12px 16px;">No loops. Add the first one below.</p>
       } @else {
         <table class="data-table loops-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Typ</th>
+              <th>Type</th>
               <th>Start</th>
-              <th>Konec</th>
+              <th>End</th>
               <th>Fraction</th>
-              <th>Opakování</th>
+              <th>Play count</th>
               <th></th>
             </tr>
           </thead>
@@ -186,13 +186,13 @@
                     [value]="loop.playCount"
                     [disabled]="isSaving() || pendingDeleteId() === loop._id"
                     (input)="updateLoop(loop._id, 'playCount', +loopPlayInp.value)"
-                    title="0 = nekonečno"
+                    title="0 = infinite"
                   />
                 </td>
                 <td>
                   @if (pendingDeleteId() === loop._id) {
                     <app-confirm-inline
-                      [message]="'Smazat smyčku #' + ($index + 1) + '?'"
+                      [message]="'Delete loop #' + ($index + 1) + '?'"
                       (confirmed)="onDeleteConfirm()"
                       (cancelled)="onDeleteCancel()"
                     />
@@ -210,16 +210,16 @@
       }
 
       <div class="add-loop-row">
-        <button class="btn btn-sm" [disabled]="isSaving()" (click)="addLoop()">＋ Přidat smyčku</button>
+        <button class="btn btn-sm" [disabled]="isSaving()" (click)="addLoop()">＋ Add loop</button>
       </div>
 
     </div>
 
     <!-- Save / cancel -->
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
 

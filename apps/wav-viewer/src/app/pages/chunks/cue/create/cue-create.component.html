@@ -1,5 +1,5 @@
 <div class="card form-card">
-  <p class="muted text-sm" style="margin-bottom: 12px;">Každý cue point je definován pozicí ve vzorcích.</p>
+  <p class="muted text-sm" style="margin-bottom: 12px;">Each cue point is defined by its position in samples.</p>
   @for (pt of points(); track $index) {
     <div class="form-row entry-row">
       <div class="form-group" style="flex:1;">
@@ -12,11 +12,11 @@
       <button class="btn btn-sm btn-danger entry-remove" (click)="removePoint($index)">✕</button>
     </div>
   }
-  <button class="btn btn-sm" (click)="addPoint()">＋ Přidat cue point</button>
+  <button class="btn btn-sm" (click)="addPoint()">＋ Add cue point</button>
 </div>
 <div class="form-actions">
-  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Cancel</button>
   <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
-    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+    @if (isDisabled()) { Saving… } @else { Add chunk }
   </button>
 </div>

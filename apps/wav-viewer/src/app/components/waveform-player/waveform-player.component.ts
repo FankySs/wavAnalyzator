@@ -82,7 +82,7 @@ export class WaveformPlayerComponent {
             requestAnimationFrame(() => this.drawWaveform());
           },
           error: () => {
-            this.error.set('Waveform není dostupný.');
+            this.error.set('Waveform is not available.');
             this.isLoading.set(false);
           },
         });

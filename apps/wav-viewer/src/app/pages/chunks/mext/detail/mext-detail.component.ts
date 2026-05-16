@@ -16,12 +16,12 @@ import { WavApiService } from '../../../../services/wav-api.service';
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const MEXT_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',                byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size',              byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'Sound Information', byteOffset: 8,  byteLength: 2, color: 'var(--warning)', description: 'Bitové příznaky – homogenní data, padding použit, atd. (uint16 bitfield)' },
-  { label: 'Frame Size',        byteOffset: 10, byteLength: 2, color: 'var(--danger)',  description: 'Velikost MP2 rámce v bajtech (uint16)' },
-  { label: 'Ancillary Length',  byteOffset: 12, byteLength: 2, color: '#b388ff',        description: 'Délka ancillary dat v bitech (uint16)' },
-  { label: 'Ancillary Data',    byteOffset: 14, byteLength: 2, color: '#80cbc4',        description: 'Definice ancillary dat (uint16 bitfield)' },
+  { label: 'ID',                byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size',              byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'Sound Information', byteOffset: 8,  byteLength: 2, color: 'var(--warning)', description: 'Bit flags – homogeneous data, padding used, etc. (uint16 bitfield)' },
+  { label: 'Frame Size',        byteOffset: 10, byteLength: 2, color: 'var(--danger)',  description: 'MP2 frame size in bytes (uint16)' },
+  { label: 'Ancillary Length',  byteOffset: 12, byteLength: 2, color: '#b388ff',        description: 'Ancillary data length in bits (uint16)' },
+  { label: 'Ancillary Data',    byteOffset: 14, byteLength: 2, color: '#80cbc4',        description: 'Ancillary data definition (uint16 bitfield)' },
 ];
 
 type MextForm = {

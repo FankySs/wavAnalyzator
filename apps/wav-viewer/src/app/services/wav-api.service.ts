@@ -121,10 +121,10 @@ export class WavApiService {
                 ? (body.message as string[]).join(', ')
                 : typeof body.message === 'string'
                   ? body.message
-                  : `Chyba ${err.status}`;
+                  : `Error ${err.status}`;
               return throwError(() => new Error(msg));
             } catch {
-              return throwError(() => new Error(`Chyba ${err.status}`));
+              return throwError(() => new Error(`Error ${err.status}`));
             }
           }
           return this.handleError(err);
@@ -328,7 +328,7 @@ export class WavApiService {
     if (err.status === 0) {
       // ProgressEvent = XHR bylo přerušeno (navigace, zničení komponenty) – není to chyba serveru
       if (err.error instanceof ProgressEvent) return EMPTY;
-      return throwError(() => new Error('Server není dostupný. Zkontroluj, zda běží BE na portu 3000.'));
+      return throwError(() => new Error('Server is not reachable. Make sure the backend is running on port 3000.'));
     }
     return throwError(() => new Error(this.extractApiErrorMessage(err)));
   };
@@ -337,6 +337,6 @@ export class WavApiService {
     const msg: unknown = err.error?.message;
     if (Array.isArray(msg)) return msg.join(', ');
     if (typeof msg === 'string') return msg;
-    return `Chyba ${err.status}`;
+    return `Error ${err.status}`;
   }
 }

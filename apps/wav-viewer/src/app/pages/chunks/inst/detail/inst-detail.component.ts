@@ -18,15 +18,15 @@ import { midiNoteToName } from '../../../../utils/midi.utils';
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const INST_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',             byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size',           byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'Unshifted Note', byteOffset: 8,  byteLength: 1, color: 'var(--warning)', description: 'MIDI nota přiřazená k nezměněné výšce tónu (0–127)' },
-  { label: 'Fine Tune',      byteOffset: 9,  byteLength: 1, color: 'var(--danger)',  description: 'Jemné ladění v centách (-50 až +50)' },
-  { label: 'Gain',           byteOffset: 10, byteLength: 1, color: '#b388ff',        description: 'Zesílení v dB' },
-  { label: 'Low Note',       byteOffset: 11, byteLength: 1, color: '#80cbc4',        description: 'Nejnižší přehrávatelná MIDI nota' },
-  { label: 'High Note',      byteOffset: 12, byteLength: 1, color: '#ffab40',        description: 'Nejvyšší přehrávatelná MIDI nota' },
-  { label: 'Low Velocity',   byteOffset: 13, byteLength: 1, color: '#f48fb1',        description: 'Minimální velocity (0–127)' },
-  { label: 'High Velocity',  byteOffset: 14, byteLength: 1, color: '#a5d6a7',        description: 'Maximální velocity (0–127)' },
+  { label: 'ID',             byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size',           byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'Unshifted Note', byteOffset: 8,  byteLength: 1, color: 'var(--warning)', description: 'MIDI note assigned to unshifted pitch (0–127)' },
+  { label: 'Fine Tune',      byteOffset: 9,  byteLength: 1, color: 'var(--danger)',  description: 'Fine tuning in cents (-50 to +50)' },
+  { label: 'Gain',           byteOffset: 10, byteLength: 1, color: '#b388ff',        description: 'Gain in dB' },
+  { label: 'Low Note',       byteOffset: 11, byteLength: 1, color: '#80cbc4',        description: 'Lowest playable MIDI note' },
+  { label: 'High Note',      byteOffset: 12, byteLength: 1, color: '#ffab40',        description: 'Highest playable MIDI note' },
+  { label: 'Low Velocity',   byteOffset: 13, byteLength: 1, color: '#f48fb1',        description: 'Minimum velocity (0–127)' },
+  { label: 'High Velocity',  byteOffset: 14, byteLength: 1, color: '#a5d6a7',        description: 'Maximum velocity (0–127)' },
 ];
 
 @Component({
@@ -63,7 +63,7 @@ export class InstDetailComponent {
 
   protected readonly fineTuneLabel = computed((): string => {
     const s = this.inst();
-    return s !== null ? `${s.fineTune} centů` : '–';
+    return s !== null ? `${s.fineTune} cents` : '–';
   });
 
   protected readonly gainLabel = computed((): string => {
@@ -173,11 +173,11 @@ export class InstDetailComponent {
     if (!live) return;
 
     if (this.formLowNote() > this.formHighNote()) {
-      this.saveError.set('Nejnižší nota musí být ≤ nejvyšší notě.');
+      this.saveError.set('Lowest note must be ≤ highest note.');
       return;
     }
     if (this.formLowVelocity > this.formHighVelocity) {
-      this.saveError.set('Nejnižší velocity musí být ≤ nejvyšší velocity.');
+      this.saveError.set('Lowest velocity must be ≤ highest velocity.');
       return;
     }
 

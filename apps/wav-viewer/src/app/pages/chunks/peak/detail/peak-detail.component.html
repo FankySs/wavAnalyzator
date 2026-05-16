@@ -9,9 +9,9 @@
 />
 
 <div class="info-panel">
-  Chunk peak ukládá maximální úroveň (peak) každého kanálu nahrávky
-  a pozici kde k ní došlo. Používá se při normalizaci a přesném
-  měření modulace v profesionálních audio systémech.
+  The peak chunk stores the maximum level (peak) of each channel in the recording
+  and the position where it occurred. Used for normalisation and precise
+  modulation measurement in professional audio systems.
 </div>
 
 @if (peak(); as p) {
@@ -19,16 +19,16 @@
   <!-- View mode -->
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
     <div class="card table-card">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Kanál</th>
-            <th>Peak hodnota</th>
-            <th>Pozice (vzorky)</th>
-            <th>Pozice (mm:ss)</th>
+            <th>Channel</th>
+            <th>Peak value</th>
+            <th>Position (samples)</th>
+            <th>Position (mm:ss)</th>
           </tr>
         </thead>
         <tbody>
@@ -62,9 +62,9 @@
     <div class="card form-card">
       @for (ch of formChannels(); track $index) {
         <div class="channel-row">
-          <span class="channel-label muted text-sm">Kanál {{ $index + 1 }}</span>
+          <span class="channel-label muted text-sm">Channel {{ $index + 1 }}</span>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">Peak hodnota (0.0 – 1.0)</label>
+            <label class="form-label">Peak value (0.0 – 1.0)</label>
             <input class="form-input" type="number" min="0" max="1" step="0.001" #inpVal
               [value]="ch.value"
               [disabled]="isSaving()"
@@ -72,7 +72,7 @@
             />
           </div>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">Pozice (vzorky)</label>
+            <label class="form-label">Position (samples)</label>
             <input class="form-input" type="number" min="0" #inpPos
               [value]="ch.position"
               [disabled]="isSaving()"
@@ -83,9 +83,9 @@
       }
     </div>
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

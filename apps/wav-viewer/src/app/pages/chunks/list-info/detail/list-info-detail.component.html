@@ -11,19 +11,19 @@
 <!-- View mode -->
 @if (!isEditing()) {
   <div class="view-header">
-    <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+    <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
   </div>
 
   @if (entries().length === 0) {
-    <p class="muted text-sm">Žádné metadata.</p>
+    <p class="muted text-sm">No metadata.</p>
   } @else {
     <div class="card table-card">
       <table class="data-table">
         <thead>
           <tr>
             <th>Tag</th>
-            <th>Popis tagu</th>
-            <th>Hodnota</th>
+            <th>Tag description</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@
   <div class="card edit-card">
 
     @if (editEntries().length === 0) {
-      <p class="muted text-sm empty-msg">Žádné záznamy. Přidejte první tag níže.</p>
+      <p class="muted text-sm empty-msg">No entries. Add the first tag below.</p>
     }
 
     @for (entry of editEntries(); track $index) {
@@ -73,7 +73,7 @@
         <div class="entry-actions">
           @if (pendingDeleteTagId() === entry.id) {
             <app-confirm-inline
-              [message]="'Smazat tag ' + entry.id + '?'"
+              [message]="'Delete tag ' + entry.id + '?'"
               (confirmed)="onDeleteTagConfirm()"
               (cancelled)="onDeleteTagCancel()"
             />
@@ -89,14 +89,14 @@
       </div>
     }
 
-    <!-- Přidat tag -->
+    <!-- Add tag -->
     @if (!isAddingTag()) {
       <div class="add-trigger">
         <button
           class="btn btn-sm"
           [disabled]="isSaving() || isDeletingTag() || !!pendingDeleteTagId()"
           (click)="onShowAddTag()"
-        >＋ Přidat tag</button>
+        >＋ Add tag</button>
       </div>
     } @else {
       <div class="add-form">
@@ -122,20 +122,20 @@
           <input
             #tagValInp
             class="form-input"
-            placeholder="Hodnota"
+            placeholder="Value"
             [value]="newTagValue()"
             [disabled]="isPosting()"
             (input)="onNewTagValueChange(tagValInp.value)"
           />
         </div>
         <div class="add-form-btns">
-          <button class="btn btn-sm" (click)="onCancelAddTag()" [disabled]="isPosting()">Zrušit</button>
+          <button class="btn btn-sm" (click)="onCancelAddTag()" [disabled]="isPosting()">Cancel</button>
           <button
             class="btn btn-sm btn-primary"
             [disabled]="isPosting() || !newTagValue().trim()"
             (click)="onAddTag()"
           >
-            @if (isPosting()) { Přidávám… } @else { Přidat }
+            @if (isPosting()) { Adding… } @else { Add }
           </button>
         </div>
       </div>
@@ -144,9 +144,9 @@
   </div>
 
   <div class="edit-actions">
-    <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+    <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
     <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving() || isDeletingTag()">
-      @if (isSaving()) { Ukládám… } @else { Uložit }
+      @if (isSaving()) { Saving… } @else { Save }
     </button>
   </div>
 

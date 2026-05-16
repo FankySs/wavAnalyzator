@@ -1,26 +1,26 @@
 <div class="container container-sm">
 
-  <!-- Hlavička -->
+  <!-- Header -->
   <div class="page-header">
     <div>
-      <a class="back-link muted text-sm" [routerLink]="['/wav', id()]">← Zpět na detail</a>
-      <h1>Přidat chunk</h1>
+      <a class="back-link muted text-sm" [routerLink]="['/wav', id()]">← Back to detail</a>
+      <h1>Add chunk</h1>
     </div>
   </div>
 
-  <!-- Krok 1: Výběr typu -->
+  <!-- Step 1: Type selection -->
   @if (step() === 1) {
     @if (isLoadingChunks()) {
-      <p class="muted text-sm step-hint">Načítám existující chunky…</p>
+      <p class="muted text-sm step-hint">Loading existing chunks…</p>
     } @else if (loadError()) {
       <div class="error-msg">{{ loadError() }}</div>
     } @else if (allUnavailable()) {
       <div class="info-panel">
-        Tento soubor již obsahuje všechny podporované chunky.
+        This file already contains all supported chunks.
       </div>
-      <a class="btn" [routerLink]="['/wav', id()]">← Zpět na detail</a>
+      <a class="btn" [routerLink]="['/wav', id()]">← Back to detail</a>
     } @else {
-      <p class="muted text-sm step-hint">Vyberte typ chunku, který chcete přidat:</p>
+      <p class="muted text-sm step-hint">Select the chunk type you want to add:</p>
       <div class="type-grid">
         @for (ct of availableTypes(); track ct.id) {
           <button class="type-card" (click)="onSelectType(ct.id)">
@@ -33,10 +33,10 @@
     }
   }
 
-  <!-- Krok 2: Formulář -->
+  <!-- Step 2: Form -->
   @if (step() === 2) {
     <div class="step2-header">
-      <button class="btn" (click)="onBack()">← Zpět</button>
+      <button class="btn" (click)="onBack()">← Back</button>
       <span class="step2-title">
         @for (ct of availableTypes(); track ct.id) {
           @if (ct.id === selectedType()) {

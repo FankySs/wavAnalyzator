@@ -151,7 +151,7 @@ export class ChunkHexViewerComponent {
         },
         error: (err: Error) => {
           const isAudioErr = err.message.includes('Audio data chunk');
-          this.error.set(isAudioErr ? 'Audio data není zobrazitelná.' : err.message);
+          this.error.set(isAudioErr ? 'Audio data cannot be displayed.' : err.message);
           this.isLoading.set(false);
         },
       });

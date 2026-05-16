@@ -30,7 +30,7 @@
 
   <div class="player-controls">
     <button class="btn btn-play" [disabled]="isLoading()" (click)="onPlayPause()">
-      @if (isPlaying()) { Pauza } @else { Přehrát }
+      @if (isPlaying()) { Pause } @else { Play }
     </button>
     <span class="time-display">
       {{ formatTime(currentTime()) }} / {{ formatTime(duration()) }}

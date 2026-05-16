@@ -11,18 +11,18 @@
   />
 
   <div class="info-panel">
-    Chunk umid obsahuje jedinečný identifikátor média (Unique Material Identifier)
-    podle standardu SMPTE. Používá se v profesionálních archivních systémech
-    pro jednoznačnou identifikaci mediálního obsahu.
+    The umid chunk contains a Unique Material Identifier
+    according to the SMPTE standard. Used in professional archival systems
+    for unambiguous identification of media content.
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
     <div class="card umid-card"
       (mouseenter)="activeHighlight.set('UMID')" (mouseleave)="activeHighlight.set(null)">
-      <p class="muted text-sm" style="margin-bottom: 6px;">SMPTE UMID (64 bajtů)</p>
+      <p class="muted text-sm" style="margin-bottom: 6px;">SMPTE UMID (64 bytes)</p>
       <code class="umid-hex">{{ formattedHex() }}</code>
     </div>
   }
@@ -33,7 +33,7 @@
     }
     <div class="card form-card">
       <div class="form-group">
-        <label class="form-label">UMID (128 hex znaků)</label>
+        <label class="form-label">UMID (128 hex chars)</label>
         <input class="form-input umid-input"
           [(ngModel)]="formUmid"
           (ngModelChange)="onFormInput()"
@@ -45,13 +45,13 @@
         @if (validationError()) {
           <p class="form-error text-sm">{{ validationError() }}</p>
         }
-        <p class="muted text-sm" style="margin-top: 4px;">Přesně 128 hexadecimálních znaků (0–9, A–F).</p>
+        <p class="muted text-sm" style="margin-top: 4px;">Exactly 128 hexadecimal characters (0–9, A–F).</p>
       </div>
     </div>
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving() || !!validationError()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

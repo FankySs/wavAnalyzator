@@ -63,10 +63,10 @@ export class WavListPageComponent {
   protected readonly activeChips = computed(() => {
     const f = this.activeFilter();
     const chips: { key: keyof WavFilter; label: string }[] = [];
-    if (f.name) chips.push({ key: 'name', label: `Název: ${f.name}` });
-    if (f.dateFrom) chips.push({ key: 'dateFrom', label: `Od: ${f.dateFrom}` });
-    if (f.dateTo) chips.push({ key: 'dateTo', label: `Do: ${f.dateTo}` });
-    if (f.chunkTypes?.length) chips.push({ key: 'chunkTypes', label: `Chunky: ${f.chunkTypes.join(', ')}` });
+    if (f.name) chips.push({ key: 'name', label: `Name: ${f.name}` });
+    if (f.dateFrom) chips.push({ key: 'dateFrom', label: `From: ${f.dateFrom}` });
+    if (f.dateTo) chips.push({ key: 'dateTo', label: `To: ${f.dateTo}` });
+    if (f.chunkTypes?.length) chips.push({ key: 'chunkTypes', label: `Chunks: ${f.chunkTypes.join(', ')}` });
     return chips;
   });
   protected readonly chunkTypes = CHUNK_TYPES;
@@ -207,11 +207,11 @@ export class WavListPageComponent {
   protected readonly onRenameConfirm = (id: string): void => {
     const trimmed = this.renameValue.trim();
     if (!trimmed) {
-      this.renameError.set('Název nesmí být prázdný.');
+      this.renameError.set('Name must not be empty.');
       return;
     }
     if (!trimmed.toLowerCase().endsWith('.wav')) {
-      this.renameError.set('Název musí končit příponou .wav.');
+      this.renameError.set('Name must end with the .wav extension.');
       return;
     }
 
@@ -307,7 +307,7 @@ export class WavListPageComponent {
       parts.push(`${Number.isInteger(khz) ? khz : khz.toFixed(1)} kHz`);
     }
     if (file.channels !== null) {
-      parts.push(file.channels === 1 ? 'Mono' : file.channels === 2 ? 'Stereo' : `${file.channels} kan.`);
+      parts.push(file.channels === 1 ? 'Mono' : file.channels === 2 ? 'Stereo' : `${file.channels} ch.`);
     }
     return parts.join(' · ') || '–';
   }

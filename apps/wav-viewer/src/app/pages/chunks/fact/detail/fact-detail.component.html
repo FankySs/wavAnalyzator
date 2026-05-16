@@ -11,17 +11,17 @@
   />
 
   <div class="info-panel">
-    Chunk fact obsahuje počet dekódovaných vzorků na kanál.
-    Je povinný pro všechny komprimované WAV soubory (např. ADPCM)
-    a zajišťuje správné určení délky nahrávky bez nutnosti dekódování.
+    The fact chunk contains the number of decoded samples per channel.
+    It is mandatory for all compressed WAV files (e.g. ADPCM)
+    and ensures correct determination of the recording length without needing to decode.
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
     <div class="params-grid">
-      <app-audio-param-card icon="" label="Počet vzorků" [value]="sampleLengthLabel()"
+      <app-audio-param-card icon="" label="Sample count" [value]="sampleLengthLabel()"
         (mouseenter)="activeHighlight.set('Sample Count')" (mouseleave)="activeHighlight.set(null)" />
     </div>
   }
@@ -32,15 +32,15 @@
     }
     <div class="card form-card">
       <div class="form-group">
-        <label class="form-label">Počet vzorků</label>
+        <label class="form-label">Sample count</label>
         <input class="form-input" type="number" min="0"
           [(ngModel)]="formSampleLength" [disabled]="isSaving()" />
       </div>
     </div>
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

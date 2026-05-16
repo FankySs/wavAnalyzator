@@ -11,8 +11,8 @@
   (mouseenter)="activeHighlight.set('Data')" (mouseleave)="activeHighlight.set(null)">
   <p class="junk-title">Padding chunk</p>
   <p class="junk-desc muted text-sm">
-    Tento chunk slouží k zarovnání velikosti souboru
-    a neobsahuje žádná užitečná data.
+    This chunk is used to align the file size
+    and contains no useful data.
   </p>
-  <p class="junk-size muted text-sm">Velikost: {{ chunk().size | number }} B</p>
+  <p class="junk-size muted text-sm">Size: {{ chunk().size | number }} B</p>
 </div>

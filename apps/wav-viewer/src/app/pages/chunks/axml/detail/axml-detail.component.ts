@@ -16,9 +16,9 @@ import { WavApiService } from '../../../../services/wav-api.service';
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const AXML_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',       byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size',     byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'XML Data', byteOffset: 8, byteLength: -1, color: 'var(--warning)', description: 'XML metadata ve formátu UTF-8 (proměnná délka)' },
+  { label: 'ID',       byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size',     byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'XML Data', byteOffset: 8, byteLength: -1, color: 'var(--warning)', description: 'XML metadata in UTF-8 format (variable length)' },
 ];
 
 @Component({

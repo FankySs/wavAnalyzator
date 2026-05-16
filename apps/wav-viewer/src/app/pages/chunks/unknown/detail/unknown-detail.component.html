@@ -1,6 +1,6 @@
 <div class="info-panel">
-  Neznámý chunk typu '{{ chunk().chunkId }}' – tento typ není podporován.
-  Zobrazujeme prvních 256 bajtů raw dat.
+  Unknown chunk type '{{ chunk().chunkId }}' – this type is not supported.
+  Showing the first 256 bytes of raw data.
 </div>
 
 @if (hexDump(); as dump) {
@@ -8,5 +8,5 @@
     <pre class="hex-pre">{{ dump }}</pre>
   </div>
 } @else {
-  <p class="muted text-sm">Náhled není dostupný.</p>
+  <p class="muted text-sm">Preview not available.</p>
 }

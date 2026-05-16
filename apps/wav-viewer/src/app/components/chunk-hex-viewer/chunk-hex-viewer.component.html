@@ -4,10 +4,10 @@
     <span class="hex-viewer-title">Hex</span>
     <div class="hex-viewer-header-right">
       @if (isExpanded() && !isLoading() && !error() && bytes()) {
-        <span class="muted text-sm">{{ bytes()!.length }} B (včetně hlavičky)</span>
+        <span class="muted text-sm">{{ bytes()!.length }} B (including header)</span>
       }
       <button class="btn btn-sm hex-toggle-btn" (click)="isExpanded.set(!isExpanded())">
-        @if (isExpanded()) { ▲ Skrýt hex } @else { ▼ Zobrazit hex }
+        @if (isExpanded()) { ▲ Hide hex } @else { ▼ Show hex }
       </button>
     </div>
   </div>
@@ -15,7 +15,7 @@
   @if (isExpanded()) {
 
     @if (isLoading()) {
-      <div class="loading-state muted text-sm">Načítám data…</div>
+      <div class="loading-state muted text-sm">Loading data…</div>
     }
 
     @if (error()) {
@@ -81,11 +81,11 @@
       <div class="hex-active-label">
         @if (effectiveActive()) {
           <span>
-            Pole: <strong>{{ effectiveActive() }}</strong> · bajty {{ activeByteRange() }}
+            Field: <strong>{{ effectiveActive() }}</strong> · bytes {{ activeByteRange() }}
             @if (activeDescription()) { · {{ activeDescription() }} }
           </span>
         } @else {
-          <span class="muted">Najeďte myší na pole v legendě nebo na detail chunku pro zvýraznění bajtů</span>
+          <span class="muted">Hover over a field in the legend or a chunk detail to highlight bytes</span>
         }
       </div>
 

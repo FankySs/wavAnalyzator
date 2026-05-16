@@ -11,109 +11,109 @@
   />
 
   <div class="info-panel">
-    Chunk cart obsahuje metadata definovaná standardem NAB (National Association
-    of Broadcasters) pro rozhlasové vysílání. Ukládá informace o vysílání jako
-    název, interpret, časy začátku a konce, kategorii a URL.
+    The cart chunk contains metadata defined by the NAB (National Association
+    of Broadcasters) standard for radio broadcasting. It stores broadcast
+    information such as title, artist, start and end times, category and URL.
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
 
     <div class="card table-card">
       <table class="data-table">
         <thead>
           <tr>
-            <th class="th-field">Pole</th>
-            <th class="th-desc">Popis</th>
-            <th>Hodnota</th>
+            <th class="th-field">Field</th>
+            <th class="th-desc">Description</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
           <tr (mouseenter)="activeHighlight.set('Version')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Version</td>
-            <td class="desc-cell muted text-sm">Verze formátu</td>
+            <td class="desc-cell muted text-sm">Format version</td>
             <td>{{ c.version || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Title')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Title</td>
-            <td class="desc-cell muted text-sm">Název pořadu nebo skladby</td>
+            <td class="desc-cell muted text-sm">Programme or track title</td>
             <td>{{ c.title || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Artist')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Artist</td>
-            <td class="desc-cell muted text-sm">Interpret</td>
+            <td class="desc-cell muted text-sm">Artist</td>
             <td>{{ c.artist || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Cut ID')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">CutId</td>
-            <td class="desc-cell muted text-sm">Identifikátor střihu</td>
+            <td class="desc-cell muted text-sm">Cut identifier</td>
             <td>{{ c.cutId || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Client ID')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ClientId</td>
-            <td class="desc-cell muted text-sm">Identifikátor klienta</td>
+            <td class="desc-cell muted text-sm">Client identifier</td>
             <td>{{ c.clientId || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Category')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Category</td>
-            <td class="desc-cell muted text-sm">Kategorie obsahu</td>
+            <td class="desc-cell muted text-sm">Content category</td>
             <td>{{ c.category || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Classification')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Classification</td>
-            <td class="desc-cell muted text-sm">Klasifikace</td>
+            <td class="desc-cell muted text-sm">Classification</td>
             <td>{{ c.classification || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Out Cue')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">OutCue</td>
-            <td class="desc-cell muted text-sm">Výstupní hláška</td>
+            <td class="desc-cell muted text-sm">Out-cue phrase</td>
             <td>{{ c.outCue || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Start Date')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">StartDate</td>
-            <td class="desc-cell muted text-sm">Datum začátku vysílání</td>
+            <td class="desc-cell muted text-sm">Broadcast start date</td>
             <td>{{ c.startDate || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Start Time')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">StartTime</td>
-            <td class="desc-cell muted text-sm">Čas začátku vysílání</td>
+            <td class="desc-cell muted text-sm">Broadcast start time</td>
             <td>{{ c.startTime || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('End Date')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">EndDate</td>
-            <td class="desc-cell muted text-sm">Datum konce vysílání</td>
+            <td class="desc-cell muted text-sm">Broadcast end date</td>
             <td>{{ c.endDate || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('End Time')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">EndTime</td>
-            <td class="desc-cell muted text-sm">Čas konce vysílání</td>
+            <td class="desc-cell muted text-sm">Broadcast end time</td>
             <td>{{ c.endTime || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Producer App')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ProducerAppId</td>
-            <td class="desc-cell muted text-sm">Aplikace producenta</td>
+            <td class="desc-cell muted text-sm">Producer application</td>
             <td>{{ c.producerAppId || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Producer Ver')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ProducerAppVersion</td>
-            <td class="desc-cell muted text-sm">Verze aplikace</td>
+            <td class="desc-cell muted text-sm">Application version</td>
             <td>{{ c.producerAppVersion || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('User Def')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">UserDef</td>
-            <td class="desc-cell muted text-sm">Uživatelské pole</td>
+            <td class="desc-cell muted text-sm">User-defined field</td>
             <td>{{ c.userDef || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('URL')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">URL</td>
-            <td class="desc-cell muted text-sm">Odkaz</td>
+            <td class="desc-cell muted text-sm">URL</td>
             <td>{{ c.url || '—' }}</td>
           </tr>
           <tr (mouseenter)="activeHighlight.set('Tag Text')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Tag</td>
-            <td class="desc-cell muted text-sm">Dodatečné poznámky</td>
+            <td class="desc-cell muted text-sm">Additional notes</td>
             <td class="tag-cell">{{ c.tag || '—' }}</td>
           </tr>
         </tbody>
@@ -242,7 +242,7 @@
       <div class="form-group">
         <label class="form-label">
           Tag
-          <span class="char-hint muted text-sm">Dodatečné poznámky (max 300)</span>
+          <span class="char-hint muted text-sm">Additional notes (max 300)</span>
         </label>
         <textarea class="form-textarea" rows="4" maxlength="300"
           [(ngModel)]="form.tag" [disabled]="isSaving()"></textarea>
@@ -251,9 +251,9 @@
     </div>
 
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }
