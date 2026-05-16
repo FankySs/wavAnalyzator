@@ -1,166 +1,173 @@
 # WAV Analyzer
 
-Webová aplikace pro analýzu a editaci zvukových souborů WAV.
-Bakalářská práce, VUT FEKT, Audio inženýrství.
+A web application for analyzing and editing WAV audio files.
+Bachelor's thesis, VUT FEKT, Audio Engineering.
 
 ---
 
-## Co aplikace umí
+## Features
 
-- Nahrání a parsování WAV souborů
-- Zobrazení struktury chunků (typ, velikost, offset)
-- Editace metadat (LIST/INFO, bext, cue, smpl, inst, cart a další)
-- Přidávání a mazání chunků
-- Waveform vizualizace s audio přehrávačem
-- Download upraveného souboru jako platný WAV
+- Upload and parse WAV files
+- Browse chunk structure (type, size, offset)
+- Interactive hex viewer for each chunk with field highlighting
+- Edit metadata chunks (LIST/INFO, bext, cue, smpl, inst, cart, and more)
+- Add and delete chunks
+- Multi-channel waveform visualization with audio player
+- Filter files by name, upload date, and contained chunk types
+- Full support for WAVE_FORMAT_EXTENSIBLE (multi-channel, 24/32-bit)
+- Download the modified file as a valid WAV
 
 ---
 
-## Technologie
+## Tech Stack
 
-| Vrstva | Technologie |
+| Layer | Technology |
 |---|---|
 | Frontend | Angular 20, TypeScript, Signals API |
 | Backend | NestJS, TypeScript |
-| Databáze | SQLite (via Prisma ORM) |
+| Database | SQLite (via Prisma ORM) |
 | Monorepo | Nx 22 |
-| Správce balíčků | yarn |
+| Package manager | yarn |
 
 ---
 
-## Požadavky
+## Prerequisites
 
-Před spuštěním je potřeba mít nainstalované:
+Make sure the following are installed before running the app:
 
 - **Node.js 18+** – https://nodejs.org
-- **yarn** – nainstaluj přes npm:
+- **yarn** – install via npm:
   ```bash
   npm install -g yarn
   ```
 - **Git** – https://git-scm.com
 
-Ověření instalace:
+Verify your installation:
 ```bash
-node -v   # musí být v18 nebo vyšší
+node -v   # must be v18 or higher
 yarn -v
 git --version
 ```
 
 ---
 
-## Instalace a spuštění
+## Installation & Setup
 
-### Krok 1 – Klonování repozitáře
+### Step 1 – Clone the repository
 
 ```bash
 git clone https://github.com/FankySs/wavAnalyzator.git
 cd wavAnalyzator
 ```
 
-### Krok 2 – Instalace závislostí
+### Step 2 – Install dependencies
 
 ```bash
 yarn install
 ```
 
-### Krok 3 – Inicializace databáze
+### Step 3 – Initialize the database
 
 ```bash
 yarn nx run wav-api:prisma-migrate
 ```
 
-Vytvoří SQLite databázi v `apps/wav-api/prisma/dev.db`.
+This creates a SQLite database at `apps/wav-api/prisma/dev.db`.
 
-### Krok 4 – Spuštění backendu
+### Step 4 – Start the backend
 
 ```bash
 yarn nx serve wav-api
 ```
 
-Backend běží na **http://localhost:3000**
+Backend runs at **http://localhost:3000**
 
-### Krok 5 – Spuštění frontendu *(nový terminál)*
+### Step 5 – Start the frontend *(new terminal)*
 
 ```bash
 yarn nx serve wav-viewer
 ```
 
-Frontend běží na **http://localhost:4200**
+Frontend runs at **http://localhost:4200**
 
-### Krok 6 – Otevřít aplikaci
+### Step 6 – Open the app
 
-Otevři **http://localhost:4200** v prohlížeči.
+Navigate to **http://localhost:4200** in your browser.
 
 ---
 
-## Struktura projektu
+## Project Structure
 
 ```
 apps/
   wav-viewer/    ← Angular frontend (port 4200)
   wav-api/       ← NestJS backend (port 3000)
 libs/
-  shared-types/  ← Sdílené TypeScript typy (DTOs)
-  riff-parser/   ← Parser a serializer WAV/RIFF souborů
+  shared-types/  ← Shared TypeScript types (DTOs)
+  riff-parser/   ← WAV/RIFF parser and serializer
 ```
 
 ---
 
-## Časté problémy
+## Troubleshooting
 
-### Backend se nespustí
+### Backend won't start
 
-- Zkontroluj, že port 3000 není obsazený jiným procesem
-- Zkontroluj, že byla spuštěna migrace databáze (Krok 3)
+- Make sure port 3000 is not occupied by another process
+- Make sure the database migration has been run (Step 3)
 
-### Frontend hlásí chybu připojení k serveru
+### Frontend shows a server connection error
 
-- Zkontroluj, že backend běží na portu 3000 (Krok 4)
-- Zkontroluj výstup terminálu backendu na případné chyby
+- Make sure the backend is running on port 3000 (Step 4)
+- Check the backend terminal output for errors
 
-### `yarn install` selže
+### `yarn install` fails
 
-- Zkontroluj verzi Node.js: `node -v` (musí být 18+)
-- Vyčisti cache a zkus znovu:
+- Check your Node.js version: `node -v` (must be 18+)
+- Clear the cache and try again:
   ```bash
   yarn cache clean && yarn install
   ```
 
 ---
 
-## Užitečné příkazy
+## Useful Commands
 
 ```bash
-# Spuštění obou aplikací najednou
+# Start both apps at once
 yarn nx run-many -t serve -p wav-api wav-viewer
 
-# Build pro produkci
+# Production build
 yarn nx build wav-api
 yarn nx build wav-viewer
 
-# Prisma Studio – správa databáze v prohlížeči
+# Prisma Studio – manage the database in the browser
 yarn prisma:studio
 
-# Spuštění testů
+# Run tests
 yarn nx test wav-api
 yarn nx test wav-viewer
 ```
 
 ---
 
-## API – přehled endpointů
+## API Overview
 
-Všechny endpointy jsou dostupné na `http://localhost:3000/api`.
+All endpoints are available at `http://localhost:3000/api`.
 
 ```
-POST   /wav/upload               Nahrání WAV souboru
-GET    /wav                      Seznam všech nahraných souborů
-GET    /wav/:id                  Detail souboru (metadata + chunky)
-DELETE /wav/:id                  Smazání souboru
-GET    /wav/:id/download         Stažení upraveného souboru jako WAV
-GET    /wav/:id/stream           Audio stream (podporuje Range requests)
-GET    /wav/:id/waveform         Waveform data pro vizualizaci
-GET    /wav/:id/chunks           Seznam chunků souboru
-GET    /wav/:id/chunks/:chunkId  Detail chunku (včetně parsovaných dat)
-DELETE /wav/:id/chunks/:chunkId  Smazání chunku
+POST   /wav/upload                      Upload a WAV file
+GET    /wav                             List all uploaded files
+GET    /wav/:id                         File detail (metadata + chunks)
+DELETE /wav/:id                         Delete a file
+PATCH  /wav/:id                         Rename a file
+GET    /wav/:id/download                Download the modified file as WAV
+GET    /wav/:id/stream                  Audio stream (supports Range requests)
+GET    /wav/:id/waveform                Waveform data for visualization
+GET    /wav/:id/chunks                  List chunks of a file
+GET    /wav/:id/chunks/:chunkId         Chunk detail (including parsed data)
+GET    /wav/:id/chunks/:chunkId/raw     Raw bytes of a chunk
+POST   /wav/:id/chunks                  Create a new chunk
+PATCH  /wav/:id/chunks/:chunkId         Update a chunk
+DELETE /wav/:id/chunks/:chunkId         Delete a chunk
 ```
