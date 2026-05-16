@@ -48,6 +48,7 @@ export class MextDetailComponent {
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
   protected readonly activeHighlight = signal<string | null>(null);
   protected readonly mextHighlights: ChunkHighlight[] = MEXT_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly mext = computed((): MextParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -106,6 +107,7 @@ export class MextDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

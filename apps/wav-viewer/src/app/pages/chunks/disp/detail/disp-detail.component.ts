@@ -44,6 +44,7 @@ export class DispDetailComponent {
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
   protected readonly activeHighlight = signal<string | null>(null);
   protected readonly dispHighlights: ChunkHighlight[] = DISP_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly disp = computed((): DispParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -95,6 +96,7 @@ export class DispDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

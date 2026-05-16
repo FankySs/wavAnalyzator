@@ -47,6 +47,7 @@ export class ListInfoDetailComponent {
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
   protected readonly activeHighlight = signal<string | null>(null);
   protected readonly listInfoHighlights: ChunkHighlight[] = LIST_INFO_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly isEditing: WritableSignal<boolean> = signal(false);
   protected readonly isSaving: WritableSignal<boolean> = signal(false);
@@ -139,6 +140,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.applyLiveToEditState(updated);
           this.isEditing.set(false);
           this.isAddingTag.set(false);
@@ -174,6 +176,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.editEntries.update((es) => es.filter((e) => e.id !== tagId));
           this.isDeletingTag.set(false);
           this.pendingDeleteTagId.set(null);
@@ -215,6 +218,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.editEntries.update((es) => [...es, { id: tagId, value }]);
           this.isPosting.set(false);
           this.isAddingTag.set(false);

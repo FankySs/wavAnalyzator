@@ -47,6 +47,7 @@ export class ChunkHexViewerComponent {
   readonly chunkSize = input.required<number>();
   readonly highlights = input<ChunkHighlight[]>([]);
   readonly activeHighlight = input<string | null>(null);
+  readonly reloadOn = input<number>(0);
 
   readonly hoveredByte = output<number | null>();
 
@@ -130,6 +131,7 @@ export class ChunkHexViewerComponent {
     effect(() => {
       const wavId = this.wavId();
       const chunkId = this.chunkId();
+      this.reloadOn();
       this.loadRawData(wavId, chunkId);
     });
   }

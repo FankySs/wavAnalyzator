@@ -52,6 +52,7 @@ export class CueDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly hexVersion = signal(0);
 
   protected readonly cueHighlights = computed<ChunkHighlight[]>(() => {
     const base: ChunkHighlight[] = [
@@ -426,6 +427,7 @@ export class CueDetailComponent {
           this.savedLabels.set(new Map(newLabels));
           this.selectedId.set(null);
           this.panelMode.set(null);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
         },
