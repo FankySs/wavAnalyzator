@@ -12,14 +12,14 @@
 
   <!-- Info panel – always visible -->
   <div class="info-panel">
-    Broadcast Extension (BWF) – profesionální metadata pro vysílání a archivaci.
-    Verze {{ b.version }}@if (b.version >= 2) {, loudness (EBU R128)}.
+    Broadcast Extension (BWF) – professional metadata for broadcasting and archiving.
+    Version {{ b.version }}@if (b.version >= 2) {, loudness (EBU R128)}.
   </div>
 
   <!-- View mode -->
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
 
     <div class="card table-card">
@@ -106,7 +106,7 @@
       <div class="form-group">
         <label class="form-label">
           Description
-          <span class="char-hint muted text-sm">(max 256 znaků)</span>
+          <span class="char-hint muted text-sm">(max 256 chars)</span>
         </label>
         <input class="form-input" maxlength="256" [(ngModel)]="form.description" [disabled]="isSaving()" />
       </div>
@@ -142,7 +142,7 @@
       <div class="form-group">
         <label class="form-label">
           Time Reference (sample offset)
-          <span class="char-hint muted text-sm">kombinovaná 64-bit hodnota</span>
+          <span class="char-hint muted text-sm">combined 64-bit value</span>
         </label>
         <input class="form-input" type="number" min="0" [(ngModel)]="form.timeReference" [disabled]="isSaving()" />
       </div>
@@ -150,15 +150,15 @@
       <div class="form-group">
         <label class="form-label">Coding History</label>
         <textarea class="form-textarea" rows="4" [(ngModel)]="form.codingHistory" [disabled]="isSaving()"></textarea>
-        <p class="muted text-sm" style="margin-top: 4px;">Formát: A=PCM,F=44100,W=16,M=stereo,T=nahrávač</p>
+        <p class="muted text-sm" style="margin-top: 4px;">Format: A=PCM,F=44100,W=16,M=stereo,T=recorder</p>
       </div>
 
     </div>
 
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
 

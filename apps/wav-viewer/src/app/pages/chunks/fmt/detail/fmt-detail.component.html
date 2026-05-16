@@ -10,13 +10,13 @@
   />
 
   <div class="params-grid">
-    <app-audio-param-card icon="" label="Audio formát"         [value]="audioFormatLabel()"
+    <app-audio-param-card icon="" label="Audio format"          [value]="audioFormatLabel()"
       (mouseenter)="activeHighlight.set('Audio Format')" (mouseleave)="activeHighlight.set(null)" />
-    <app-audio-param-card icon="" label="Kanály"               [value]="channelsLabel()"
+    <app-audio-param-card icon="" label="Channels"              [value]="channelsLabel()"
       (mouseenter)="activeHighlight.set('Channels')" (mouseleave)="activeHighlight.set(null)" />
-    <app-audio-param-card icon="" label="Vzorkovací frekvence" [value]="sampleRateLabel()"
+    <app-audio-param-card icon="" label="Sample rate"           [value]="sampleRateLabel()"
       (mouseenter)="activeHighlight.set('Sample Rate')" (mouseleave)="activeHighlight.set(null)" />
-    <app-audio-param-card icon="" label="Bitová hloubka"       [value]="bitsPerSampleLabel()"
+    <app-audio-param-card icon="" label="Bit depth"             [value]="bitsPerSampleLabel()"
       (mouseenter)="activeHighlight.set('Bit Depth')" (mouseleave)="activeHighlight.set(null)" />
     <app-audio-param-card icon="" label="Byte rate"            [value]="byteRateLabel()"
       (mouseenter)="activeHighlight.set('Byte Rate')" (mouseleave)="activeHighlight.set(null)" />
@@ -26,7 +26,7 @@
 
   @if (byteRateMismatch()) {
     <div class="warning-panel">
-      Upozornění: byteRate neodpovídá očekávané hodnotě (očekáváno: {{ expectedByteRateLabel() }})
+      Warning: byteRate does not match the expected value (expected: {{ expectedByteRateLabel() }})
     </div>
   }
 

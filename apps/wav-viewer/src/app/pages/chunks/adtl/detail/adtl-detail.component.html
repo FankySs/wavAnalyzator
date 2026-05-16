@@ -11,25 +11,25 @@
   />
 
   <div class="info-panel">
-    Chunk adtl (Associated Data List) obsahuje textové anotace k cue pointům.
-    Každá anotace je přiřazena ke konkrétnímu cue pointu pomocí jeho ID
-    a může obsahovat název (labl), poznámku (note) nebo popis úseku (ltxt).
+    The adtl (Associated Data List) chunk contains text annotations for cue points.
+    Each annotation is assigned to a specific cue point by its ID
+    and can contain a label (labl), a note (note) or a region description (ltxt).
   </div>
 
   @if (!isEditing()) {
     <div class="view-header">
-      <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
+      <button class="btn btn-sm" (click)="onEditClick()">✎ Edit</button>
     </div>
 
     @if (a.entries.length === 0) {
-      <p class="muted text-sm">Žádné anotace</p>
+      <p class="muted text-sm">No annotations</p>
     } @else {
       <div class="card table-card">
         <table class="data-table">
           <thead>
             <tr>
               <th>Cue ID</th>
-              <th>Typ</th>
+              <th>Type</th>
               <th>Text</th>
             </tr>
           </thead>
@@ -57,13 +57,13 @@
 
     <div class="card edit-card">
       @if (rows().length === 0) {
-        <p class="muted text-sm">Žádné anotace. Přidejte novou.</p>
+        <p class="muted text-sm">No annotations. Add a new one.</p>
       } @else {
         <table class="data-table edit-table">
           <thead>
             <tr>
               <th class="th-cue">Cue ID</th>
-              <th class="th-type">Typ</th>
+              <th class="th-type">Type</th>
               <th>Text</th>
               <th class="th-del"></th>
             </tr>
@@ -88,7 +88,7 @@
                 <td class="delete-cell">
                   @if (row.pendingDelete) {
                     <app-confirm-inline
-                      message="Smazat?"
+                      message="Delete?"
                       (confirmed)="onDeleteConfirm(row._id)"
                       (cancelled)="onDeleteCancel(row._id)"
                     />
@@ -104,14 +104,14 @@
       }
 
       <div class="add-row">
-        <button class="btn btn-sm" [disabled]="isSaving()" (click)="onAddRow()">+ Přidat anotaci</button>
+        <button class="btn btn-sm" [disabled]="isSaving()" (click)="onAddRow()">+ Add annotation</button>
       </div>
     </div>
 
     <div class="edit-actions">
-      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Zrušit</button>
+      <button class="btn" (click)="onCancelClick()" [disabled]="isSaving()">Cancel</button>
       <button class="btn btn-primary" (click)="onSaveClick()" [disabled]="isSaving()">
-        @if (isSaving()) { Ukládám… } @else { Uložit }
+        @if (isSaving()) { Saving… } @else { Save }
       </button>
     </div>
   }

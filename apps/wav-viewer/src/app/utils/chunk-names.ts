@@ -1,15 +1,15 @@
 export const CHUNK_NAMES: Record<string, string> = {
-  'fmt ': 'Formát',
+  'fmt ': 'Format',
   'data': 'Audio data',
   'LIST': 'Metadata',
   'bext': 'Broadcast Extension',
-  'cue ': 'Časové značky',
+  'cue ': 'Cue Points',
   'smpl': 'Sampler',
-  'fact': 'Počet vzorků',
-  'inst': 'Hudební parametry',
-  'PEAK': 'Peak úrovně',
+  'fact': 'Sample Count',
+  'inst': 'Instrument',
+  'PEAK': 'Peak Levels',
   'cart': 'Broadcast Cart',
-  'DISP': 'Popis souboru',
+  'DISP': 'File Description',
   'ixml': 'iXML Metadata',
   'iXML': 'iXML Metadata',
   'axml': 'EBU Core XML',
@@ -24,5 +24,5 @@ export const CHUNK_NAMES: Record<string, string> = {
 };
 
 export function getChunkName(chunkId: string): string {
-  return CHUNK_NAMES[chunkId] ?? `Neznámý (${chunkId.trim()})`;
+  return CHUNK_NAMES[chunkId] ?? `Unknown (${chunkId.trim()})`;
 }

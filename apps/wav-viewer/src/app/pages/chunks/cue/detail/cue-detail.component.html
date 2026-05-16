@@ -10,23 +10,23 @@
 
 <!-- Info panel -->
 <div class="info-panel">
-  Chunk cue obsahuje seznam časových značek (cue pointů) v nahrávce.
-  Každá značka označuje konkrétní pozici ve vzorcích a může mít textový popisek
-  uložený v přidruženém chunk adtl. Používá se v DAW aplikacích pro navigaci,
-  editaci a synchronizaci zvuku.
+  The cue chunk contains a list of time markers (cue points) in the recording.
+  Each marker designates a specific position in samples and can have a text label
+  stored in the associated adtl chunk. Used in DAW applications for navigation,
+  editing and audio synchronisation.
 </div>
 
 @if (hasUnsavedChanges()) {
   <div class="unsaved-banner">
-    Jsou neuložené změny.
+    There are unsaved changes.
   </div>
 }
 
 <!-- Add mode hint -->
 @if (isAddingPoint()) {
   <div class="add-mode-hint">
-    <span>Klikněte na waveform pro umístění nového cue pointu</span>
-    <button class="btn btn-sm" (click)="onCancelAddPoint()">Zrušit</button>
+    <span>Click on the waveform to place a new cue point</span>
+    <button class="btn btn-sm" (click)="onCancelAddPoint()">Cancel</button>
   </div>
 }
 
@@ -51,7 +51,7 @@
       <div class="panel-view">
         <div class="panel-info">
           <span class="panel-label">{{ pt.label }}</span>
-          <span class="muted text-sm">{{ pt.timeStr }} &nbsp;|&nbsp; {{ pt.sampleOffset }} vzorků</span>
+          <span class="muted text-sm">{{ pt.timeStr }} &nbsp;|&nbsp; {{ pt.sampleOffset }} samples</span>
           @if (pt.adtlLabel) {
             <span class="muted text-sm panel-adtl-label">{{ pt.adtlLabel }}</span>
           }
@@ -59,13 +59,13 @@
         <div class="panel-actions">
           @if (pendingDeleteId() === pt.id) {
             <app-confirm-inline
-              [message]="'Smazat ' + pt.label + '?'"
+              [message]="'Delete ' + pt.label + '?'"
               (confirmed)="onDeleteConfirm()"
               (cancelled)="onDeleteCancel()"
             />
           } @else {
-            <button class="btn btn-sm" (click)="onPanelEdit()">✎ Upravit</button>
-            <button class="btn btn-sm btn-danger" (click)="onDeleteRequest(pt.id)">✕ Smazat</button>
+            <button class="btn btn-sm" (click)="onPanelEdit()">✎ Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="onDeleteRequest(pt.id)">✕ Delete</button>
           }
         </div>
       </div>
@@ -74,7 +74,7 @@
     @if (panelMode() === 'edit' || panelMode() === 'new') {
       <div class="panel-form">
         <span class="panel-form-title muted text-sm">
-          {{ panelMode() === 'new' ? 'Nový cue point' : 'Upravit ' + (selectedPoint()?.label ?? '') }}
+          {{ panelMode() === 'new' ? 'New cue point' : 'Edit ' + (selectedPoint()?.label ?? '') }}
         </span>
 
         @if (formError()) {
@@ -83,7 +83,7 @@
 
         <div class="form-row">
           <div class="form-group" style="flex:1;">
-            <label class="form-label">Pozice (mm:ss.mmm)</label>
+            <label class="form-label">Position (mm:ss.mmm)</label>
             <input class="form-input"
               [(ngModel)]="formTimeStr"
               (ngModelChange)="onTimeStrInput()"
@@ -91,7 +91,7 @@
             />
           </div>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">Pozice (vzorky)</label>
+            <label class="form-label">Position (samples)</label>
             <input class="form-input" type="number" min="0"
               [(ngModel)]="formSamples"
               (ngModelChange)="onSamplesInput()"
@@ -100,17 +100,17 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Popisek (adtl/labl)</label>
+          <label class="form-label">Label (adtl/labl)</label>
           <input class="form-input" type="text"
             [(ngModel)]="formLabel"
-            placeholder="volitelný popisek…"
+            placeholder="optional label…"
           />
         </div>
 
         <div class="panel-form-btns">
-          <button class="btn btn-sm" (click)="onPanelCancel()">Zrušit</button>
+          <button class="btn btn-sm" (click)="onPanelCancel()">Cancel</button>
           <button class="btn btn-sm btn-primary" (click)="onPanelSave()">
-            {{ panelMode() === 'new' ? 'Přidat' : 'Uložit' }}
+            {{ panelMode() === 'new' ? 'Add' : 'Save' }}
           </button>
         </div>
       </div>
@@ -126,9 +126,9 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Pozice (mm:ss.mmm)</th>
-          <th>Pozice (vzorky)</th>
-          <th>Popisek</th>
+          <th>Position (mm:ss.mmm)</th>
+          <th>Position (samples)</th>
+          <th>Label</th>
         </tr>
       </thead>
       <tbody>
@@ -150,7 +150,7 @@
                   class="adtl-link"
                   [routerLink]="['/wav', wavId(), 'chunks', adtlChunkDbId()]"
                   [fragment]="'cue-' + m.id"
-                  title="Otevřít adtl chunk"
+                  title="Open adtl chunk"
                   (click)="$event.stopPropagation()"
                 >↗</a>
               }
@@ -161,12 +161,12 @@
     </table>
   </div>
 } @else {
-  <p class="muted text-sm" style="margin-top: 8px;">Žádné cue pointy.</p>
+  <p class="muted text-sm" style="margin-top: 8px;">No cue points.</p>
 }
 
 <!-- Add button + Global save -->
 <div class="save-bar">
-  <button class="btn btn-sm" [disabled]="isAddingPoint()" (click)="onAddPointClick()">＋ Přidat cue point</button>
+  <button class="btn btn-sm" [disabled]="isAddingPoint()" (click)="onAddPointClick()">＋ Add cue point</button>
   @if (saveError()) {
     <div class="error-msg save-error">{{ saveError() }}</div>
   }
@@ -175,6 +175,6 @@
     [disabled]="!hasUnsavedChanges() || isSaving()"
     (click)="onGlobalSave()"
   >
-    @if (isSaving()) { Ukládám… } @else { Uložit změny }
+    @if (isSaving()) { Saving… } @else { Save changes }
   </button>
 </div>

@@ -17,10 +17,10 @@ import { ConfirmInlineComponent } from '../../../../components/confirm-inline/co
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const ADTL_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',         byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size',       byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'List Type',  byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "Typ LIST chunku – 'adtl' = associated data list" },
-  { label: 'Sub-chunks', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Sub-chunky: labl (label), note (poznámka), ltxt (text s délkou) – každý s vlastní hlavičkou' },
+  { label: 'ID',         byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size',       byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'List Type',  byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "LIST chunk type – 'adtl' = associated data list" },
+  { label: 'Sub-chunks', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Sub-chunks: labl (label), note (note), ltxt (text with length) – each with its own header' },
 ];
 
 type EditRow = {

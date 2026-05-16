@@ -17,9 +17,9 @@ import { AudioParamCardComponent } from '../../../../components/audio-param-card
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const FACT_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',           byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size',         byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'Sample Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Celkový počet vzorků na kanál (uint32, little-endian)' },
+  { label: 'ID',           byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size',         byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'Sample Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Total number of samples per channel (uint32, little-endian)' },
 ];
 
 @Component({
@@ -48,7 +48,7 @@ export class FactDetailComponent {
 
   protected readonly sampleLengthLabel = computed((): string => {
     const f = this.fact();
-    return f !== null ? f.sampleLength.toLocaleString('cs-CZ') : '–';
+    return f !== null ? f.sampleLength.toLocaleString('en-US') : '–';
   });
 
   protected readonly isEditing: WritableSignal<boolean> = signal(false);

@@ -40,12 +40,12 @@ export class ListInfoCreateComponent {
     const entries = this.entries();
     const emptyEntry = entries.find((e) => !e.value.trim());
     if (emptyEntry) {
-      this.formError.set(`Hodnota tagu "${emptyEntry.id}" nesmí být prázdná.`);
+      this.formError.set(`Value of tag "${emptyEntry.id}" must not be empty.`);
       return;
     }
     const longEntry = entries.find((e) => e.value.length > 500);
     if (longEntry) {
-      this.formError.set(`Hodnota tagu "${longEntry.id}" překračuje 500 znaků.`);
+      this.formError.set(`Value of tag "${longEntry.id}" exceeds 500 characters.`);
       return;
     }
     this.formError.set(null);

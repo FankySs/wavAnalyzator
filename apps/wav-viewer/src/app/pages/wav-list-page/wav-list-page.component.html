@@ -1,12 +1,12 @@
 <div class="container">
 
-  <!-- Hlavička -->
+  <!-- Header -->
   <div class="page-header">
     <div>
       <h1>WAV Analyzer</h1>
-      <p class="muted text-sm">Správa a analýza WAV souborů</p>
+      <p class="muted text-sm">Manage and analyze WAV files</p>
     </div>
-    <button class="btn btn-primary" (click)="onOpenModal()">＋ Nahrát WAV soubor</button>
+    <button class="btn btn-primary" (click)="onOpenModal()">＋ Upload WAV file</button>
   </div>
 
   <!-- Filter chips -->
@@ -15,48 +15,48 @@
       @for (chip of activeChips(); track chip.key) {
         <span class="chip">{{ chip.label }}<button class="chip-remove" (click)="onRemoveChip(chip.key)">✕</button></span>
       }
-      <button class="btn btn-sm" (click)="onClearAllFilters()">Odstranit vše</button>
+      <button class="btn btn-sm" (click)="onClearAllFilters()">Remove all</button>
     </div>
   }
 
-  <!-- Chyba -->
+  <!-- Error -->
   @if (error()) {
     <div class="error-msg">{{ error() }}</div>
   }
 
   <!-- Loading -->
   @if (isLoading()) {
-    <p class="muted text-sm">Načítám seznam souborů…</p>
+    <p class="muted text-sm">Loading file list…</p>
   }
 
-  <!-- Prázdný stav -->
+  <!-- Empty state -->
   @if (!isLoading() && files().length === 0 && !error() && !hasActiveFilter()) {
     <div class="empty-state">
       <div class="empty-icon">🎵</div>
-      <p class="empty-title">Žádné soubory v databázi</p>
-      <p class="muted text-sm">Nahrajte WAV soubor pro analýzu jeho struktury.</p>
-      <button class="btn btn-primary" (click)="onOpenModal()">Nahrát WAV soubor</button>
+      <p class="empty-title">No files in database</p>
+      <p class="muted text-sm">Upload a WAV file to analyze its structure.</p>
+      <button class="btn btn-primary" (click)="onOpenModal()">Upload WAV file</button>
     </div>
   }
 
-  <!-- Žádné výsledky filtru -->
+  <!-- No filter results -->
   @if (!isLoading() && files().length === 0 && !error() && hasActiveFilter()) {
-    <p class="muted text-sm">Žádné soubory neodpovídají zadanému filtru.</p>
+    <p class="muted text-sm">No files match the specified filter.</p>
   }
 
-  <!-- Tabulka souborů -->
+  <!-- File table -->
   @if (!isLoading() && files().length > 0) {
     <div class="card table-card">
       <table class="data-table">
         <thead>
         <tr>
-          <th>Název souboru</th>
-          <th>Velikost</th>
-          <th>Délka</th>
-          <th>Formát</th>
-          <th>Nahráno</th>
+          <th>File name</th>
+          <th>Size</th>
+          <th>Duration</th>
+          <th>Format</th>
+          <th>Uploaded</th>
           <th class="col-filter-btn">
-            <button class="btn btn-sm filter-btn" [class.filter-btn-active]="hasActiveFilter()" (click)="onOpenFilterModal()">🔽 Filtry</button>
+            <button class="btn btn-sm filter-btn" [class.filter-btn-active]="hasActiveFilter()" (click)="onOpenFilterModal()">🔽 Filters</button>
           </th>
         </tr>
         </thead>
@@ -78,12 +78,12 @@
                       <span class="rename-error">{{ renameError() }}</span>
                     }
                     <div class="rename-actions">
-                      <button class="btn btn-sm btn-primary" [disabled]="isRenaming()" (click)="onRenameConfirm(file.id)">Uložit</button>
-                      <button class="btn btn-sm" [disabled]="isRenaming()" (click)="onRenameCancel()">Zrušit</button>
+                      <button class="btn btn-sm btn-primary" [disabled]="isRenaming()" (click)="onRenameConfirm(file.id)">Save</button>
+                      <button class="btn btn-sm" [disabled]="isRenaming()" (click)="onRenameCancel()">Cancel</button>
                     </div>
                   </div>
                 } @else {
-                  <span class="file-name" title="Klikněte pro přejmenování" (click)="onRenameStart(file, $event)">{{ file.fileName }}</span>
+                  <span class="file-name" title="Click to rename" (click)="onRenameStart(file, $event)">{{ file.fileName }}</span>
                 }
               </td>
               <td>{{ formatFileSize(file.fileSize) }}</td>
@@ -97,7 +97,7 @@
                     (cancelled)="onDeleteCancel()"
                   />
                 } @else {
-                  <button class="btn btn-sm" (click)="onRowClick(file.id)">Otevřít</button>
+                  <button class="btn btn-sm" (click)="onRowClick(file.id)">Open</button>
                   <button
                     class="btn btn-sm btn-danger"
                     [disabled]="isDeleting()"
@@ -116,9 +116,9 @@
 </div>
 
 <!-- Upload modal -->
-<app-modal [isOpen]="showModal()" title="Nahrát WAV soubor" (closed)="onCloseModal()">
+<app-modal [isOpen]="showModal()" title="Upload WAV file" (closed)="onCloseModal()">
 
-  <!-- Drag & drop zóna -->
+  <!-- Drag & drop zone -->
   <div
     class="drop-zone"
     [class.drop-zone-active]="isDragging()"
@@ -128,10 +128,10 @@
   >
     @if (!pendingFile()) {
       <div class="drop-icon">🎵</div>
-      <p class="drop-text">Přetáhněte WAV soubor sem</p>
-      <p class="muted text-sm">nebo</p>
+      <p class="drop-text">Drag a WAV file here</p>
+      <p class="muted text-sm">or</p>
       <label class="btn">
-        Vybrat soubor
+        Choose file
         <input type="file" accept=".wav,audio/wav" (change)="onFileInputChange($event)" hidden/>
       </label>
     } @else {
@@ -151,16 +151,16 @@
   }
 
   <div class="modal-actions">
-    <button class="btn" (click)="onCloseModal()" [disabled]="isUploading()">Zrušit</button>
+    <button class="btn" (click)="onCloseModal()" [disabled]="isUploading()">Cancel</button>
     <button
       class="btn btn-primary"
       [disabled]="!pendingFile() || isUploading()"
       (click)="onUpload()"
     >
       @if (isUploading()) {
-        Nahrávám…
+        Uploading…
       } @else {
-        Nahrát
+        Upload
       }
     </button>
   </div>
@@ -168,20 +168,20 @@
 </app-modal>
 
 <!-- Filter modal -->
-<app-modal [isOpen]="showFilterModal()" title="Filtry" (closed)="onCloseFilterModal()">
+<app-modal [isOpen]="showFilterModal()" title="Filters" (closed)="onCloseFilterModal()">
   <div class="filter-form">
     <div>
-      <p class="filter-section-label">Název souboru</p>
+      <p class="filter-section-label">File name</p>
       <input
         class="form-input"
         type="text"
-        placeholder="Obsahuje…"
+        placeholder="Contains…"
         [value]="pendingFilter().name ?? ''"
         (input)="onPendingNameChange($any($event.target).value)"
       />
     </div>
     <div>
-      <p class="filter-section-label">Datum nahrání</p>
+      <p class="filter-section-label">Upload date</p>
       <div class="date-range">
         <input class="form-input" type="date"
           [value]="pendingFilter().dateFrom ?? ''"
@@ -195,7 +195,7 @@
       </div>
     </div>
     <div>
-      <p class="filter-section-label">Typy chunků</p>
+      <p class="filter-section-label">Chunk types</p>
       <div class="chunk-type-grid">
         @for (type of chunkTypes; track type) {
           <button
@@ -208,7 +208,7 @@
     </div>
   </div>
   <div class="modal-actions">
-    <button class="btn" (click)="onCloseFilterModal()">Zrušit</button>
-    <button class="btn btn-primary" (click)="onApplyFilter()">Použít</button>
+    <button class="btn" (click)="onCloseFilterModal()">Cancel</button>
+    <button class="btn btn-primary" (click)="onApplyFilter()">Apply</button>
   </div>
 </app-modal>

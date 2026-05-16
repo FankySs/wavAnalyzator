@@ -1,14 +1,14 @@
 <div class="container">
 
-  <!-- Hlavička -->
+  <!-- Header -->
   <div class="page-header">
     <div>
-      <a class="back-link muted text-sm" routerLink="/">← Zpět na seznam</a>
+      <a class="back-link muted text-sm" routerLink="/">← Back to list</a>
       @if (detail()) {
         <h1 class="page-title">{{ detail()!.fileName }}</h1>
-        <p class="muted text-sm">{{ formatSize(detail()!.fileSize) }} · nahráno {{ formatDate(detail()!.uploadedAt) }}</p>
+        <p class="muted text-sm">{{ formatSize(detail()!.fileSize) }} · uploaded {{ formatDate(detail()!.uploadedAt) }}</p>
       } @else if (isLoading()) {
-        <h1 class="page-title muted">Načítám…</h1>
+        <h1 class="page-title muted">Loading…</h1>
       }
     </div>
     @if (detail()) {
@@ -18,14 +18,14 @@
           [disabled]="isDownloading()"
           (click)="onDownloadClick()"
         >
-          @if (isDownloading()) { Sestavuji soubor… } @else { Stáhnout WAV }
+          @if (isDownloading()) { Building file… } @else { Download WAV }
         </button>
-        <a class="btn btn-primary" [routerLink]="['/wav', id(), 'chunks', 'new']">＋ Přidat chunk</a>
+        <a class="btn btn-primary" [routerLink]="['/wav', id(), 'chunks', 'new']">＋ Add chunk</a>
       </div>
     }
   </div>
 
-  <!-- Chyba -->
+  <!-- Error -->
   @if (error()) {
     <div class="error-msg">{{ error() }}</div>
   }
@@ -34,38 +34,38 @@
   }
 
   @if (detail()) {
-    <!-- Audio parametry -->
+    <!-- Audio parameters -->
     <div class="params-grid">
-      <app-audio-param-card icon="🎵" label="Vzorkovací frekvence" [value]="sampleRateLabel()" />
-      <app-audio-param-card icon="🎚" label="Bitová hloubka" [value]="bitDepthLabel()" />
-      <app-audio-param-card icon="🔊" label="Kanály" [value]="channelsLabel()" />
-      <app-audio-param-card icon="⏱" label="Délka" [value]="durationLabel()" />
+      <app-audio-param-card icon="🎵" label="Sample rate" [value]="sampleRateLabel()" />
+      <app-audio-param-card icon="🎚" label="Bit depth" [value]="bitDepthLabel()" />
+      <app-audio-param-card icon="🔊" label="Channels" [value]="channelsLabel()" />
+      <app-audio-param-card icon="⏱" label="Duration" [value]="durationLabel()" />
     </div>
 
-    <!-- Audio přehrávač -->
+    <!-- Audio player -->
     <div class="section">
       <div class="section-header">
-        <span>Přehrávač</span>
+        <span>Player</span>
       </div>
       <app-waveform-player [wavId]="id()" />
     </div>
 
-    <!-- Chunky -->
+    <!-- Chunks -->
     <div class="section">
       <div class="section-header">
-        <span>Chunky ({{ detail()!.chunks.length }})</span>
+        <span>Chunks ({{ detail()!.chunks.length }})</span>
       </div>
 
       @if (detail()!.chunks.length === 0) {
-        <p class="muted text-sm" style="padding: 16px 0;">Žádné chunky.</p>
+        <p class="muted text-sm" style="padding: 16px 0;">No chunks.</p>
       } @else {
         <div class="card table-card">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Typ</th>
-                <th>Název</th>
-                <th>Velikost</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Size</th>
                 <th>Offset</th>
                 <th></th>
               </tr>

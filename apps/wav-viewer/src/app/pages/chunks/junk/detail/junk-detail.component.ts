@@ -4,9 +4,9 @@ import type { WavChunkDetailDto } from '@shared-types';
 import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 const JUNK_HIGHLIGHTS: ChunkHighlight[] = [
-  { label: 'ID',   byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-  { label: 'Size', byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-  { label: 'Data', byteOffset: 8, byteLength: -1, color: 'var(--muted)',   description: 'Výplňová data – obvykle nuly nebo náhodné bajty pro zarovnání' },
+  { label: 'ID',   byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+  { label: 'Size', byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
+  { label: 'Data', byteOffset: 8, byteLength: -1, color: 'var(--muted)',   description: 'Padding data – usually zeros or random bytes for alignment' },
 ];
 
 @Component({

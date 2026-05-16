@@ -56,9 +56,9 @@ export class CueDetailComponent {
 
   protected readonly cueHighlights = computed<ChunkHighlight[]>(() => {
     const base: ChunkHighlight[] = [
-      { label: 'ID',        byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
-      { label: 'Size',      byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
-      { label: 'Cue Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Počet cue pointů (uint32)' },
+      { label: 'ID',        byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
+      { label: 'Size',      byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
+      { label: 'Cue Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Number of cue points (uint32)' },
     ];
     const parsed = this.chunk().parsed as CueParsed | null;
     const points = parsed?.chunkType === 'cue' ? parsed.points : [];
@@ -67,12 +67,12 @@ export class CueDetailComponent {
       const baseOffset = 12 + i * 24;
       const color = colors[i % colors.length];
       base.push(
-        { label: `Cue ${i + 1} – ID`,          byteOffset: baseOffset,      byteLength: 4, color, description: `Cue point ${i + 1}: identifikátor (uint32)` },
-        { label: `Cue ${i + 1} – Position`,    byteOffset: baseOffset + 4,  byteLength: 4, color, description: `Cue point ${i + 1}: pozice v samplich (uint32)` },
-        { label: `Cue ${i + 1} – Data Chunk`,  byteOffset: baseOffset + 8,  byteLength: 4, color, description: `Cue point ${i + 1}: ID odkazovaného data chunku` },
-        { label: `Cue ${i + 1} – Chunk Start`, byteOffset: baseOffset + 12, byteLength: 4, color, description: `Cue point ${i + 1}: offset začátku chunku` },
-        { label: `Cue ${i + 1} – Block Start`, byteOffset: baseOffset + 16, byteLength: 4, color, description: `Cue point ${i + 1}: offset začátku bloku` },
-        { label: `Cue ${i + 1} – Sample Ofs`,  byteOffset: baseOffset + 20, byteLength: 4, color, description: `Cue point ${i + 1}: offset vzorku v bloku` },
+        { label: `Cue ${i + 1} – ID`,          byteOffset: baseOffset,      byteLength: 4, color, description: `Cue point ${i + 1}: identifier (uint32)` },
+        { label: `Cue ${i + 1} – Position`,    byteOffset: baseOffset + 4,  byteLength: 4, color, description: `Cue point ${i + 1}: position in samples (uint32)` },
+        { label: `Cue ${i + 1} – Data Chunk`,  byteOffset: baseOffset + 8,  byteLength: 4, color, description: `Cue point ${i + 1}: ID of the referenced data chunk` },
+        { label: `Cue ${i + 1} – Chunk Start`, byteOffset: baseOffset + 12, byteLength: 4, color, description: `Cue point ${i + 1}: chunk start offset` },
+        { label: `Cue ${i + 1} – Block Start`, byteOffset: baseOffset + 16, byteLength: 4, color, description: `Cue point ${i + 1}: block start offset` },
+        { label: `Cue ${i + 1} – Sample Ofs`,  byteOffset: baseOffset + 20, byteLength: 4, color, description: `Cue point ${i + 1}: sample offset within block` },
       );
     });
     return base;
@@ -278,7 +278,7 @@ export class CueDetailComponent {
   protected readonly onPanelSave = (): void => {
     const samples = this.formSamples;
     if (samples < 0) {
-      this.formError.set('Pozice nesmí být záporná.');
+      this.formError.set('Position must not be negative.');
       return;
     }
 

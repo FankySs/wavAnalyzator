@@ -9,7 +9,7 @@
       <input class="form-input" type="number" min="1" [(ngModel)]="samplePeriod" />
     </div>
   </div>
-  <div class="section-header" style="margin: 16px 0 8px;">Smyčky</div>
+  <div class="section-header" style="margin: 16px 0 8px;">Loops</div>
   @for (loop of loops(); track $index) {
     <div class="loop-card">
       <div class="form-row">
@@ -30,7 +30,7 @@
       </div>
       <div class="form-row" style="grid-template-columns: 1fr 1fr auto;">
         <div class="form-group">
-          <label class="form-label">Typ</label>
+          <label class="form-label">Type</label>
           <input class="form-input" type="number" min="0" max="2" #inpType
             [value]="loop.type ?? 0"
             (input)="updateLoop($index, 'type', +inpType.value)"
@@ -47,11 +47,11 @@
       </div>
     </div>
   }
-  <button class="btn btn-sm" (click)="addLoop()">＋ Přidat smyčku</button>
+  <button class="btn btn-sm" (click)="addLoop()">＋ Add loop</button>
 </div>
 <div class="form-actions">
-  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Zrušit</button>
+  <button class="btn" [disabled]="isDisabled()" (click)="onCancel()">Cancel</button>
   <button class="btn btn-primary" [disabled]="isDisabled()" (click)="onSubmit()">
-    @if (isDisabled()) { Ukládám… } @else { Přidat chunk }
+    @if (isDisabled()) { Saving… } @else { Add chunk }
   </button>
 </div>

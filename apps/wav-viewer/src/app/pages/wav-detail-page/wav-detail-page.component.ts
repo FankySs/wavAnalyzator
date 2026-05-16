@@ -52,7 +52,7 @@ export class WavDetailPageComponent {
   protected readonly channelsLabel = computed(() => {
     const ch = this.detail()?.channels;
     if (ch === null || ch === undefined) return '–';
-    return ch === 1 ? 'Mono' : ch === 2 ? 'Stereo' : `${ch} kanálů`;
+    return ch === 1 ? 'Mono' : ch === 2 ? 'Stereo' : `${ch} channels`;
   });
   protected readonly durationLabel = computed(() => {
     const sec = this.detail()?.durationSec;
@@ -149,7 +149,7 @@ export class WavDetailPageComponent {
           this.isDownloading.set(false);
         },
         error: () => {
-          this.downloadError.set('Stažení se nezdařilo. Zkuste to znovu.');
+          this.downloadError.set('Download failed. Please try again.');
           this.isDownloading.set(false);
         },
       });
