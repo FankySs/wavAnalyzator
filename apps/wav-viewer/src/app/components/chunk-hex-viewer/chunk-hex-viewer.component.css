@@ -1,0 +1,80 @@
+.loading-state {
+  padding: 16px;
+  text-align: center;
+}
+
+.hex-viewer {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.hex-header,
+.hex-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hex-header {
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.offset-col {
+  min-width: 48px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.hex-cols {
+  display: flex;
+}
+
+.hex-header-cell {
+  min-width: 28px;
+  padding: 2px 4px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hex-cell {
+  min-width: 28px;
+  padding: 2px 4px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: default;
+  background-color: transparent;
+  transition: background-color 150ms ease;
+  user-select: none;
+}
+
+.hex-cell-empty {
+  visibility: hidden;
+}
+
+.hex-group-start {
+  margin-left: 12px;
+}
+
+.ascii-col {
+  color: var(--muted);
+  white-space: pre;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.ascii-label {
+  font-size: 11px;
+  opacity: 0.4;
+}

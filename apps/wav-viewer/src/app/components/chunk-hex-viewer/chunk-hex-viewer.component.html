@@ -1,0 +1,43 @@
+@if (isLoading()) {
+  <div class="loading-state muted text-sm">Načítám data…</div>
+}
+
+@if (error()) {
+  <div class="error-msg">{{ error() }}</div>
+}
+
+@if (!isLoading() && !error() && bytes()) {
+  <div class="hex-viewer">
+
+    <div class="hex-header">
+      <span class="offset-col"></span>
+      <div class="hex-cols">
+        @for (h of colHeaders; track h) {
+          <span class="hex-header-cell" [class.hex-group-start]="$index === 8">{{ h }}</span>
+        }
+      </div>
+      <span class="ascii-col ascii-label">0123456789ABCDEF</span>
+    </div>
+
+    @for (row of rows(); track row.offset) {
+      <div class="hex-row">
+        <span class="offset-col">{{ row.offset }}</span>
+        <div class="hex-cols">
+          @for (cell of row.cells; track $index) {
+            <span
+              class="hex-cell"
+              [class.hex-cell-empty]="cell.index < 0"
+              [class.hex-group-start]="$index === 8"
+              [style]="cell.style"
+              [attr.data-index]="cell.index >= 0 ? cell.index : null"
+              (mouseenter)="onByteEnter(cell.index)"
+              (mouseleave)="onByteLeave()"
+            >{{ cell.hex }}</span>
+          }
+        </div>
+        <span class="ascii-col">{{ row.ascii }}</span>
+      </div>
+    }
+
+  </div>
+}

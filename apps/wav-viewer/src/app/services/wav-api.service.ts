@@ -109,6 +109,29 @@ export class WavApiService {
       .pipe(catchError(this.handleError));
   }
 
+  getChunkRaw(fileId: string, chunkId: string): Observable<ArrayBuffer> {
+    return this.http
+      .get(`${this.base}/wav/${fileId}/chunks/${chunkId}/raw`, { responseType: 'arraybuffer' })
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          if (err.error instanceof ArrayBuffer) {
+            try {
+              const body = JSON.parse(new TextDecoder().decode(err.error)) as { message?: unknown };
+              const msg = Array.isArray(body.message)
+                ? (body.message as string[]).join(', ')
+                : typeof body.message === 'string'
+                  ? body.message
+                  : `Chyba ${err.status}`;
+              return throwError(() => new Error(msg));
+            } catch {
+              return throwError(() => new Error(`Chyba ${err.status}`));
+            }
+          }
+          return this.handleError(err);
+        }),
+      );
+  }
+
   // --- LIST/INFO editace ---
 
   updateListInfo(fileId: string, chunkDbId: string, dto: UpdateListInfoDto): Observable<WavChunkDetailDto> {

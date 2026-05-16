@@ -21,7 +21,7 @@
     } @else {
       @switch (chunk()!.parsed?.chunkType) {
         @case ('fmt') {
-          <app-fmt-detail [chunk]="chunk()!" />
+          <app-fmt-detail [chunk]="chunk()!" [wavId]="id()" />
         }
         @case ('LIST_INFO') {
           <app-list-info-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />

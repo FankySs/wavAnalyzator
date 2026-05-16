@@ -1,6 +1,18 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import type { WavChunkDetailDto, FmtParsed } from '@shared-types';
 import { AudioParamCardComponent } from '../../../../components/audio-param-card/audio-param-card.component';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const FMT_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',           byteOffset: 0,  byteLength: 4, color: 'var(--brand)' },
+  { label: 'Size',         byteOffset: 4,  byteLength: 4, color: 'var(--success)' },
+  { label: 'Audio Format', byteOffset: 8,  byteLength: 2, color: 'var(--warning)' },
+  { label: 'Channels',     byteOffset: 10, byteLength: 2, color: 'var(--danger)' },
+  { label: 'Sample Rate',  byteOffset: 12, byteLength: 4, color: '#b388ff' },
+  { label: 'Byte Rate',    byteOffset: 16, byteLength: 4, color: '#80cbc4' },
+  { label: 'Block Align',  byteOffset: 20, byteLength: 2, color: '#ffab40' },
+  { label: 'Bit Depth',    byteOffset: 22, byteLength: 2, color: '#f48fb1' },
+];
 
 const FORMAT_DISPLAY: Record<string, string> = {
   PCM: 'PCM',
@@ -16,10 +28,14 @@ const FORMAT_DISPLAY: Record<string, string> = {
   standalone: true,
   templateUrl: './fmt-detail.component.html',
   styleUrls: ['./fmt-detail.component.css'],
-  imports: [AudioParamCardComponent],
+  imports: [AudioParamCardComponent, ChunkHexViewerComponent],
 })
 export class FmtDetailComponent {
   readonly chunk = input.required<WavChunkDetailDto>();
+  readonly wavId = input.required<string>();
+
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly fmtHighlights: ChunkHighlight[] = FMT_HIGHLIGHTS;
 
   protected readonly fmt = computed((): FmtParsed | null => {
     const parsed = this.chunk().parsed;

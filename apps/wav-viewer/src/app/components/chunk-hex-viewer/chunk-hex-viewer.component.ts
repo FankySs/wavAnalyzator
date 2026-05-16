@@ -1,0 +1,140 @@
+import {
+  Component,
+  DestroyRef,
+  WritableSignal,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WavApiService } from '../../services/wav-api.service';
+
+export interface ChunkHighlight {
+  label: string;
+  byteOffset: number;
+  byteLength: number;
+  color: string;
+}
+
+type HexCell = {
+  index: number;
+  hex: string;
+  style: Record<string, string>;
+};
+
+type HexRow = {
+  offset: string;
+  cells: HexCell[];
+  ascii: string;
+};
+
+@Component({
+  selector: 'app-chunk-hex-viewer',
+  standalone: true,
+  templateUrl: './chunk-hex-viewer.component.html',
+  styleUrls: ['./chunk-hex-viewer.component.css'],
+})
+export class ChunkHexViewerComponent {
+  private readonly wavApiService = inject(WavApiService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly wavId = input.required<string>();
+  readonly chunkId = input.required<string>();
+  readonly chunkFourCC = input.required<string>();
+  readonly chunkSize = input.required<number>();
+  readonly highlights = input<ChunkHighlight[]>([]);
+  readonly activeHighlight = input<string | null>(null);
+
+  readonly hoveredByte = output<number | null>();
+
+  protected readonly bytes: WritableSignal<Uint8Array | null> = signal(null);
+  protected readonly isLoading: WritableSignal<boolean> = signal(false);
+  protected readonly error: WritableSignal<string | null> = signal(null);
+
+  protected readonly rows = computed((): HexRow[] => {
+    const bytes = this.bytes();
+    if (!bytes) return [];
+
+    const active = this.activeHighlight();
+    const hlMap = new Map<number, ChunkHighlight>();
+    for (const h of this.highlights()) {
+      for (let i = h.byteOffset; i < h.byteOffset + h.byteLength; i++) {
+        hlMap.set(i, h);
+      }
+    }
+
+    const result: HexRow[] = [];
+    for (let rowStart = 0; rowStart < bytes.length; rowStart += 16) {
+      const cells: HexCell[] = [];
+      let ascii = '';
+
+      for (let col = 0; col < 16; col++) {
+        const idx = rowStart + col;
+        if (idx >= bytes.length) {
+          cells.push({ index: -1, hex: '', style: {} });
+          continue;
+        }
+        const byte = bytes[idx];
+        const hl = hlMap.get(idx);
+        const isActive = hl !== undefined && hl.label === active;
+        const pct = isActive ? '60%' : '25%';
+        const style: Record<string, string> = hl
+          ? { 'background-color': `color-mix(in srgb, ${hl.color} ${pct}, transparent)` }
+          : {};
+        ascii += byte >= 32 && byte <= 126 ? String.fromCharCode(byte) : '.';
+        cells.push({ index: idx, hex: byte.toString(16).padStart(2, '0').toUpperCase(), style });
+      }
+
+      result.push({
+        offset: rowStart.toString(16).toUpperCase().padStart(4, '0'),
+        cells,
+        ascii,
+      });
+    }
+    return result;
+  });
+
+  protected readonly colHeaders = Array.from({ length: 16 }, (_, i) =>
+    i.toString(16).toUpperCase().padStart(2, '0'),
+  );
+
+  constructor() {
+    effect(() => {
+      const wavId = this.wavId();
+      const chunkId = this.chunkId();
+      this.loadRawData(wavId, chunkId);
+    });
+  }
+
+  private loadRawData(wavId: string, chunkId: string): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.bytes.set(null);
+
+    this.wavApiService
+      .getChunkRaw(wavId, chunkId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (buffer) => {
+          this.bytes.set(new Uint8Array(buffer));
+          this.isLoading.set(false);
+        },
+        error: (err: Error) => {
+          const isAudioErr = err.message.includes('Audio data chunk');
+          this.error.set(isAudioErr ? 'Audio data není zobrazitelná.' : err.message);
+          this.isLoading.set(false);
+        },
+      });
+  }
+
+  protected readonly onByteEnter = (index: number): void => {
+    if (index >= 0) this.hoveredByte.emit(index);
+  };
+
+  protected readonly onByteLeave = (): void => {
+    this.hoveredByte.emit(null);
+  };
+}
