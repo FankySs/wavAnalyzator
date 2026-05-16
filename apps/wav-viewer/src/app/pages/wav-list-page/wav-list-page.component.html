@@ -9,6 +9,16 @@
     <button class="btn btn-primary" (click)="onOpenModal()">＋ Nahrát WAV soubor</button>
   </div>
 
+  <!-- Filter chips -->
+  @if (hasActiveFilter()) {
+    <div class="filter-chips">
+      @for (chip of activeChips(); track chip.key) {
+        <span class="chip">{{ chip.label }}<button class="chip-remove" (click)="onRemoveChip(chip.key)">✕</button></span>
+      }
+      <button class="btn btn-sm" (click)="onClearAllFilters()">Odstranit vše</button>
+    </div>
+  }
+
   <!-- Chyba -->
   @if (error()) {
     <div class="error-msg">{{ error() }}</div>
@@ -20,13 +30,18 @@
   }
 
   <!-- Prázdný stav -->
-  @if (!isLoading() && files().length === 0 && !error()) {
+  @if (!isLoading() && files().length === 0 && !error() && !hasActiveFilter()) {
     <div class="empty-state">
       <div class="empty-icon">🎵</div>
       <p class="empty-title">Žádné soubory v databázi</p>
       <p class="muted text-sm">Nahrajte WAV soubor pro analýzu jeho struktury.</p>
       <button class="btn btn-primary" (click)="onOpenModal()">Nahrát WAV soubor</button>
     </div>
+  }
+
+  <!-- Žádné výsledky filtru -->
+  @if (!isLoading() && files().length === 0 && !error() && hasActiveFilter()) {
+    <p class="muted text-sm">Žádné soubory neodpovídají zadanému filtru.</p>
   }
 
   <!-- Tabulka souborů -->
@@ -40,7 +55,9 @@
           <th>Délka</th>
           <th>Formát</th>
           <th>Nahráno</th>
-          <th></th>
+          <th class="col-filter-btn">
+            <button class="btn btn-sm filter-btn" [class.filter-btn-active]="hasActiveFilter()" (click)="onOpenFilterModal()">🔽 Filtry</button>
+          </th>
         </tr>
         </thead>
         <tbody>
@@ -148,4 +165,50 @@
     </button>
   </div>
 
+</app-modal>
+
+<!-- Filter modal -->
+<app-modal [isOpen]="showFilterModal()" title="Filtry" (closed)="onCloseFilterModal()">
+  <div class="filter-form">
+    <div>
+      <p class="filter-section-label">Název souboru</p>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="Obsahuje…"
+        [value]="pendingFilter().name ?? ''"
+        (input)="onPendingNameChange($any($event.target).value)"
+      />
+    </div>
+    <div>
+      <p class="filter-section-label">Datum nahrání</p>
+      <div class="date-range">
+        <input class="form-input" type="date"
+          [value]="pendingFilter().dateFrom ?? ''"
+          (change)="onPendingDateFromChange($any($event.target).value)"
+        />
+        <span class="muted">–</span>
+        <input class="form-input" type="date"
+          [value]="pendingFilter().dateTo ?? ''"
+          (change)="onPendingDateToChange($any($event.target).value)"
+        />
+      </div>
+    </div>
+    <div>
+      <p class="filter-section-label">Typy chunků</p>
+      <div class="chunk-type-grid">
+        @for (type of chunkTypes; track type) {
+          <button
+            class="chunk-toggle"
+            [class.chunk-toggle-active]="pendingFilter().chunkTypes?.includes(type)"
+            (click)="onToggleChunkType(type)"
+          >{{ type }}</button>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn" (click)="onCloseFilterModal()">Zrušit</button>
+    <button class="btn btn-primary" (click)="onApplyFilter()">Použít</button>
+  </div>
 </app-modal>

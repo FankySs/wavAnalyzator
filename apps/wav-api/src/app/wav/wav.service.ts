@@ -30,6 +30,13 @@ function toWavChunkDto(chunk: {
   };
 }
 
+interface WavFindAllParams {
+  name?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  chunkTypes?: string[];
+}
+
 @Injectable()
 export class WavService {
   constructor(
@@ -39,8 +46,21 @@ export class WavService {
     private readonly parser: WavParserService,
   ) {}
 
-  async findAll(): Promise<WavFileDto[]> {
+  async findAll(params: WavFindAllParams = {}): Promise<WavFileDto[]> {
+    const { name, dateFrom, dateTo, chunkTypes } = params;
     const files = await this.prisma.wavFile.findMany({
+      where: {
+        ...(name ? { fileName: { contains: name } } : {}),
+        ...(dateFrom || dateTo
+          ? {
+              uploadedAt: {
+                ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
+                ...(dateTo ? { lte: new Date(dateTo) } : {}),
+              },
+            }
+          : {}),
+        ...(chunkTypes?.length ? { chunks: { some: { chunkId: { in: chunkTypes } } } } : {}),
+      },
       include: {
         _count: { select: { chunks: true } },
         chunks: {

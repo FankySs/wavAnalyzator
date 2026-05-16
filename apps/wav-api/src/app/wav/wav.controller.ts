@@ -75,8 +75,18 @@ export class WavController {
   // --- Soubory ---
 
   @Get()
-  async findAll(): Promise<WavFileDto[]> {
-    return this.wavService.findAll();
+  async findAll(
+    @Query('name') name?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('chunkTypes') chunkTypes?: string,
+  ): Promise<WavFileDto[]> {
+    return this.wavService.findAll({
+      name,
+      dateFrom,
+      dateTo,
+      chunkTypes: chunkTypes ? chunkTypes.split(',').filter(Boolean) : undefined,
+    });
   }
 
   @Post('upload')

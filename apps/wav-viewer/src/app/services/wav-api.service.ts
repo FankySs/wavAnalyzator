@@ -38,6 +38,13 @@ import type {
 } from '@shared-types';
 import { environment } from '../../environments/environment';
 
+export interface WavFilter {
+  name?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  chunkTypes?: string[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class WavApiService {
   private readonly http = inject(HttpClient);
@@ -45,9 +52,14 @@ export class WavApiService {
 
   // --- Soubory ---
 
-  getWavList(): Observable<WavFileDto[]> {
+  getWavList(filter: WavFilter = {}): Observable<WavFileDto[]> {
+    const params: Record<string, string> = {};
+    if (filter.name) params['name'] = filter.name;
+    if (filter.dateFrom) params['dateFrom'] = filter.dateFrom;
+    if (filter.dateTo) params['dateTo'] = filter.dateTo;
+    if (filter.chunkTypes?.length) params['chunkTypes'] = filter.chunkTypes.join(',');
     return this.http
-      .get<WavFileDto[]>(`${this.base}/wav`)
+      .get<WavFileDto[]>(`${this.base}/wav`, { params })
       .pipe(catchError(this.handleError));
   }
 
