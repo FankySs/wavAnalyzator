@@ -14,13 +14,20 @@ import { FormsModule } from '@angular/forms';
 import type { FactParsed, UpdateFactDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
 import { AudioParamCardComponent } from '../../../../components/audio-param-card/audio-param-card.component';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const FACT_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',           byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',         byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'Sample Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Celkový počet vzorků na kanál (uint32, little-endian)' },
+];
 
 @Component({
   selector: 'app-fact-detail',
   standalone: true,
   templateUrl: './fact-detail.component.html',
   styleUrls: ['./fact-detail.component.css'],
-  imports: [FormsModule, AudioParamCardComponent],
+  imports: [FormsModule, AudioParamCardComponent, ChunkHexViewerComponent],
 })
 export class FactDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -30,6 +37,9 @@ export class FactDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly factHighlights: ChunkHighlight[] = FACT_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly fact = computed((): FactParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -80,6 +90,7 @@ export class FactDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

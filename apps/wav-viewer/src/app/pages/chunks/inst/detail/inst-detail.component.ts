@@ -15,13 +15,26 @@ import type { InstParsed, UpdateInstDto, WavChunkDetailDto } from '@shared-types
 import { WavApiService } from '../../../../services/wav-api.service';
 import { AudioParamCardComponent } from '../../../../components/audio-param-card/audio-param-card.component';
 import { midiNoteToName } from '../../../../utils/midi.utils';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const INST_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',             byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',           byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'Unshifted Note', byteOffset: 8,  byteLength: 1, color: 'var(--warning)', description: 'MIDI nota přiřazená k nezměněné výšce tónu (0–127)' },
+  { label: 'Fine Tune',      byteOffset: 9,  byteLength: 1, color: 'var(--danger)',  description: 'Jemné ladění v centách (-50 až +50)' },
+  { label: 'Gain',           byteOffset: 10, byteLength: 1, color: '#b388ff',        description: 'Zesílení v dB' },
+  { label: 'Low Note',       byteOffset: 11, byteLength: 1, color: '#80cbc4',        description: 'Nejnižší přehrávatelná MIDI nota' },
+  { label: 'High Note',      byteOffset: 12, byteLength: 1, color: '#ffab40',        description: 'Nejvyšší přehrávatelná MIDI nota' },
+  { label: 'Low Velocity',   byteOffset: 13, byteLength: 1, color: '#f48fb1',        description: 'Minimální velocity (0–127)' },
+  { label: 'High Velocity',  byteOffset: 14, byteLength: 1, color: '#a5d6a7',        description: 'Maximální velocity (0–127)' },
+];
 
 @Component({
   selector: 'app-inst-detail',
   standalone: true,
   templateUrl: './inst-detail.component.html',
   styleUrls: ['./inst-detail.component.css'],
-  imports: [FormsModule, AudioParamCardComponent],
+  imports: [FormsModule, AudioParamCardComponent, ChunkHexViewerComponent],
 })
 export class InstDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -32,6 +45,9 @@ export class InstDetailComponent {
 
   // Server-side state
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly instHighlights: ChunkHighlight[] = INST_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly inst = computed((): InstParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -185,6 +201,7 @@ export class InstDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

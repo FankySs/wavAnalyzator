@@ -1,5 +1,15 @@
 @if (adtl(); as a) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="adtlHighlights"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <div class="info-panel">
     Chunk adtl (Associated Data List) obsahuje textové anotace k cue pointům.
     Každá anotace je přiřazena ke konkrétnímu cue pointu pomocí jeho ID
@@ -25,7 +35,10 @@
           </thead>
           <tbody>
             @for (entry of a.entries; track entry.cuePointId + entry.id) {
-              <tr>
+              <tr
+                (mouseenter)="activeHighlight.set('Sub-chunks')"
+                (mouseleave)="activeHighlight.set(null)"
+              >
                 <td>{{ entry.cuePointId }}</td>
                 <td><span class="type-badge">{{ entry.id }}</span></td>
                 <td>{{ entry.text || '—' }}</td>

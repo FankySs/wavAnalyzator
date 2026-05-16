@@ -1,3 +1,13 @@
+<app-chunk-hex-viewer
+  [wavId]="wavId()"
+  [chunkId]="chunk().id"
+  [chunkFourCC]="chunk().chunkId"
+  [chunkSize]="chunk().size"
+  [highlights]="listInfoHighlights"
+  [activeHighlight]="activeHighlight()"
+  [reloadOn]="hexVersion()"
+/>
+
 <!-- View mode -->
 @if (!isEditing()) {
   <div class="view-header">

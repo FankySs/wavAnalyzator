@@ -1,4 +1,14 @@
-<div class="card junk-card">
+<app-chunk-hex-viewer
+  [wavId]="wavId()"
+  [chunkId]="chunk().id"
+  [chunkFourCC]="chunk().chunkId"
+  [chunkSize]="chunk().size"
+  [highlights]="junkHighlights"
+  [activeHighlight]="activeHighlight()"
+/>
+
+<div class="card junk-card"
+  (mouseenter)="activeHighlight.set('Data')" (mouseleave)="activeHighlight.set(null)">
   <p class="junk-title">Padding chunk</p>
   <p class="junk-desc muted text-sm">
     Tento chunk slouží k zarovnání velikosti souboru

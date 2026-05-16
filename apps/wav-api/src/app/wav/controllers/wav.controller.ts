@@ -54,17 +54,19 @@ import type {
   CreateIxmlDto,
   CreateAxmlDto,
 } from '@shared-types';
-import { WavService } from './wav.service';
-import { WavChunkUpdateService } from './wav-chunk-update.service';
-import { WavChunkCreateService } from './wav-chunk-create.service';
-import { WavSerializerService } from './wav-serializer.service';
-import { WavWaveformService } from './wav-waveform.service';
-import { R2StorageService } from './r2-storage.service';
+import { WavQueryService } from '../services/query/wav-query.service';
+import { WavMutationService } from '../services/mutation/wav-mutation.service';
+import { WavChunkUpdateService } from '../services/mutation/wav-chunk-update.service';
+import { WavChunkCreateService } from '../services/mutation/wav-chunk-create.service';
+import { WavSerializerService } from '../services/io/wav-serializer.service';
+import { WavWaveformService } from '../services/query/wav-waveform.service';
+import { R2StorageService } from '../services/io/r2-storage.service';
 
 @Controller('wav')
 export class WavController {
   constructor(
-    private readonly wavService: WavService,
+    private readonly queryService: WavQueryService,
+    private readonly mutationService: WavMutationService,
     private readonly chunkUpdateService: WavChunkUpdateService,
     private readonly chunkCreateService: WavChunkCreateService,
     private readonly wavSerializerService: WavSerializerService,
@@ -75,8 +77,18 @@ export class WavController {
   // --- Soubory ---
 
   @Get()
-  async findAll(): Promise<WavFileDto[]> {
-    return this.wavService.findAll();
+  async findAll(
+    @Query('name') name?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('chunkTypes') chunkTypes?: string,
+  ): Promise<WavFileDto[]> {
+    return this.queryService.findAll({
+      name,
+      dateFrom,
+      dateTo,
+      chunkTypes: chunkTypes ? chunkTypes.split(',').filter(Boolean) : undefined,
+    });
   }
 
   @Post('upload')
@@ -86,12 +98,12 @@ export class WavController {
     if (!file) {
       throw new BadRequestException('Žádný soubor nebyl nahrán. Použij pole "file".');
     }
-    return this.wavService.upload(file);
+    return this.mutationService.upload(file);
   }
 
   @Get(':id')
   async findById(@Param('id') id: string): Promise<WavFileDetailDto> {
-    return this.wavService.findById(id);
+    return this.queryService.findById(id);
   }
 
   @Patch(':id/rename')
@@ -99,13 +111,13 @@ export class WavController {
     @Param('id') id: string,
     @Body() dto: RenameWavFileDto,
   ): Promise<WavFileDto> {
-    return this.wavService.renameFile(id, dto);
+    return this.mutationService.renameFile(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteById(@Param('id') id: string): Promise<void> {
-    return this.wavService.deleteById(id);
+    return this.mutationService.deleteById(id);
   }
 
   @Get(':id/download')
@@ -148,7 +160,7 @@ export class WavController {
     @Headers('range') range?: string,
   ): Promise<void> {
     try {
-      const { storageKey, fileName, fileSize } = await this.wavService.getFileInfo(id);
+      const { storageKey, fileName, fileSize } = await this.queryService.getFileInfo(id);
 
       res.setHeader('Content-Type', 'audio/wav');
       res.setHeader('Accept-Ranges', 'bytes');
@@ -179,7 +191,29 @@ export class WavController {
 
   @Get(':id/chunks')
   async findChunks(@Param('id') id: string): Promise<WavChunkDto[]> {
-    return this.wavService.findChunks(id);
+    return this.queryService.findChunks(id);
+  }
+
+  @Get(':id/chunks/:chunkId/raw')
+  async getChunkRaw(
+    @Param('id') id: string,
+    @Param('chunkId') chunkId: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const buffer = await this.queryService.findChunkRawData(id, chunkId);
+      res.set('Content-Type', 'application/octet-stream');
+      res.set('Content-Length', String(buffer.byteLength));
+      res.end(buffer);
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        res.status(404).json({ message: (err as Error).message });
+      } else if (err instanceof BadRequestException) {
+        res.status(400).json({ message: (err as Error).message });
+      } else {
+        res.status(500).json({ message: 'Chyba při čtení raw dat chunku.' });
+      }
+    }
   }
 
   @Get(':id/chunks/:chunkId')
@@ -187,7 +221,7 @@ export class WavController {
     @Param('id') id: string,
     @Param('chunkId') chunkId: string,
   ): Promise<WavChunkDetailDto> {
-    return this.wavService.findChunkDetail(id, chunkId);
+    return this.queryService.findChunkDetail(id, chunkId);
   }
 
   // --- Chunky – mazání ---
@@ -198,7 +232,7 @@ export class WavController {
     @Param('id') id: string,
     @Param('chunkId') chunkId: string,
   ): Promise<void> {
-    return this.wavService.deleteChunk(id, chunkId);
+    return this.mutationService.deleteChunk(id, chunkId);
   }
 
   // --- LIST/INFO – editace ---

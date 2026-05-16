@@ -1,5 +1,15 @@
 @if (disp(); as d) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="dispHighlights"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <div class="info-panel">
     Chunk DISP obsahuje textový popis souboru zobrazitelný
     v aplikacích podporujících schránku Windows.
@@ -10,8 +20,10 @@
     <div class="view-header">
       <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
     </div>
-    <div class="card text-card">
-      <span class="cf-badge muted text-sm">{{ cfTypeName() }}</span>
+    <div class="card text-card"
+      (mouseenter)="activeHighlight.set('Data')" (mouseleave)="activeHighlight.set(null)">
+      <span class="cf-badge muted text-sm"
+        (mouseenter)="activeHighlight.set('Type')" (mouseleave)="activeHighlight.set(null)">{{ cfTypeName() }}</span>
       <p class="disp-text">{{ d.text || '—' }}</p>
     </div>
   }

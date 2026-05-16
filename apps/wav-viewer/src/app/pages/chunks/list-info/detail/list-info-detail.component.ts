@@ -18,6 +18,14 @@ import type {
 import { WavApiService } from '../../../../services/wav-api.service';
 import { ConfirmInlineComponent } from '../../../../components/confirm-inline/confirm-inline.component';
 import { INFO_TAGS, INFO_TAG_MAP, type InfoTag } from '../../../../utils/info-tags';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const LIST_INFO_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',        byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: 'Identifikátor LIST chunku' },
+  { label: 'Size',      byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'List Type', byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "Typ LIST chunku – 'INFO' = textová metadata" },
+  { label: 'Entries',   byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Jednotlivé INFO sub-chunky (každý má vlastní 4B ID + 4B velikost + data)' },
+];
 
 type EditEntry = { id: string; value: string };
 
@@ -26,7 +34,7 @@ type EditEntry = { id: string; value: string };
   standalone: true,
   templateUrl: './list-info-detail.component.html',
   styleUrls: ['./list-info-detail.component.css'],
-  imports: [ConfirmInlineComponent],
+  imports: [ConfirmInlineComponent, ChunkHexViewerComponent],
 })
 export class ListInfoDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -37,6 +45,9 @@ export class ListInfoDetailComponent {
 
   // Server-side state, updated after each successful API call
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly listInfoHighlights: ChunkHighlight[] = LIST_INFO_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly isEditing: WritableSignal<boolean> = signal(false);
   protected readonly isSaving: WritableSignal<boolean> = signal(false);
@@ -129,6 +140,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.applyLiveToEditState(updated);
           this.isEditing.set(false);
           this.isAddingTag.set(false);
@@ -164,6 +176,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.editEntries.update((es) => es.filter((e) => e.id !== tagId));
           this.isDeletingTag.set(false);
           this.pendingDeleteTagId.set(null);
@@ -205,6 +218,7 @@ export class ListInfoDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.editEntries.update((es) => [...es, { id: tagId, value }]);
           this.isPosting.set(false);
           this.isAddingTag.set(false);

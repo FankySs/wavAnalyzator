@@ -17,9 +17,6 @@ export class ListInfoCreateComponent {
 
   protected readonly entries: WritableSignal<CreateInfoEntryDto[]> = signal([
     { id: 'INAM', value: '' },
-    { id: 'IART', value: '' },
-    { id: 'IPRD', value: '' },
-    { id: 'ICRD', value: '' },
   ]);
 
   protected readonly charCounts = computed(() => this.entries().map((e) => e.value.length));

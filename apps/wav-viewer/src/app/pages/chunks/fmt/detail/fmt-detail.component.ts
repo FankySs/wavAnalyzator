@@ -1,6 +1,18 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import type { WavChunkDetailDto, FmtParsed } from '@shared-types';
 import { AudioParamCardComponent } from '../../../../components/audio-param-card/audio-param-card.component';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const FMT_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',           byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: "4bajtový ASCII identifikátor chunku (např. 'fmt ')" },
+  { label: 'Size',         byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech (uint32, little-endian)' },
+  { label: 'Audio Format', byteOffset: 8,  byteLength: 2, color: 'var(--warning)', description: 'Formát kódování – 1 = PCM, 3 = IEEE float, 6 = A-law, 7 = μ-law' },
+  { label: 'Channels',     byteOffset: 10, byteLength: 2, color: 'var(--danger)',  description: 'Počet kanálů – 1 = Mono, 2 = Stereo' },
+  { label: 'Sample Rate',  byteOffset: 12, byteLength: 4, color: '#b388ff',        description: 'Vzorkovací frekvence v Hz (uint32, little-endian)' },
+  { label: 'Byte Rate',    byteOffset: 16, byteLength: 4, color: '#80cbc4',        description: 'Počet bajtů za sekundu = SampleRate × Channels × BitsPerSample / 8' },
+  { label: 'Block Align',  byteOffset: 20, byteLength: 2, color: '#ffab40',        description: 'Velikost jednoho vzorku všech kanálů v bajtech' },
+  { label: 'Bit Depth',    byteOffset: 22, byteLength: 2, color: '#f48fb1',        description: 'Počet bitů na vzorek – typicky 8, 16, 24 nebo 32' },
+];
 
 const FORMAT_DISPLAY: Record<string, string> = {
   PCM: 'PCM',
@@ -16,10 +28,14 @@ const FORMAT_DISPLAY: Record<string, string> = {
   standalone: true,
   templateUrl: './fmt-detail.component.html',
   styleUrls: ['./fmt-detail.component.css'],
-  imports: [AudioParamCardComponent],
+  imports: [AudioParamCardComponent, ChunkHexViewerComponent],
 })
 export class FmtDetailComponent {
   readonly chunk = input.required<WavChunkDetailDto>();
+  readonly wavId = input.required<string>();
+
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly fmtHighlights: ChunkHighlight[] = FMT_HIGHLIGHTS;
 
   protected readonly fmt = computed((): FmtParsed | null => {
     const parsed = this.chunk().parsed;

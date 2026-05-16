@@ -1,3 +1,13 @@
+<app-chunk-hex-viewer
+  [wavId]="wavId()"
+  [chunkId]="chunk().id"
+  [chunkFourCC]="chunk().chunkId"
+  [chunkSize]="chunk().size"
+  [highlights]="peakHighlights"
+  [activeHighlight]="activeHighlight()"
+  [reloadOn]="hexVersion()"
+/>
+
 <div class="info-panel">
   Chunk peak ukládá maximální úroveň (peak) každého kanálu nahrávky
   a pozici kde k ní došlo. Používá se při normalizaci a přesném
@@ -23,7 +33,9 @@
         </thead>
         <tbody>
           @for (ch of p.channels; track $index) {
-            <tr>
+            <tr
+              (mouseenter)="activeHighlight.set('Ch' + ($index + 1) + ' Value')"
+              (mouseleave)="activeHighlight.set(null)">
               <td>{{ $index + 1 }}</td>
               <td>
                 <div class="peak-cell">

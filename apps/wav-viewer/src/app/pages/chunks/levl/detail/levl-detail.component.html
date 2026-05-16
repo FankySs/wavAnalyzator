@@ -1,5 +1,15 @@
 @if (levl(); as l) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="levlHighlights"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <div class="info-panel">
     Chunk levl (Level Structure Chunk) ukládá metadata o úrovních hlasitosti
     nahrávky. Obsahuje informace o peak envelope datech používaných
@@ -22,32 +32,32 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Version')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Version</td>
             <td class="desc-cell muted text-sm">Verze formátu</td>
             <td>{{ l.version }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Format')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Format</td>
             <td class="desc-cell muted text-sm">Formát dat</td>
             <td>{{ l.format }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Points/Value')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Points</td>
             <td class="desc-cell muted text-sm">Počet level points</td>
             <td>{{ l.pointsPerValue }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Channel Count')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Channel Count</td>
             <td class="desc-cell muted text-sm">Počet kanálů</td>
             <td>{{ l.channels }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Peak Frames')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Block Size</td>
             <td class="desc-cell muted text-sm">Velikost bloku</td>
             <td>{{ l.blockSize }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Sample Frame Count')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Peak Envelope Version</td>
             <td class="desc-cell muted text-sm">Verze peak envelope</td>
             <td>{{ l.frameCount }}</td>

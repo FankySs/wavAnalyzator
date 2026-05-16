@@ -1,0 +1,96 @@
+<div class="hex-viewer">
+
+  <div class="hex-viewer-header">
+    <span class="hex-viewer-title">Hex</span>
+    <div class="hex-viewer-header-right">
+      @if (isExpanded() && !isLoading() && !error() && bytes()) {
+        <span class="muted text-sm">{{ bytes()!.length }} B (včetně hlavičky)</span>
+      }
+      <button class="btn btn-sm hex-toggle-btn" (click)="isExpanded.set(!isExpanded())">
+        @if (isExpanded()) { ▲ Skrýt hex } @else { ▼ Zobrazit hex }
+      </button>
+    </div>
+  </div>
+
+  @if (isExpanded()) {
+
+    @if (isLoading()) {
+      <div class="loading-state muted text-sm">Načítám data…</div>
+    }
+
+    @if (error()) {
+      <div class="error-msg">{{ error() }}</div>
+    }
+
+    @if (!isLoading() && !error() && bytes()) {
+
+      @if (highlights().length) {
+        <div class="hex-legend">
+          @for (h of highlights(); track h.label) {
+            <span
+              class="hex-legend-chip"
+              [class.hex-legend-chip-active]="h.label === effectiveActive()"
+              [style.background-color]="h.label === effectiveActive()
+                ? 'color-mix(in srgb, ' + h.color + ' 20%, transparent)'
+                : ''"
+              [attr.title]="h.description || null"
+              (mouseenter)="onChipEnter(h.label)"
+              (mouseleave)="onChipLeave()"
+            >
+              <span class="hex-legend-dot"
+                [style.background-color]="h.label === effectiveActive() ? h.color : 'var(--muted)'"
+              ></span>
+              {{ h.label }}
+            </span>
+          }
+        </div>
+      }
+
+      <div class="hex-grid">
+
+        <div class="hex-header">
+          <span class="offset-col col-label">OFFSET</span>
+          <div class="hex-cols">
+            @for (h of colHeaders; track h) {
+              <span class="hex-header-cell" [class.hex-group-start]="$index === 8">{{ h }}</span>
+            }
+          </div>
+        </div>
+
+        @for (row of rows(); track row.offset) {
+          <div class="hex-row">
+            <span class="offset-col">{{ row.offset }}</span>
+            <div class="hex-cols">
+              @for (cell of row.cells; track $index) {
+                <span
+                  class="hex-cell"
+                  [class.hex-cell-empty]="cell.index < 0"
+                  [class.hex-group-start]="$index === 8"
+                  [style]="cell.style"
+                  [attr.data-index]="cell.index >= 0 ? cell.index : null"
+                  (mouseenter)="onByteEnter(cell.index)"
+                  (mouseleave)="onByteLeave()"
+                >{{ cell.hex }}</span>
+              }
+            </div>
+          </div>
+        }
+
+      </div>
+
+      <div class="hex-active-label">
+        @if (effectiveActive()) {
+          <span>
+            Pole: <strong>{{ effectiveActive() }}</strong> · bajty {{ activeByteRange() }}
+            @if (activeDescription()) { · {{ activeDescription() }} }
+          </span>
+        } @else {
+          <span class="muted">Najeďte myší na pole v legendě nebo na detail chunku pro zvýraznění bajtů</span>
+        }
+      </div>
+
+    }
+
+  }
+
+</div>

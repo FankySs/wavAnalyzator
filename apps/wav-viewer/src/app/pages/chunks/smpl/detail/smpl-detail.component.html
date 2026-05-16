@@ -1,5 +1,15 @@
 @if (smpl(); as s) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="smplHighlights()"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <!-- Info panel -->
   <div class="info-panel">
     Chunk smpl obsahuje parametry pro samplingové nástroje a definici smyček.
@@ -15,13 +25,20 @@
     </div>
 
     <div class="params-grid">
-      <app-audio-param-card icon="" label="MIDI nota"         [value]="midiNoteLabel()" />
-      <app-audio-param-card icon="" label="Sample Period"     [value]="samplePeriodLabel()" />
-      <app-audio-param-card icon="" label="Pitch Fraction"    [value]="pitchFractionLabel()" />
-      <app-audio-param-card icon="" label="SMPTE Format"      [value]="smpteFormatLabel()" />
-      <app-audio-param-card icon="" label="SMPTE Offset"      [value]="smpteOffsetLabel()" />
-      <app-audio-param-card icon="" label="Výrobce"           [value]="manufacturerLabel()" />
-      <app-audio-param-card icon="" label="Produkt"           [value]="productLabel()" />
+      <app-audio-param-card icon="" label="MIDI nota"         [value]="midiNoteLabel()"
+        (mouseenter)="activeHighlight.set('MIDI Unity Note')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Sample Period"     [value]="samplePeriodLabel()"
+        (mouseenter)="activeHighlight.set('Sample Period')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Pitch Fraction"    [value]="pitchFractionLabel()"
+        (mouseenter)="activeHighlight.set('MIDI Pitch Frac')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="SMPTE Format"      [value]="smpteFormatLabel()"
+        (mouseenter)="activeHighlight.set('SMPTE Format')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="SMPTE Offset"      [value]="smpteOffsetLabel()"
+        (mouseenter)="activeHighlight.set('SMPTE Offset')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Výrobce"           [value]="manufacturerLabel()"
+        (mouseenter)="activeHighlight.set('Manufacturer')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Produkt"           [value]="productLabel()"
+        (mouseenter)="activeHighlight.set('Product')" (mouseleave)="activeHighlight.set(null)" />
     </div>
 
     <!-- Loops table -->
@@ -44,7 +61,9 @@
           </thead>
           <tbody>
             @for (loop of s.loops; track $index) {
-              <tr>
+              <tr
+                (mouseenter)="activeHighlight.set('Loop ' + ($index + 1))"
+                (mouseleave)="activeHighlight.set(null)">
                 <td>{{ $index + 1 }}</td>
                 <td>{{ loopTypeLabel(loop.type) }}</td>
                 <td>{{ loop.start }}</td>

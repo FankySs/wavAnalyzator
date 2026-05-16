@@ -1,5 +1,15 @@
 @if (inst()) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="instHighlights"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <!-- Info panel -->
   <div class="info-panel">
     Chunk inst obsahuje hudební parametry pro samplingové nástroje a syntezátory.
@@ -15,13 +25,20 @@
     </div>
 
     <div class="params-grid">
-      <app-audio-param-card icon="" label="Základní nota"    [value]="unshiftedNoteLabel()" />
-      <app-audio-param-card icon="" label="Fine Tune"        [value]="fineTuneLabel()" />
-      <app-audio-param-card icon="" label="Zesílení"         [value]="gainLabel()" />
-      <app-audio-param-card icon="" label="Nejnižší nota"    [value]="lowNoteLabel()" />
-      <app-audio-param-card icon="" label="Nejvyšší nota"    [value]="highNoteLabel()" />
-      <app-audio-param-card icon="" label="Nejnižší velocity" [value]="lowVelocityLabel()" />
-      <app-audio-param-card icon="" label="Nejvyšší velocity" [value]="highVelocityLabel()" />
+      <app-audio-param-card icon="" label="Základní nota"    [value]="unshiftedNoteLabel()"
+        (mouseenter)="activeHighlight.set('Unshifted Note')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Fine Tune"        [value]="fineTuneLabel()"
+        (mouseenter)="activeHighlight.set('Fine Tune')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Zesílení"         [value]="gainLabel()"
+        (mouseenter)="activeHighlight.set('Gain')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Nejnižší nota"    [value]="lowNoteLabel()"
+        (mouseenter)="activeHighlight.set('Low Note')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Nejvyšší nota"    [value]="highNoteLabel()"
+        (mouseenter)="activeHighlight.set('High Note')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Nejnižší velocity" [value]="lowVelocityLabel()"
+        (mouseenter)="activeHighlight.set('Low Velocity')" (mouseleave)="activeHighlight.set(null)" />
+      <app-audio-param-card icon="" label="Nejvyšší velocity" [value]="highVelocityLabel()"
+        (mouseenter)="activeHighlight.set('High Velocity')" (mouseleave)="activeHighlight.set(null)" />
     </div>
 
     <!-- MIDI range bar -->

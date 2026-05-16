@@ -6,7 +6,7 @@ import {
   assertDateField,
   assertTimeField,
   validateListInfoEntries,
-} from './wav-validation.helpers';
+} from '../../validation/wav-validation.helpers';
 import type {
   WavChunkDto,
   CreateListInfoDto,
@@ -33,7 +33,7 @@ import {
   serializeXml,
   serializeAdtl,
 } from '@riff-parser';
-import { PrismaService } from '../prisma';
+import { PrismaService } from '../../../prisma';
 
 @Injectable()
 export class WavChunkCreateService {

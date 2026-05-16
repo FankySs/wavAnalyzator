@@ -1,5 +1,15 @@
 @if (bext(); as b) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="bextHighlights"
+    [activeHighlight]="activeHighlight()"
+    [reloadOn]="hexVersion()"
+  />
+
   <!-- Info panel – always visible -->
   <div class="info-panel">
     Broadcast Extension (BWF) – profesionální metadata pro vysílání a archivaci.
@@ -15,66 +25,66 @@
     <div class="card table-card">
       <table class="data-table">
         <tbody>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Description')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Description</td>
             <td>{{ b.description || '–' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Originator')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Originator</td>
             <td>{{ b.originator || '–' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Originator Ref')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Originator Reference</td>
             <td>{{ b.originatorReference || '–' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Origination Date')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Origination Date</td>
             <td>{{ b.originationDate || '–' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Origination Time')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Origination Time</td>
             <td>{{ b.originationTime || '–' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Time Reference')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Time Reference (low)</td>
             <td>{{ b.timeReferenceLow }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Time Reference')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Time Reference (high)</td>
             <td>{{ b.timeReferenceHigh }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Version')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Version</td>
             <td>{{ b.version }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('UMID')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">UMID</td>
             <td class="umid-cell muted text-sm">{{ b.umid }}</td>
           </tr>
           @if (b.version >= 2) {
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Loudness Value')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Loudness Value</td>
               <td>{{ b.loudnessValue !== undefined ? (b.loudnessValue / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
             </tr>
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Loudness Range')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Loudness Range</td>
               <td>{{ b.loudnessRange !== undefined ? (b.loudnessRange / 100 | number:'1.2-2') + ' LU' : '–' }}</td>
             </tr>
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Max True Peak')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Max True Peak</td>
               <td>{{ b.maxTruePeakLevel !== undefined ? (b.maxTruePeakLevel / 100 | number:'1.2-2') + ' dBTP' : '–' }}</td>
             </tr>
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Max Momentary')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Max Momentary Loudness</td>
               <td>{{ b.maxMomentaryLoudness !== undefined ? (b.maxMomentaryLoudness / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
             </tr>
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Max Short Term')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Max Short-term Loudness</td>
               <td>{{ b.maxShortTermLoudness !== undefined ? (b.maxShortTermLoudness / 100 | number:'1.2-2') + ' LUFS' : '–' }}</td>
             </tr>
           }
           @if (b.codingHistory) {
-            <tr>
+            <tr (mouseenter)="activeHighlight.set('Coding History')" (mouseleave)="activeHighlight.set(null)">
               <td class="label-cell muted text-sm">Coding History</td>
               <td class="coding-history-cell">{{ b.codingHistory }}</td>
             </tr>

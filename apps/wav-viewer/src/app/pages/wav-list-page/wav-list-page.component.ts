@@ -2,6 +2,7 @@ import {
   Component,
   DestroyRef,
   WritableSignal,
+  computed,
   effect,
   inject,
   signal,
@@ -9,12 +10,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import type { WavFileDto } from '@shared-types';
-import { WavApiService } from '../../services/wav-api.service';
+import { WavApiService, type WavFilter } from '../../services/wav-api.service';
 import { AudioFileService } from '../../services/audio-file.service';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { ConfirmInlineComponent } from '../../components/confirm-inline/confirm-inline.component';
 import { formatFileSize, formatDate, formatDuration } from '../../utils/format.utils';
+import { CHUNK_TYPES } from '../../utils/chunk-types';
 
 @Component({
   selector: 'app-wav-list-page',
@@ -50,6 +52,25 @@ export class WavListPageComponent {
   protected readonly renameError: WritableSignal<string | null> = signal(null);
   protected readonly isRenaming: WritableSignal<boolean> = signal(false);
 
+  // Filter
+  protected readonly activeFilter: WritableSignal<WavFilter> = signal({});
+  protected readonly pendingFilter: WritableSignal<WavFilter> = signal({});
+  protected readonly showFilterModal: WritableSignal<boolean> = signal(false);
+  protected readonly hasActiveFilter = computed(() => {
+    const f = this.activeFilter();
+    return !!(f.name || f.dateFrom || f.dateTo || f.chunkTypes?.length);
+  });
+  protected readonly activeChips = computed(() => {
+    const f = this.activeFilter();
+    const chips: { key: keyof WavFilter; label: string }[] = [];
+    if (f.name) chips.push({ key: 'name', label: `Název: ${f.name}` });
+    if (f.dateFrom) chips.push({ key: 'dateFrom', label: `Od: ${f.dateFrom}` });
+    if (f.dateTo) chips.push({ key: 'dateTo', label: `Do: ${f.dateTo}` });
+    if (f.chunkTypes?.length) chips.push({ key: 'chunkTypes', label: `Chunky: ${f.chunkTypes.join(', ')}` });
+    return chips;
+  });
+  protected readonly chunkTypes = CHUNK_TYPES;
+
   private readonly loadTrigger: WritableSignal<number> = signal(0);
 
   constructor() {
@@ -63,7 +84,7 @@ export class WavListPageComponent {
     this.isLoading.set(true);
     this.error.set(null);
     this.wavApiService
-      .getWavList()
+      .getWavList(this.activeFilter())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (files) => {
@@ -215,6 +236,54 @@ export class WavListPageComponent {
   protected readonly onRenameCancel = (): void => {
     this.renamingId.set(null);
     this.renameError.set(null);
+  };
+
+  protected readonly onOpenFilterModal = (): void => {
+    this.pendingFilter.set({ ...this.activeFilter() });
+    this.showFilterModal.set(true);
+  };
+
+  protected readonly onCloseFilterModal = (): void => {
+    this.showFilterModal.set(false);
+  };
+
+  protected readonly onApplyFilter = (): void => {
+    this.activeFilter.set({ ...this.pendingFilter() });
+    this.showFilterModal.set(false);
+  };
+
+  protected readonly onRemoveChip = (key: keyof WavFilter): void => {
+    this.activeFilter.update((f) => {
+      const next = { ...f };
+      delete next[key];
+      return next;
+    });
+  };
+
+  protected readonly onClearAllFilters = (): void => {
+    this.activeFilter.set({});
+  };
+
+  protected readonly onPendingNameChange = (val: string): void => {
+    this.pendingFilter.update((f) => ({ ...f, name: val || undefined }));
+  };
+
+  protected readonly onPendingDateFromChange = (val: string): void => {
+    this.pendingFilter.update((f) => ({ ...f, dateFrom: val || undefined }));
+  };
+
+  protected readonly onPendingDateToChange = (val: string): void => {
+    this.pendingFilter.update((f) => ({ ...f, dateTo: val || undefined }));
+  };
+
+  protected readonly onToggleChunkType = (type: string): void => {
+    this.pendingFilter.update((f) => {
+      const current = f.chunkTypes ?? [];
+      const next = current.includes(type)
+        ? current.filter((t) => t !== type)
+        : [...current, type];
+      return { ...f, chunkTypes: next.length ? next : undefined };
+    });
   };
 
   protected readonly onRenameKeydown = (event: KeyboardEvent, id: string): void => {

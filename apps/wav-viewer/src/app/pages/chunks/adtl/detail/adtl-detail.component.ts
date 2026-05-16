@@ -14,6 +14,14 @@ import { FormsModule } from '@angular/forms';
 import type { AdtlParsed, UpdateAdtlDto, UpdateAdtlEntryDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
 import { ConfirmInlineComponent } from '../../../../components/confirm-inline/confirm-inline.component';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const ADTL_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',         byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',       byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'List Type',  byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "Typ LIST chunku – 'adtl' = associated data list" },
+  { label: 'Sub-chunks', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Sub-chunky: labl (label), note (poznámka), ltxt (text s délkou) – každý s vlastní hlavičkou' },
+];
 
 type EditRow = {
   _id: number;
@@ -28,7 +36,7 @@ type EditRow = {
   standalone: true,
   templateUrl: './adtl-detail.component.html',
   styleUrls: ['./adtl-detail.component.css'],
-  imports: [FormsModule, ConfirmInlineComponent],
+  imports: [FormsModule, ConfirmInlineComponent, ChunkHexViewerComponent],
 })
 export class AdtlDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -38,6 +46,9 @@ export class AdtlDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly adtlHighlights: ChunkHighlight[] = ADTL_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly adtl = computed((): AdtlParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -118,6 +129,7 @@ export class AdtlDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

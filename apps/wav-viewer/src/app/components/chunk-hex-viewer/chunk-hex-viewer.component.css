@@ -1,0 +1,155 @@
+.loading-state {
+  padding: 16px;
+  text-align: center;
+}
+
+/* Card */
+.hex-viewer {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+/* Viewer header */
+.hex-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hex-viewer-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hex-toggle-btn {
+  font-size: 12px;
+}
+
+.hex-legend,
+.hex-grid,
+.hex-active-label {
+  margin-top: 12px;
+}
+
+.hex-viewer-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* Legend */
+.hex-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hex-legend-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  background-color: transparent;
+  cursor: default;
+  transition: background-color 120ms ease;
+}
+
+.hex-legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  flex-shrink: 0;
+  transition: background-color 120ms ease;
+}
+
+/* Hex grid */
+.hex-grid {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.hex-header,
+.hex-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hex-header {
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.col-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* Offset column */
+.offset-col {
+  min-width: 56px;
+  color: var(--muted);
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 8px;
+}
+
+/* Hex cells */
+.hex-cols {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.hex-header-cell {
+  min-width: 26px;
+  padding: 3px 5px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hex-cell {
+  min-width: 26px;
+  padding: 3px 5px;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: default;
+  color: var(--text);
+  background-color: transparent;
+  transition: background-color 120ms ease;
+  user-select: none;
+}
+
+.hex-cell-empty {
+  visibility: hidden;
+}
+
+.hex-group-start {
+  margin-left: 12px;
+}
+
+/* Active label */
+.hex-active-label {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  min-height: 22px;
+}

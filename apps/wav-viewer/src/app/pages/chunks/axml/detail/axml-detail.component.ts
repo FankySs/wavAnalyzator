@@ -13,13 +13,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import type { AxmlParsed, UpdateAxmlDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const AXML_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',       byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',     byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'XML Data', byteOffset: 8, byteLength: -1, color: 'var(--warning)', description: 'XML metadata ve formátu UTF-8 (proměnná délka)' },
+];
 
 @Component({
   selector: 'app-axml-detail',
   standalone: true,
   templateUrl: './axml-detail.component.html',
   styleUrls: ['./axml-detail.component.css'],
-  imports: [FormsModule],
+  imports: [FormsModule, ChunkHexViewerComponent],
 })
 export class AxmlDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -29,6 +36,9 @@ export class AxmlDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly axmlHighlights: ChunkHighlight[] = AXML_HIGHLIGHTS;
+  protected readonly hexVersion = signal(0);
 
   protected readonly axml = computed((): AxmlParsed | null => {
     const parsed = this.liveChunk()?.parsed;
@@ -73,6 +83,7 @@ export class AxmlDetailComponent {
       .subscribe({
         next: (updated) => {
           this.liveChunk.set(updated);
+          this.hexVersion.update(v => v + 1);
           this.isSaving.set(false);
           this.savingChange.emit(false);
           this.isEditing.set(false);

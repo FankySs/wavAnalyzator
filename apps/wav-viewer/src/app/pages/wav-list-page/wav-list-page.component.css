@@ -80,6 +80,89 @@
 .file-preview-icon { font-size: 28px; }
 .file-preview-name { font-weight: 500; margin: 0 0 2px; }
 
+.col-filter-btn { text-align: right; white-space: nowrap; }
+
+/* Filter button */
+.filter-btn { position: relative; }
+.filter-btn-active { font-weight: 600; }
+.filter-btn-active::after {
+  content: '';
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 6px; height: 6px;
+  background: var(--brand, #6aa6ff);
+  border-radius: 50%;
+}
+
+/* Active filter chips */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  background: rgba(106, 166, 255, .12);
+  border: 1px solid rgba(106, 166, 255, .3);
+  border-radius: 12px;
+  font-size: 12px;
+}
+.chip-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 10px;
+  padding: 0;
+  line-height: 1;
+}
+.chip-remove:hover { color: var(--danger, #f87171); }
+
+/* Filter form */
+.filter-form { display: flex; flex-direction: column; gap: 16px; }
+.filter-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.date-range .form-input { flex: 1; }
+
+/* Chunk type toggle buttons */
+.chunk-type-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chunk-toggle {
+  padding: 3px 10px;
+  font-size: 12px;
+  font-family: monospace;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,.15);
+  background: var(--panel-2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.chunk-toggle:hover { border-color: var(--brand, #6aa6ff); color: inherit; }
+.chunk-toggle-active {
+  background: rgba(106, 166, 255, .15);
+  border-color: var(--brand, #6aa6ff);
+  color: var(--brand, #6aa6ff);
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
