@@ -1,5 +1,14 @@
 @if (fact()) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="factHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk fact obsahuje počet dekódovaných vzorků na kanál.
     Je povinný pro všechny komprimované WAV soubory (např. ADPCM)
@@ -11,7 +20,8 @@
       <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
     </div>
     <div class="params-grid">
-      <app-audio-param-card icon="" label="Počet vzorků" [value]="sampleLengthLabel()" />
+      <app-audio-param-card icon="" label="Počet vzorků" [value]="sampleLengthLabel()"
+        (mouseenter)="activeHighlight.set('Sample Count')" (mouseleave)="activeHighlight.set(null)" />
     </div>
   }
 

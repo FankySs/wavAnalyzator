@@ -69,7 +69,7 @@
           <app-adtl-detail [chunk]="chunk()!" [wavId]="id()" (savingChange)="onSavingChange($event)" />
         }
         @case ('junk') {
-          <app-junk-detail [chunk]="chunk()!" />
+          <app-junk-detail [chunk]="chunk()!" [wavId]="id()" />
         }
         @default {
           <app-unknown-detail [chunk]="chunk()!" />

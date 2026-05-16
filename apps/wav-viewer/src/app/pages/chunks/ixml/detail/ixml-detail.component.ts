@@ -13,13 +13,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import type { IxmlParsed, UpdateIxmlDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const IXML_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',       byteOffset: 0, byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',     byteOffset: 4, byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'XML Data', byteOffset: 8, byteLength: -1, color: 'var(--warning)', description: 'iXML metadata ve formátu UTF-8 – production sound metadata standard' },
+];
 
 @Component({
   selector: 'app-ixml-detail',
   standalone: true,
   templateUrl: './ixml-detail.component.html',
   styleUrls: ['./ixml-detail.component.css'],
-  imports: [FormsModule],
+  imports: [FormsModule, ChunkHexViewerComponent],
 })
 export class IxmlDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -29,6 +36,8 @@ export class IxmlDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly ixmlHighlights: ChunkHighlight[] = IXML_HIGHLIGHTS;
 
   protected readonly ixml = computed((): IxmlParsed | null => {
     const parsed = this.liveChunk()?.parsed;

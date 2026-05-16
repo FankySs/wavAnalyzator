@@ -13,6 +13,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import type { DispParsed, UpdateDispDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const DISP_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',   byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size', byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'Type', byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: 'Typ dat – 1 = CF_TEXT (plain text), 7 = CF_OEMTEXT' },
+  { label: 'Data', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Textový obsah chunku (ASCII/UTF-8)' },
+];
 
 const CF_TYPE_NAMES: Record<number, string> = {
   1: 'CF_TEXT',
@@ -24,7 +32,7 @@ const CF_TYPE_NAMES: Record<number, string> = {
   standalone: true,
   templateUrl: './disp-detail.component.html',
   styleUrls: ['./disp-detail.component.css'],
-  imports: [FormsModule],
+  imports: [FormsModule, ChunkHexViewerComponent],
 })
 export class DispDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -34,6 +42,8 @@ export class DispDetailComponent {
   readonly wavId = input.required<string>();
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly dispHighlights: ChunkHighlight[] = DISP_HIGHLIGHTS;
 
   protected readonly disp = computed((): DispParsed | null => {
     const parsed = this.liveChunk()?.parsed;

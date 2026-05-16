@@ -1,5 +1,14 @@
 @if (umid()) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="umidHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk umid obsahuje jedinečný identifikátor média (Unique Material Identifier)
     podle standardu SMPTE. Používá se v profesionálních archivních systémech
@@ -10,7 +19,8 @@
     <div class="view-header">
       <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
     </div>
-    <div class="card umid-card">
+    <div class="card umid-card"
+      (mouseenter)="activeHighlight.set('UMID')" (mouseleave)="activeHighlight.set(null)">
       <p class="muted text-sm" style="margin-bottom: 6px;">SMPTE UMID (64 bajtů)</p>
       <code class="umid-hex">{{ formattedHex() }}</code>
     </div>

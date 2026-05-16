@@ -1,5 +1,14 @@
 @if (axml(); as a) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="axmlHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk axml obsahuje metadata ve formátu EBU Core XML.
     Používá se v profesionálních televizních a filmových audio workflows
@@ -10,7 +19,8 @@
     <div class="view-header">
       <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
     </div>
-    <div class="card xml-card">
+    <div class="card xml-card"
+      (mouseenter)="activeHighlight.set('XML Data')" (mouseleave)="activeHighlight.set(null)">
       <pre class="xml-pre">{{ a.xml || '—' }}</pre>
     </div>
   }

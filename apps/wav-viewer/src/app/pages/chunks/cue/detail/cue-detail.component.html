@@ -1,3 +1,12 @@
+<app-chunk-hex-viewer
+  [wavId]="wavId()"
+  [chunkId]="chunk().id"
+  [chunkFourCC]="chunk().chunkId"
+  [chunkSize]="chunk().size"
+  [highlights]="cueHighlights()"
+  [activeHighlight]="activeHighlight()"
+/>
+
 <!-- Info panel -->
 <div class="info-panel">
   Chunk cue obsahuje seznam časových značek (cue pointů) v nahrávce.
@@ -127,6 +136,8 @@
             class="table-row"
             [class.row-selected]="m.isSelected"
             (click)="onRowClick(m.id)"
+            (mouseenter)="activeHighlight.set('Cue ' + ($index + 1) + ' – ID')"
+            (mouseleave)="activeHighlight.set(null)"
           >
             <td>{{ m.label }}</td>
             <td>{{ m.timeStr }}</td>

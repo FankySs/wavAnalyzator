@@ -1,5 +1,14 @@
 @if (cart(); as c) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="cartHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk cart obsahuje metadata definovaná standardem NAB (National Association
     of Broadcasters) pro rozhlasové vysílání. Ukládá informace o vysílání jako
@@ -21,87 +30,87 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Version')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Version</td>
             <td class="desc-cell muted text-sm">Verze formátu</td>
             <td>{{ c.version || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Title')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Title</td>
             <td class="desc-cell muted text-sm">Název pořadu nebo skladby</td>
             <td>{{ c.title || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Artist')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Artist</td>
             <td class="desc-cell muted text-sm">Interpret</td>
             <td>{{ c.artist || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Cut ID')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">CutId</td>
             <td class="desc-cell muted text-sm">Identifikátor střihu</td>
             <td>{{ c.cutId || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Client ID')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ClientId</td>
             <td class="desc-cell muted text-sm">Identifikátor klienta</td>
             <td>{{ c.clientId || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Category')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Category</td>
             <td class="desc-cell muted text-sm">Kategorie obsahu</td>
             <td>{{ c.category || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Classification')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Classification</td>
             <td class="desc-cell muted text-sm">Klasifikace</td>
             <td>{{ c.classification || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Out Cue')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">OutCue</td>
             <td class="desc-cell muted text-sm">Výstupní hláška</td>
             <td>{{ c.outCue || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Start Date')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">StartDate</td>
             <td class="desc-cell muted text-sm">Datum začátku vysílání</td>
             <td>{{ c.startDate || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Start Time')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">StartTime</td>
             <td class="desc-cell muted text-sm">Čas začátku vysílání</td>
             <td>{{ c.startTime || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('End Date')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">EndDate</td>
             <td class="desc-cell muted text-sm">Datum konce vysílání</td>
             <td>{{ c.endDate || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('End Time')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">EndTime</td>
             <td class="desc-cell muted text-sm">Čas konce vysílání</td>
             <td>{{ c.endTime || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Producer App')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ProducerAppId</td>
             <td class="desc-cell muted text-sm">Aplikace producenta</td>
             <td>{{ c.producerAppId || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Producer Ver')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">ProducerAppVersion</td>
             <td class="desc-cell muted text-sm">Verze aplikace</td>
             <td>{{ c.producerAppVersion || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('User Def')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">UserDef</td>
             <td class="desc-cell muted text-sm">Uživatelské pole</td>
             <td>{{ c.userDef || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('URL')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">URL</td>
             <td class="desc-cell muted text-sm">Odkaz</td>
             <td>{{ c.url || '—' }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Tag Text')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Tag</td>
             <td class="desc-cell muted text-sm">Dodatečné poznámky</td>
             <td class="tag-cell">{{ c.tag || '—' }}</td>

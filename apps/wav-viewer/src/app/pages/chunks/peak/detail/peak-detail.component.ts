@@ -14,13 +14,25 @@ import { FormsModule } from '@angular/forms';
 import type { PeakParsed, UpdatePeakDto, WavChunkDetailDto } from '@shared-types';
 import { WavApiService } from '../../../../services/wav-api.service';
 import { samplesToTime } from '../../../../utils/time.utils';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
+
+const PEAK_HIGHLIGHTS: ChunkHighlight[] = [
+  { label: 'ID',        byteOffset: 0,  byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+  { label: 'Size',      byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+  { label: 'Version',   byteOffset: 8,  byteLength: 4, color: 'var(--warning)', description: 'Verze formátu PEAK chunku (uint32)' },
+  { label: 'Timestamp', byteOffset: 12, byteLength: 4, color: 'var(--danger)',  description: 'Unix timestamp vytvoření chunku (uint32)' },
+  { label: 'Ch1 Value', byteOffset: 16, byteLength: 4, color: '#b388ff',        description: 'Maximální amplituda kanálu 1 (float32)' },
+  { label: 'Ch1 Pos',   byteOffset: 20, byteLength: 4, color: '#80cbc4',        description: 'Pozice maximální amplitudy kanálu 1 (uint32)' },
+  { label: 'Ch2 Value', byteOffset: 24, byteLength: 4, color: '#ffab40',        description: 'Maximální amplituda kanálu 2 (float32)' },
+  { label: 'Ch2 Pos',   byteOffset: 28, byteLength: 4, color: '#f48fb1',        description: 'Pozice maximální amplitudy kanálu 2 (uint32)' },
+];
 
 @Component({
   selector: 'app-peak-detail',
   standalone: true,
   templateUrl: './peak-detail.component.html',
   styleUrls: ['./peak-detail.component.css'],
-  imports: [FormsModule],
+  imports: [FormsModule, ChunkHexViewerComponent],
 })
 export class PeakDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -33,6 +45,8 @@ export class PeakDetailComponent {
   protected readonly resolvedSampleRate = computed(() => this.sampleRate() ?? 44100);
 
   protected readonly liveChunk: WritableSignal<WavChunkDetailDto | null> = signal(null);
+  protected readonly activeHighlight = signal<string | null>(null);
+  protected readonly peakHighlights: ChunkHighlight[] = PEAK_HIGHLIGHTS;
 
   protected readonly peak = computed((): PeakParsed | null => {
     const parsed = this.liveChunk()?.parsed;

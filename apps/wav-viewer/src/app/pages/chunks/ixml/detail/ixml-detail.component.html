@@ -1,5 +1,14 @@
 @if (ixml(); as x) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="ixmlHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk ixml obsahuje metadata ve formátu iXML používaném v filmové produkci.
     Uchovává informace o scéně, čísle záběru, jménech operátorů a nahrávacím
@@ -10,7 +19,8 @@
     <div class="view-header">
       <button class="btn btn-sm" (click)="onEditClick()">✎ Upravit</button>
     </div>
-    <div class="card xml-card">
+    <div class="card xml-card"
+      (mouseenter)="activeHighlight.set('XML Data')" (mouseleave)="activeHighlight.set(null)">
       <pre class="xml-pre">{{ x.xml || '—' }}</pre>
     </div>
   }

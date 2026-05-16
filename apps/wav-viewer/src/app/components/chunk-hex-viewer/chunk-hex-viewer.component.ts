@@ -62,8 +62,10 @@ export class ChunkHexViewerComponent {
 
   private readonly hlMap = computed((): Map<number, ChunkHighlight> => {
     const map = new Map<number, ChunkHighlight>();
+    const bytesLen = this.bytes()?.length ?? 0;
     for (const h of this.highlights()) {
-      for (let i = h.byteOffset; i < h.byteOffset + h.byteLength; i++) {
+      const end = h.byteLength === -1 ? bytesLen : h.byteOffset + h.byteLength;
+      for (let i = h.byteOffset; i < end; i++) {
         map.set(i, h);
       }
     }
@@ -107,7 +109,9 @@ export class ChunkHexViewerComponent {
     const hl = this.highlights().find((h) => h.label === active);
     if (!hl) return '';
     const start = `0x${hl.byteOffset.toString(16).toUpperCase().padStart(2, '0')}`;
-    const end = `0x${(hl.byteOffset + hl.byteLength - 1).toString(16).toUpperCase().padStart(2, '0')}`;
+    const bytesLen = this.bytes()?.length ?? 0;
+    const endByte = hl.byteLength === -1 ? bytesLen - 1 : hl.byteOffset + hl.byteLength - 1;
+    const end = `0x${endByte.toString(16).toUpperCase().padStart(2, '0')}`;
     return `${start}–${end}`;
   });
 

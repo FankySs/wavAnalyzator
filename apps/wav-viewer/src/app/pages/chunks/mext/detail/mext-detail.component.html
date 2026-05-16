@@ -1,5 +1,14 @@
 @if (mext(); as m) {
 
+  <app-chunk-hex-viewer
+    [wavId]="wavId()"
+    [chunkId]="chunk().id"
+    [chunkFourCC]="chunk().chunkId"
+    [chunkSize]="chunk().size"
+    [highlights]="mextHighlights"
+    [activeHighlight]="activeHighlight()"
+  />
+
   <div class="info-panel">
     Chunk MEXT (Multiplexed Audio Extension) obsahuje informace pro
     postprodukci a synchronizaci multikanálových souborů. Definuje
@@ -21,22 +30,22 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Sound Information')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Sound Information</td>
             <td class="desc-cell muted text-sm">Informace o zvuku</td>
             <td class="hex-cell">{{ toHex(m.soundInformation) }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Frame Size')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Frame Count</td>
             <td class="desc-cell muted text-sm">Počet snímků</td>
             <td>{{ m.frameCount }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Ancillary Length')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Ancillary Data Length</td>
             <td class="desc-cell muted text-sm">Délka doplňkových dat</td>
             <td>{{ m.ancillaryDataLength }}</td>
           </tr>
-          <tr>
+          <tr (mouseenter)="activeHighlight.set('Ancillary Data')" (mouseleave)="activeHighlight.set(null)">
             <td class="label-cell muted text-sm">Ancillary Data Def</td>
             <td class="desc-cell muted text-sm">Definice doplňkových dat</td>
             <td class="hex-cell">{{ toHex(m.ancillaryDataDef) }}</td>

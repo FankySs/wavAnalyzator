@@ -27,6 +27,7 @@ import { WavApiService } from '../../../../services/wav-api.service';
 import { ConfirmInlineComponent } from '../../../../components/confirm-inline/confirm-inline.component';
 import { WaveformPlayerComponent, CueMarker } from '../../../../components/waveform-player/waveform-player.component';
 import { samplesToTime, timeToSamples } from '../../../../utils/time.utils';
+import { ChunkHexViewerComponent, type ChunkHighlight } from '../../../../components/chunk-hex-viewer/chunk-hex-viewer.component';
 
 type LocalPoint = {
   id: number; // negative = temporary (not yet saved to server)
@@ -40,7 +41,7 @@ type PanelMode = 'view' | 'edit' | 'new';
   standalone: true,
   templateUrl: './cue-detail.component.html',
   styleUrls: ['./cue-detail.component.css'],
-  imports: [FormsModule, RouterLink, ConfirmInlineComponent, WaveformPlayerComponent],
+  imports: [FormsModule, RouterLink, ConfirmInlineComponent, WaveformPlayerComponent, ChunkHexViewerComponent],
 })
 export class CueDetailComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -49,6 +50,32 @@ export class CueDetailComponent {
 
   readonly chunk = input.required<WavChunkDetailDto>();
   readonly wavId = input.required<string>();
+
+  protected readonly activeHighlight = signal<string | null>(null);
+
+  protected readonly cueHighlights = computed<ChunkHighlight[]>(() => {
+    const base: ChunkHighlight[] = [
+      { label: 'ID',        byteOffset: 0, byteLength: 4, color: 'var(--brand)',   description: '4bajtový ASCII identifikátor chunku' },
+      { label: 'Size',      byteOffset: 4, byteLength: 4, color: 'var(--success)', description: 'Velikost těla chunku v bajtech' },
+      { label: 'Cue Count', byteOffset: 8, byteLength: 4, color: 'var(--warning)', description: 'Počet cue pointů (uint32)' },
+    ];
+    const parsed = this.chunk().parsed as CueParsed | null;
+    const points = parsed?.chunkType === 'cue' ? parsed.points : [];
+    const colors = ['#b388ff', '#80cbc4', '#ffab40', '#f48fb1', '#a5d6a7', '#ce93d8', '#80deea', '#ef9a9a'];
+    points.forEach((_, i) => {
+      const baseOffset = 12 + i * 24;
+      const color = colors[i % colors.length];
+      base.push(
+        { label: `Cue ${i + 1} – ID`,          byteOffset: baseOffset,      byteLength: 4, color, description: `Cue point ${i + 1}: identifikátor (uint32)` },
+        { label: `Cue ${i + 1} – Position`,    byteOffset: baseOffset + 4,  byteLength: 4, color, description: `Cue point ${i + 1}: pozice v samplich (uint32)` },
+        { label: `Cue ${i + 1} – Data Chunk`,  byteOffset: baseOffset + 8,  byteLength: 4, color, description: `Cue point ${i + 1}: ID odkazovaného data chunku` },
+        { label: `Cue ${i + 1} – Chunk Start`, byteOffset: baseOffset + 12, byteLength: 4, color, description: `Cue point ${i + 1}: offset začátku chunku` },
+        { label: `Cue ${i + 1} – Block Start`, byteOffset: baseOffset + 16, byteLength: 4, color, description: `Cue point ${i + 1}: offset začátku bloku` },
+        { label: `Cue ${i + 1} – Sample Ofs`,  byteOffset: baseOffset + 20, byteLength: 4, color, description: `Cue point ${i + 1}: offset vzorku v bloku` },
+      );
+    });
+    return base;
+  });
 
   // Cue point state
   protected readonly livePoints: WritableSignal<LocalPoint[]> = signal([]);
