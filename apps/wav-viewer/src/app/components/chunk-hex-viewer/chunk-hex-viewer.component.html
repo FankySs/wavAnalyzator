@@ -24,18 +24,21 @@
 
     @if (!isLoading() && !error() && bytes()) {
 
-      @if (highlights().length) {
+      @if (visibleHighlights().length) {
         <div class="hex-legend">
-          @for (h of highlights(); track h.label) {
+          @for (h of visibleHighlights(); track h.label) {
             <span
               class="hex-legend-chip"
               [class.hex-legend-chip-active]="h.label === effectiveActive()"
+              [class.hex-legend-chip-locked]="h.label === lockedHighlight()"
               [style.background-color]="h.label === effectiveActive()
                 ? 'color-mix(in srgb, ' + h.color + ' 20%, transparent)'
                 : ''"
+              [style.border]="h.label === lockedHighlight() ? '2px solid ' + h.color : '2px solid transparent'"
               [attr.title]="h.description || null"
               (mouseenter)="onChipEnter(h.label)"
               (mouseleave)="onChipLeave()"
+              (click)="onChipClick(h.label)"
             >
               <span class="hex-legend-dot"
                 [style.background-color]="h.label === effectiveActive() ? h.color : 'var(--muted)'"
@@ -70,6 +73,7 @@
                   [attr.data-index]="cell.index >= 0 ? cell.index : null"
                   (mouseenter)="onByteEnter(cell.index)"
                   (mouseleave)="onByteLeave()"
+                  (click)="onByteClick(cell.index)"
                 >{{ cell.hex }}</span>
               }
             </div>
@@ -84,6 +88,9 @@
             Field: <strong>{{ effectiveActive() }}</strong> · bytes {{ activeByteRange() }}
             @if (activeDescription()) { · {{ activeDescription() }} }
           </span>
+          @if (lockedHighlight()) {
+            <span class="hex-lock-indicator">🔒 Locked</span>
+          }
         } @else {
           <span class="muted">Hover over a field in the legend or a chunk detail to highlight bytes</span>
         }

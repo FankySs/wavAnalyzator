@@ -3,8 +3,12 @@ export type WaveformPointDto = {
   max: number; //  0.0 to 1.0
 };
 
-export type WaveformDto = {
+export type WaveformChannelDto = {
   points: WaveformPointDto[];
+};
+
+export type WaveformDto = {
+  channels: WaveformChannelDto[]; // one entry per audio channel
   durationSec: number;
   sampleRate: number;
 };

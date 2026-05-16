@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import type { WavFileDto } from '@shared-types';
 import { WavApiService, type WavFilter } from '../../services/wav-api.service';
 import { AudioFileService } from '../../services/audio-file.service';
-import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { ConfirmInlineComponent } from '../../components/confirm-inline/confirm-inline.component';
 import { formatFileSize, formatDate, formatDuration } from '../../utils/format.utils';
@@ -23,7 +22,7 @@ import { CHUNK_TYPES } from '../../utils/chunk-types';
   standalone: true,
   templateUrl: './wav-list-page.component.html',
   styleUrls: ['./wav-list-page.component.css'],
-  imports: [FormsModule, ModalComponent, ConfirmInlineComponent],
+  imports: [ModalComponent, ConfirmInlineComponent],
 })
 export class WavListPageComponent {
   private readonly wavApiService = inject(WavApiService);
@@ -46,9 +45,10 @@ export class WavListPageComponent {
   protected readonly pendingDeleteId: WritableSignal<string | null> = signal(null);
   protected readonly isDeleting: WritableSignal<boolean> = signal(false);
 
-  // Inline rename
-  protected readonly renamingId: WritableSignal<string | null> = signal(null);
-  protected renameValue = '';
+  // Rename modal
+  protected readonly renameModalOpen: WritableSignal<boolean> = signal(false);
+  protected readonly renameTarget: WritableSignal<WavFileDto | null> = signal(null);
+  protected readonly renameValue: WritableSignal<string> = signal('');
   protected readonly renameError: WritableSignal<string | null> = signal(null);
   protected readonly isRenaming: WritableSignal<boolean> = signal(false);
 
@@ -197,15 +197,21 @@ export class WavListPageComponent {
     this.pendingFile.set(null);
   };
 
-  protected readonly onRenameStart = (file: WavFileDto, event: Event): void => {
-    event.stopPropagation();
-    this.renamingId.set(file.id);
-    this.renameValue = file.fileName;
+  protected readonly openRenameModal = (file: WavFileDto): void => {
+    this.renameTarget.set(file);
+    this.renameValue.set(file.fileName);
+    this.renameError.set(null);
+    this.renameModalOpen.set(true);
+  };
+
+  protected readonly closeRenameModal = (): void => {
+    this.renameModalOpen.set(false);
+    this.renameTarget.set(null);
     this.renameError.set(null);
   };
 
-  protected readonly onRenameConfirm = (id: string): void => {
-    const trimmed = this.renameValue.trim();
+  protected readonly onRenameConfirm = (): void => {
+    const trimmed = this.renameValue().trim();
     if (!trimmed) {
       this.renameError.set('Name must not be empty.');
       return;
@@ -214,28 +220,25 @@ export class WavListPageComponent {
       this.renameError.set('Name must end with the .wav extension.');
       return;
     }
+    const target = this.renameTarget();
+    if (!target) return;
 
     this.isRenaming.set(true);
     this.renameError.set(null);
     this.wavApiService
-      .renameWav(id, { fileName: trimmed })
+      .renameWav(target.id, { fileName: trimmed })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updated) => {
-          this.files.update((files) => files.map((f) => (f.id === id ? updated : f)));
-          this.renamingId.set(null);
+          this.files.update((files) => files.map((f) => (f.id === target.id ? updated : f)));
           this.isRenaming.set(false);
+          this.closeRenameModal();
         },
         error: (err: Error) => {
           this.renameError.set(err.message);
           this.isRenaming.set(false);
         },
       });
-  };
-
-  protected readonly onRenameCancel = (): void => {
-    this.renamingId.set(null);
-    this.renameError.set(null);
   };
 
   protected readonly onOpenFilterModal = (): void => {
@@ -284,11 +287,6 @@ export class WavListPageComponent {
         : [...current, type];
       return { ...f, chunkTypes: next.length ? next : undefined };
     });
-  };
-
-  protected readonly onRenameKeydown = (event: KeyboardEvent, id: string): void => {
-    if (event.key === 'Enter') this.onRenameConfirm(id);
-    if (event.key === 'Escape') this.onRenameCancel();
   };
 
   protected readonly formatFileSize = formatFileSize;

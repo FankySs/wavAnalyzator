@@ -1,6 +1,7 @@
 import {
   Component,
   DestroyRef,
+  HostListener,
   WritableSignal,
   computed,
   effect,
@@ -57,15 +58,22 @@ export class ChunkHexViewerComponent {
   protected readonly isExpanded: WritableSignal<boolean> = signal(false);
 
   private readonly internalHighlight: WritableSignal<string | null> = signal(null);
+  protected readonly lockedHighlight: WritableSignal<string | null> = signal(null);
 
   protected readonly effectiveActive = computed((): string | null =>
-    this.internalHighlight() ?? this.activeHighlight() ?? null,
+    this.internalHighlight() ?? this.lockedHighlight() ?? this.activeHighlight() ?? null,
   );
+
+  protected readonly visibleHighlights = computed((): ChunkHighlight[] => {
+    const bytes = this.bytes();
+    if (!bytes) return [];
+    return this.highlights().filter(h => h.byteOffset < bytes.length);
+  });
 
   private readonly hlMap = computed((): Map<number, ChunkHighlight> => {
     const map = new Map<number, ChunkHighlight>();
     const bytesLen = this.bytes()?.length ?? 0;
-    for (const h of this.highlights()) {
+    for (const h of this.visibleHighlights()) {
       const end = h.byteLength === -1 ? bytesLen : h.byteOffset + h.byteLength;
       for (let i = h.byteOffset; i < end; i++) {
         map.set(i, h);
@@ -79,6 +87,8 @@ export class ChunkHexViewerComponent {
     if (!bytes) return [];
 
     const active = this.effectiveActive();
+    const locked = this.lockedHighlight();
+    const hovering = this.internalHighlight();
     const hlMap = this.hlMap();
 
     const result: HexRow[] = [];
@@ -94,9 +104,11 @@ export class ChunkHexViewerComponent {
         const byte = bytes[idx];
         const hl = hlMap.get(idx);
         const isActive = hl !== undefined && hl.label === active;
-        const style: Record<string, string> = (hl && isActive)
-          ? { 'background-color': `color-mix(in srgb, ${hl.color} 40%, transparent)` }
-          : {};
+        let style: Record<string, string> = {};
+        if (hl && isActive) {
+          const opacity = hl.label === locked && !hovering ? '55%' : '40%';
+          style = { 'background-color': `color-mix(in srgb, ${hl.color} ${opacity}, transparent)` };
+        }
         cells.push({ index: idx, hex: byte.toString(16).padStart(2, '0').toUpperCase(), style });
       }
 
@@ -108,7 +120,7 @@ export class ChunkHexViewerComponent {
   protected readonly activeByteRange = computed((): string => {
     const active = this.effectiveActive();
     if (!active) return '';
-    const hl = this.highlights().find((h) => h.label === active);
+    const hl = this.visibleHighlights().find((h) => h.label === active);
     if (!hl) return '';
     const start = `0x${hl.byteOffset.toString(16).toUpperCase().padStart(2, '0')}`;
     const bytesLen = this.bytes()?.length ?? 0;
@@ -120,7 +132,7 @@ export class ChunkHexViewerComponent {
   protected readonly activeDescription = computed((): string => {
     const active = this.effectiveActive();
     if (!active) return '';
-    return this.highlights().find((h) => h.label === active)?.description ?? '';
+    return this.visibleHighlights().find((h) => h.label === active)?.description ?? '';
   });
 
   protected readonly colHeaders = Array.from({ length: 16 }, (_, i) =>
@@ -170,6 +182,13 @@ export class ChunkHexViewerComponent {
     this.internalHighlight.set(null);
   };
 
+  protected readonly onByteClick = (index: number): void => {
+    if (index < 0) return;
+    const hl = this.hlMap().get(index);
+    const label = hl?.label ?? null;
+    this.lockedHighlight.set(this.lockedHighlight() === label ? null : label);
+  };
+
   protected readonly onChipEnter = (label: string): void => {
     this.internalHighlight.set(label);
   };
@@ -177,4 +196,16 @@ export class ChunkHexViewerComponent {
   protected readonly onChipLeave = (): void => {
     this.internalHighlight.set(null);
   };
+
+  protected readonly onChipClick = (label: string): void => {
+    this.lockedHighlight.set(this.lockedHighlight() === label ? null : label);
+  };
+
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.hex-grid') && !target.closest('.hex-legend')) {
+      this.lockedHighlight.set(null);
+    }
+  }
 }

@@ -11,7 +11,11 @@ const FMT_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'Sample Rate',  byteOffset: 12, byteLength: 4, color: '#b388ff',        description: 'Sampling frequency in Hz (uint32, little-endian)' },
   { label: 'Byte Rate',    byteOffset: 16, byteLength: 4, color: '#80cbc4',        description: 'Bytes per second = SampleRate × Channels × BitsPerSample / 8' },
   { label: 'Block Align',  byteOffset: 20, byteLength: 2, color: '#ffab40',        description: 'Size of one sample frame for all channels in bytes' },
-  { label: 'Bit Depth',    byteOffset: 22, byteLength: 2, color: '#f48fb1',        description: 'Bits per sample – typically 8, 16, 24 or 32' },
+  { label: 'Bit Depth',        byteOffset: 22, byteLength: 2,  color: '#f48fb1', description: 'Bits per sample – typically 8, 16, 24 or 32' },
+  { label: 'cbSize',           byteOffset: 24, byteLength: 2,  color: '#ce93d8', description: 'Size of extension in bytes – must be 22 for WAVE_FORMAT_EXTENSIBLE (uint16)' },
+  { label: 'Valid Bits/Sample',byteOffset: 26, byteLength: 2,  color: '#80deea', description: 'Number of valid bits per sample – may differ from wBitsPerSample (uint16)' },
+  { label: 'Channel Mask',     byteOffset: 28, byteLength: 4,  color: '#ef9a9a', description: 'Bitmask of speaker positions – e.g. 0x003F = 5.1 surround (uint32)' },
+  { label: 'SubFormat GUID',   byteOffset: 32, byteLength: 16, color: '#ffe082', description: 'Identifies the actual codec – {00000001-...} = PCM, {00000003-...} = IEEE Float' },
 ];
 
 const FORMAT_DISPLAY: Record<string, string> = {

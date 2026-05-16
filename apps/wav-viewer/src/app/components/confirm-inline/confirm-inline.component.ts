@@ -7,7 +7,7 @@ import { Component, input, output } from '@angular/core';
   styleUrls: ['./confirm-inline.component.css'],
 })
 export class ConfirmInlineComponent {
-  readonly message = input<string>('Opravdu smazat?');
+  readonly message = input<string>('Are you sure?');
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
 }

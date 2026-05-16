@@ -47,69 +47,44 @@
   <!-- File table -->
   @if (!isLoading() && files().length > 0) {
     <div class="card table-card">
-      <table class="data-table">
-        <thead>
-        <tr>
-          <th>File name</th>
-          <th>Size</th>
-          <th>Duration</th>
-          <th>Format</th>
-          <th>Uploaded</th>
-          <th class="col-filter-btn">
-            <button class="btn btn-sm filter-btn" [class.filter-btn-active]="hasActiveFilter()" (click)="onOpenFilterModal()">🔽 Filters</button>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-          @for (file of files(); track file.id) {
-            <tr class="row-clickable" (click)="onRowClick(file.id)">
-              <td class="col-name" (click)="$event.stopPropagation()">
-                @if (renamingId() === file.id) {
-                  <div class="rename-form">
-                    <input
-                      class="rename-input"
-                      type="text"
-                      [(ngModel)]="renameValue"
-                      (keydown)="onRenameKeydown($event, file.id)"
-                      [disabled]="isRenaming()"
-                      autofocus
-                    />
-                    @if (renameError()) {
-                      <span class="rename-error">{{ renameError() }}</span>
-                    }
-                    <div class="rename-actions">
-                      <button class="btn btn-sm btn-primary" [disabled]="isRenaming()" (click)="onRenameConfirm(file.id)">Save</button>
-                      <button class="btn btn-sm" [disabled]="isRenaming()" (click)="onRenameCancel()">Cancel</button>
-                    </div>
-                  </div>
-                } @else {
-                  <span class="file-name" title="Click to rename" (click)="onRenameStart(file, $event)">{{ file.fileName }}</span>
-                }
-              </td>
-              <td>{{ formatFileSize(file.fileSize) }}</td>
-              <td>{{ formatDuration(file.durationSec) }}</td>
-              <td class="col-format">{{ formatAudioInfo(file) }}</td>
-              <td class="col-date muted text-sm">{{ formatDate(file.uploadedAt) }}</td>
-              <td class="col-actions" (click)="$event.stopPropagation()">
-                @if (pendingDeleteId() === file.id) {
-                  <app-confirm-inline
-                    (confirmed)="onDeleteConfirm()"
-                    (cancelled)="onDeleteCancel()"
-                  />
-                } @else {
-                  <button class="btn btn-sm" (click)="onRowClick(file.id)">Open</button>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    [disabled]="isDeleting()"
-                    (click)="onDeleteRequest(file.id, $event)"
-                  >🗑
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <div class="file-row file-row-header">
+        <div class="col-name">File name</div>
+        <div class="col-size">Size</div>
+        <div class="col-duration">Duration</div>
+        <div class="col-format">Format</div>
+        <div class="col-uploaded">Uploaded</div>
+        <div class="col-actions">
+          <button class="btn btn-sm filter-btn" [class.filter-btn-active]="hasActiveFilter()" (click)="onOpenFilterModal()">🔽 Filters</button>
+        </div>
+      </div>
+      @for (file of files(); track file.id) {
+        <div class="file-row" (click)="onRowClick(file.id)">
+          <div class="col-name">
+            <span class="file-name">{{ file.fileName }}</span>
+          </div>
+          <div class="col-size">{{ formatFileSize(file.fileSize) }}</div>
+          <div class="col-duration">{{ formatDuration(file.durationSec) }}</div>
+          <div class="col-format">{{ formatAudioInfo(file) }}</div>
+          <div class="col-uploaded muted text-sm">{{ formatDate(file.uploadedAt) }}</div>
+          <div class="col-actions" (click)="$event.stopPropagation()">
+            @if (pendingDeleteId() === file.id) {
+              <app-confirm-inline
+                (confirmed)="onDeleteConfirm()"
+                (cancelled)="onDeleteCancel()"
+              />
+            } @else {
+              <button class="btn btn-sm" (click)="onRowClick(file.id)">Open</button>
+              <button class="btn btn-sm" (click)="openRenameModal(file)">✏</button>
+              <button
+                class="btn btn-sm btn-danger"
+                [disabled]="isDeleting()"
+                (click)="onDeleteRequest(file.id, $event)"
+              >🗑
+              </button>
+            }
+          </div>
+        </div>
+      }
     </div>
   }
 
@@ -165,6 +140,30 @@
     </button>
   </div>
 
+</app-modal>
+
+<!-- Rename modal -->
+<app-modal [isOpen]="renameModalOpen()" title="Rename file" (closed)="closeRenameModal()">
+  <div class="form-group">
+    <label class="form-label">File name</label>
+    <input
+      class="form-input"
+      [value]="renameValue()"
+      (input)="renameValue.set($any($event.target).value)"
+      (keydown.enter)="onRenameConfirm()"
+      (keydown.escape)="closeRenameModal()"
+      autofocus
+    />
+    @if (renameError()) {
+      <div class="error-msg" style="margin-top: 6px;">{{ renameError() }}</div>
+    }
+  </div>
+  <div class="modal-actions">
+    <button class="btn" (click)="closeRenameModal()" [disabled]="isRenaming()">Cancel</button>
+    <button class="btn btn-primary" (click)="onRenameConfirm()" [disabled]="isRenaming()">
+      @if (isRenaming()) { Renaming… } @else { Rename }
+    </button>
+  </div>
 </app-modal>
 
 <!-- Filter modal -->
