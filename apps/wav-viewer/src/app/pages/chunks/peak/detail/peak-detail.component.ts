@@ -21,10 +21,10 @@ const PEAK_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'Size',      byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'Version',   byteOffset: 8,  byteLength: 4, color: 'var(--warning)', description: 'PEAK chunk format version (uint32)' },
   { label: 'Timestamp', byteOffset: 12, byteLength: 4, color: 'var(--danger)',  description: 'Unix timestamp of chunk creation (uint32)' },
-  { label: 'Ch1 Value', byteOffset: 16, byteLength: 4, color: '#b388ff',        description: 'Peak amplitude of channel 1 (float32)' },
-  { label: 'Ch1 Pos',   byteOffset: 20, byteLength: 4, color: '#80cbc4',        description: 'Position of peak amplitude for channel 1 (uint32)' },
-  { label: 'Ch2 Value', byteOffset: 24, byteLength: 4, color: '#ffab40',        description: 'Peak amplitude of channel 2 (float32)' },
-  { label: 'Ch2 Pos',   byteOffset: 28, byteLength: 4, color: '#f48fb1',        description: 'Position of peak amplitude for channel 2 (uint32)' },
+  { label: 'Ch1 Value', byteOffset: 16, byteLength: 4, color: 'var(--highlight-10)',        description: 'Peak amplitude of channel 1 (float32)' },
+  { label: 'Ch1 Pos',   byteOffset: 20, byteLength: 4, color: 'var(--highlight-2)',        description: 'Position of peak amplitude for channel 1 (uint32)' },
+  { label: 'Ch2 Value', byteOffset: 24, byteLength: 4, color: 'var(--highlight-6)',        description: 'Peak amplitude of channel 2 (float32)' },
+  { label: 'Ch2 Pos',   byteOffset: 28, byteLength: 4, color: 'var(--highlight-8)',        description: 'Position of peak amplitude for channel 2 (uint32)' },
 ];
 
 @Component({

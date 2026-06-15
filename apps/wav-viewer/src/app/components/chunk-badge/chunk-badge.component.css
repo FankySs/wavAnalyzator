@@ -9,10 +9,10 @@
   white-space: pre;
 }
 
-.badge-blue  { background: rgba(106,166,255,.15); color: #7ab8ff; }
-.badge-audio { background: rgba(150,150,150,.15); color: #b0b8c4; }
-.badge-green { background: rgba(80,200,120,.15);  color: #6ddc9a; }
-.badge-purple{ background: rgba(180,100,255,.15); color: #d096ff; }
-.badge-orange{ background: rgba(255,165,60,.15);  color: #ffaa55; }
-.badge-teal  { background: rgba(0,210,190,.15);   color: #5ee8d8; }
-.badge-gray  { background: rgba(150,160,180,.12); color: #9aa7b2; }
+.badge-blue   { background: var(--badge-blue-bg);   color: var(--badge-blue-fg); }
+.badge-audio  { background: var(--badge-audio-bg);  color: var(--badge-audio-fg); }
+.badge-green  { background: var(--badge-green-bg);  color: var(--badge-green-fg); }
+.badge-purple { background: var(--badge-purple-bg); color: var(--badge-purple-fg); }
+.badge-orange { background: var(--badge-orange-bg); color: var(--badge-orange-fg); }
+.badge-teal   { background: var(--badge-teal-bg);   color: var(--badge-teal-fg); }
+.badge-gray   { background: var(--badge-gray-bg);   color: var(--badge-gray-fg); }

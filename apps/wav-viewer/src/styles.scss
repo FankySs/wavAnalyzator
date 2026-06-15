@@ -1,31 +1,59 @@
-:root {
-  --bg: #0f1115;
-  --panel: #151821;
-  --panel-2: #1b2030;
-  --text: #e8eef7;
-  --muted: #9aa7b2;
-  --brand: #6aa6ff;
-  --brand-2: #7fd2ff;
-  --brand-light: #c8deff;
-  --brand-mid: #7ab8ff;
-  --danger: #ff847d;
-  --warning: #ffd070;
-  --success: #6ddc9a;
-  --border: rgba(255, 255, 255, 0.06);
+:root,
+[data-theme="dark"] {
+  --bg: #0f1115; --panel: #151821; --panel-2: #1b2030;
+  --grad-1: #192036; --grad-2: #112030;
+  --text: #e8eef7; --muted: #9aa7b2;
+  --brand: #6aa6ff; --brand-2: #7fd2ff; --brand-light: #c8deff; --brand-mid: #7ab8ff;
+  --danger: #ff847d; --warning: #ffd070; --success: #6ddc9a;
+  --border: rgba(255,255,255,0.06); --surface-tint: rgba(255,255,255,0.07);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --waveform-unplayed: rgba(255,255,255,0.30); --waveform-separator: rgba(255,255,255,0.06);
+  --cue-outline: rgba(0,0,0,0.50); --cue-label-bg: rgba(0,0,0,0.60); --cue-label-text: #ffffff;
+  --highlight-1: #7cb0ff; --highlight-2: #5fd6c4; --highlight-3: #86d98f; --highlight-4: #c3d96b;
+  --highlight-5: #f5c969; --highlight-6: #f7a766; --highlight-7: #f08a82; --highlight-8: #ef8fc0;
+  --highlight-9: #cf9bf0; --highlight-10: #9aa6f5; --highlight-11: #9fb2c4; --highlight-12: #c4b09c;
+  --badge-blue-fg: #7ab8ff;   --badge-blue-bg: rgba(106,166,255,.15);
+  --badge-audio-fg: #b0b8c4;  --badge-audio-bg: rgba(150,150,150,.15);
+  --badge-green-fg: #6ddc9a;  --badge-green-bg: rgba(80,200,120,.15);
+  --badge-purple-fg: #d096ff; --badge-purple-bg: rgba(180,100,255,.15);
+  --badge-orange-fg: #ffaa55; --badge-orange-bg: rgba(255,165,60,.15);
+  --badge-teal-fg: #5ee8d8;   --badge-teal-bg: rgba(0,210,190,.15);
+  --badge-gray-fg: #9aa7b2;   --badge-gray-bg: rgba(150,160,180,.12);
   --radius: 14px;
   --radius-sm: 8px;
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
   --gap: 16px;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --card-bg: var(--panel);
+}
+
+[data-theme="light"] {
+  --bg: #eceff5; --panel: #ffffff; --panel-2: #f3f6fb;
+  --grad-1: #eef2f9; --grad-2: #e7edf6;
+  --text: #1c2230; --muted: #5b6675;
+  --brand: #2563eb; --brand-2: #0e7490; --brand-light: #3b6fd4; --brand-mid: #2f6ad0;
+  --danger: #dc2626; --warning: #b45309; --success: #047857;
+  --border: rgba(15,23,42,0.10); --surface-tint: rgba(15,23,42,0.05);
+  --shadow: 0 8px 24px rgba(15,23,42,.10);
+  --waveform-unplayed: rgba(28,34,48,0.22); --waveform-separator: rgba(28,34,48,0.10);
+  --cue-outline: rgba(15,23,42,0.45); --cue-label-bg: rgba(15,23,42,0.80); --cue-label-text: #ffffff;
+  --highlight-1: #2563eb; --highlight-2: #0d9488; --highlight-3: #16a34a; --highlight-4: #4d7c0f;
+  --highlight-5: #b45309; --highlight-6: #c2410c; --highlight-7: #dc2626; --highlight-8: #db2777;
+  --highlight-9: #9333ea; --highlight-10: #4f46e5; --highlight-11: #475569; --highlight-12: #7c5e43;
+  --badge-blue-fg: #1d4ed8;   --badge-blue-bg: rgba(37,99,235,.12);
+  --badge-audio-fg: #475569;  --badge-audio-bg: rgba(71,85,105,.10);
+  --badge-green-fg: #047857;  --badge-green-bg: rgba(4,120,87,.12);
+  --badge-purple-fg: #7e22ce; --badge-purple-bg: rgba(147,51,234,.12);
+  --badge-orange-fg: #c2410c; --badge-orange-bg: rgba(194,65,12,.12);
+  --badge-teal-fg: #0f766e;   --badge-teal-bg: rgba(13,148,136,.12);
+  --badge-gray-fg: #64748b;   --badge-gray-bg: rgba(100,116,139,.10);
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 10% -10%, #192036 0%, transparent 60%),
-              radial-gradient(900px 700px at 100% 0%, #112030 0%, transparent 60%),
+  background: radial-gradient(1200px 800px at 10% -10%, var(--grad-1) 0%, transparent 60%),
+              radial-gradient(900px 700px at 100% 0%, var(--grad-2) 0%, transparent 60%),
               var(--bg);
   color: var(--text);
 }
@@ -66,8 +94,8 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
   gap: 6px;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.1);
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
   color: var(--text);
   cursor: pointer;
   font-size: 14px;
@@ -78,27 +106,27 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
   font-family: inherit;
 }
 .btn:hover:not(:disabled) {
-  background: rgba(255,255,255,.11);
-  border-color: rgba(255,255,255,.18);
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  border-color: color-mix(in srgb, var(--text) 14%, transparent);
 }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
 
 .btn-primary {
-  background: rgba(106, 166, 255, .18);
-  border-color: rgba(106, 166, 255, .35);
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 35%, transparent);
   color: var(--brand);
 }
 .btn-primary:hover:not(:disabled) {
-  background: rgba(106, 166, 255, .26);
+  background: color-mix(in srgb, var(--brand) 26%, transparent);
 }
 
 .btn-danger {
-  background: rgba(255, 132, 125, .1);
-  border-color: rgba(255, 132, 125, .25);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 25%, transparent);
   color: var(--danger);
 }
 .btn-danger:hover:not(:disabled) {
-  background: rgba(255, 132, 125, .2);
+  background: color-mix(in srgb, var(--danger) 20%, transparent);
 }
 
 .btn-sm { padding: 4px 10px; font-size: 12px; }
@@ -133,7 +161,7 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .06em;
-  border-bottom: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid var(--border);
 }
 .data-table td {
   padding: 10px 12px;
@@ -142,7 +170,7 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 }
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr.row-clickable { cursor: pointer; }
-.data-table tbody tr.row-clickable:hover td { background: rgba(255,255,255,.03); }
+.data-table tbody tr.row-clickable:hover td { background: var(--surface-tint); }
 
 /* Forms */
 .form-group { margin-bottom: 14px; }
@@ -160,8 +188,8 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 .form-textarea {
   width: 100%;
   box-sizing: border-box;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
   padding: 8px 12px;
@@ -172,7 +200,7 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 }
 .form-input:focus,
 .form-select:focus,
-.form-textarea:focus { border-color: rgba(106, 166, 255, .5); }
+.form-textarea:focus { border-color: color-mix(in srgb, var(--brand) 50%, transparent); }
 .form-textarea { resize: vertical; min-height: 100px; }
 .form-select option { background: var(--panel-2); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -181,8 +209,8 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 .error-msg {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 80, 80, .1);
-  border: 1px solid rgba(255, 80, 80, .25);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent);
   color: var(--danger);
   font-size: 13px;
   margin-bottom: 14px;
@@ -230,7 +258,7 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 }
 
 .loop-card {
-  border: 1px solid rgba(255,255,255,.07);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px;
   margin-bottom: 8px;
@@ -248,8 +276,8 @@ h3 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
 .info-panel {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(106,166,255,.07);
-  border: 1px solid rgba(106,166,255,.18);
+  background: color-mix(in srgb, var(--brand) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 18%, transparent);
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;

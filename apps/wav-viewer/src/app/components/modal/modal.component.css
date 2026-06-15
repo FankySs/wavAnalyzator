@@ -11,9 +11,9 @@
 
 .modal-box {
   background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
-  border: 1px solid rgba(255,255,255,.09);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 480px;
   max-height: 90vh;

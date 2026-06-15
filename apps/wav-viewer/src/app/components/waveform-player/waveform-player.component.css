@@ -13,14 +13,14 @@
   width: 100%;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.03);
+  background: var(--surface-tint);
   display: block;
 }
 
 .waveform-skeleton {
   width: 100%;
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.05);
+  background: var(--surface-tint);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -31,7 +31,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.03);
+  background: var(--surface-tint);
   color: var(--muted);
   font-size: 13px;
 }

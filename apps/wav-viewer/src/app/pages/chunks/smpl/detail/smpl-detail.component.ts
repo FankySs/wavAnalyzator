@@ -54,16 +54,16 @@ export class SmplDetailComponent {
       { label: 'Size',           byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
       { label: 'Manufacturer',   byteOffset: 8,  byteLength: 4, color: 'var(--warning)', description: 'MIDI Manufacturer ID (uint32)' },
       { label: 'Product',        byteOffset: 12, byteLength: 4, color: 'var(--danger)',  description: 'Manufacturer product ID (uint32)' },
-      { label: 'Sample Period',  byteOffset: 16, byteLength: 4, color: '#b388ff',        description: 'Sample period in nanoseconds = 1 000 000 000 / SampleRate' },
-      { label: 'MIDI Unity Note',byteOffset: 20, byteLength: 4, color: '#80cbc4',        description: 'MIDI note for playback at original pitch (0–127)' },
-      { label: 'MIDI Pitch Frac',byteOffset: 24, byteLength: 4, color: '#ffab40',        description: 'Fractional part of MIDI note (uint32, 0x80000000 = 0.5 semitone)' },
-      { label: 'SMPTE Format',   byteOffset: 28, byteLength: 4, color: '#f48fb1',        description: 'SMPTE format (0=none, 24, 25, 29, 30 fps)' },
-      { label: 'SMPTE Offset',   byteOffset: 32, byteLength: 4, color: '#a5d6a7',        description: 'SMPTE time offset (hours:minutes:seconds:frames packed)' },
-      { label: 'Loop Count',     byteOffset: 36, byteLength: 4, color: '#ce93d8',        description: 'Number of loops defined in this chunk (uint32)' },
-      { label: 'Sampler Data',   byteOffset: 40, byteLength: 4, color: '#80deea',        description: 'Length of additional sampler data after loops in bytes' },
+      { label: 'Sample Period',  byteOffset: 16, byteLength: 4, color: 'var(--highlight-10)',        description: 'Sample period in nanoseconds = 1 000 000 000 / SampleRate' },
+      { label: 'MIDI Unity Note',byteOffset: 20, byteLength: 4, color: 'var(--highlight-2)',        description: 'MIDI note for playback at original pitch (0–127)' },
+      { label: 'MIDI Pitch Frac',byteOffset: 24, byteLength: 4, color: 'var(--highlight-6)',        description: 'Fractional part of MIDI note (uint32, 0x80000000 = 0.5 semitone)' },
+      { label: 'SMPTE Format',   byteOffset: 28, byteLength: 4, color: 'var(--highlight-8)',        description: 'SMPTE format (0=none, 24, 25, 29, 30 fps)' },
+      { label: 'SMPTE Offset',   byteOffset: 32, byteLength: 4, color: 'var(--highlight-3)',        description: 'SMPTE time offset (hours:minutes:seconds:frames packed)' },
+      { label: 'Loop Count',     byteOffset: 36, byteLength: 4, color: 'var(--highlight-9)',        description: 'Number of loops defined in this chunk (uint32)' },
+      { label: 'Sampler Data',   byteOffset: 40, byteLength: 4, color: 'var(--highlight-1)',        description: 'Length of additional sampler data after loops in bytes' },
     ];
     const loops = this.smpl()?.loops ?? [];
-    const colors = ['#ef9a9a', '#b388ff', '#80cbc4', '#ffab40', '#f48fb1', '#a5d6a7', '#ce93d8', '#80deea'];
+    const colors = ['var(--highlight-7)', 'var(--highlight-10)', 'var(--highlight-2)', 'var(--highlight-6)', 'var(--highlight-8)', 'var(--highlight-3)', 'var(--highlight-9)', 'var(--highlight-1)'];
     loops.forEach((_, i) => {
       const baseOffset = 44 + i * 24;
       const color = colors[i % colors.length];

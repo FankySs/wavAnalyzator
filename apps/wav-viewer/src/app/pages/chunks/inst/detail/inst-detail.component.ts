@@ -22,11 +22,11 @@ const INST_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'Size',           byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'Unshifted Note', byteOffset: 8,  byteLength: 1, color: 'var(--warning)', description: 'MIDI note assigned to unshifted pitch (0–127)' },
   { label: 'Fine Tune',      byteOffset: 9,  byteLength: 1, color: 'var(--danger)',  description: 'Fine tuning in cents (-50 to +50)' },
-  { label: 'Gain',           byteOffset: 10, byteLength: 1, color: '#b388ff',        description: 'Gain in dB' },
-  { label: 'Low Note',       byteOffset: 11, byteLength: 1, color: '#80cbc4',        description: 'Lowest playable MIDI note' },
-  { label: 'High Note',      byteOffset: 12, byteLength: 1, color: '#ffab40',        description: 'Highest playable MIDI note' },
-  { label: 'Low Velocity',   byteOffset: 13, byteLength: 1, color: '#f48fb1',        description: 'Minimum velocity (0–127)' },
-  { label: 'High Velocity',  byteOffset: 14, byteLength: 1, color: '#a5d6a7',        description: 'Maximum velocity (0–127)' },
+  { label: 'Gain',           byteOffset: 10, byteLength: 1, color: 'var(--highlight-10)',        description: 'Gain in dB' },
+  { label: 'Low Note',       byteOffset: 11, byteLength: 1, color: 'var(--highlight-2)',        description: 'Lowest playable MIDI note' },
+  { label: 'High Note',      byteOffset: 12, byteLength: 1, color: 'var(--highlight-6)',        description: 'Highest playable MIDI note' },
+  { label: 'Low Velocity',   byteOffset: 13, byteLength: 1, color: 'var(--highlight-8)',        description: 'Minimum velocity (0–127)' },
+  { label: 'High Velocity',  byteOffset: 14, byteLength: 1, color: 'var(--highlight-3)',        description: 'Maximum velocity (0–127)' },
 ];
 
 @Component({

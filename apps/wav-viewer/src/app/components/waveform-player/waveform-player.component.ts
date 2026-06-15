@@ -14,8 +14,19 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { WaveformDto } from '@shared-types';
 import { WavApiService } from '../../services/wav-api.service';
+import { ThemeService } from '../../services/theme.service';
 
 export type CueMarker = { id: number; sampleOffset: number; label: string };
+
+type ResolvedColors = {
+  brand: string;
+  waveformUnplayed: string;
+  waveformSeparator: string;
+  cueOutline: string;
+  cueLabelBg: string;
+  cueLabelText: string;
+  warning: string;
+};
 
 @Component({
   selector: 'app-waveform-player',
@@ -26,6 +37,7 @@ export type CueMarker = { id: number; sampleOffset: number; label: string };
 export class WaveformPlayerComponent {
   private readonly wavApiService = inject(WavApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly themeService = inject(ThemeService);
 
   readonly wavId = input.required<string>();
   readonly showCuePoints = input<boolean>(false);
@@ -47,6 +59,16 @@ export class WaveformPlayerComponent {
   protected readonly duration = signal(0);
   protected readonly isPlaying = signal(false);
   private readonly canvasWidth = signal(800);
+
+  private resolvedColors: ResolvedColors = this.resolveColors();
+
+  private readonly themeEffect = effect(() => {
+    this.themeService.theme();
+    this.resolvedColors = this.resolveColors();
+    if (this.waveform()) {
+      requestAnimationFrame(() => this.drawWaveform());
+    }
+  });
 
   protected readonly canvasHeight = computed(() => {
     const channelCount = this.waveform()?.channels.length ?? 1;
@@ -171,6 +193,19 @@ export class WaveformPlayerComponent {
     return String(index + 1);
   }
 
+  private resolveColors(): ResolvedColors {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      brand: style.getPropertyValue('--brand').trim(),
+      waveformUnplayed: style.getPropertyValue('--waveform-unplayed').trim(),
+      waveformSeparator: style.getPropertyValue('--waveform-separator').trim(),
+      cueOutline: style.getPropertyValue('--cue-outline').trim(),
+      cueLabelBg: style.getPropertyValue('--cue-label-bg').trim(),
+      cueLabelText: style.getPropertyValue('--cue-label-text').trim(),
+      warning: style.getPropertyValue('--warning').trim(),
+    };
+  }
+
   private drawWaveform(): void {
     const canvasRef = this.waveformCanvas();
     if (!canvasRef) return;
@@ -191,6 +226,7 @@ export class WaveformPlayerComponent {
 
     ctx.clearRect(0, 0, width, height);
 
+    const colors = this.resolvedColors;
     const channelCount = wf.channels.length;
     const bandHeight = this.channelBandHeight();
     const paddingY = channelCount === 1 ? 12 : 6;
@@ -215,7 +251,7 @@ export class WaveformPlayerComponent {
         const bh = minY - maxY;
 
         ctx.fillStyle =
-          j / points.length < playedFraction ? 'var(--brand)' : 'rgba(255,255,255,0.3)';
+          j / points.length < playedFraction ? colors.brand : colors.waveformUnplayed;
 
         ctx.fillRect(x, maxY, Math.max(1, barWidth - 0.5), Math.max(1, bh));
       });
@@ -224,7 +260,7 @@ export class WaveformPlayerComponent {
 
       // Separator between channels, not after the last one
       if (i < channelCount - 1) {
-        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.strokeStyle = colors.waveformSeparator;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(0, (i + 1) * bandHeight);
@@ -235,7 +271,7 @@ export class WaveformPlayerComponent {
 
     if (this.duration() > 0) {
       const playheadX = (this.currentTime() / this.duration()) * width;
-      ctx.strokeStyle = 'var(--brand)';
+      ctx.strokeStyle = colors.brand;
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(playheadX, 0);
@@ -253,7 +289,7 @@ export class WaveformPlayerComponent {
         const label = point.label;
 
         // Dark outline for visibility on both blue and gray backgrounds
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+        ctx.strokeStyle = colors.cueOutline;
         ctx.lineWidth = isSelected ? 5 : 3;
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -261,7 +297,7 @@ export class WaveformPlayerComponent {
         ctx.stroke();
 
         // Marker line on top
-        ctx.strokeStyle = isSelected ? '#ffffff' : 'var(--warning)';
+        ctx.strokeStyle = isSelected ? colors.cueLabelText : colors.warning;
         ctx.lineWidth = isSelected ? 2.5 : 1.5;
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -271,11 +307,11 @@ export class WaveformPlayerComponent {
         // Label background
         ctx.font = `${isSelected ? 'bold ' : ''}11px var(--font-mono)`;
         const textWidth = ctx.measureText(label).width;
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillStyle = colors.cueLabelBg;
         ctx.fillRect(x + 2, 2, textWidth + 4, 14);
 
         // Label text
-        ctx.fillStyle = isSelected ? '#ffffff' : 'var(--warning)';
+        ctx.fillStyle = isSelected ? colors.cueLabelText : colors.warning;
         ctx.fillText(label, x + 4, 13);
       });
     }

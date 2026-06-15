@@ -20,15 +20,15 @@ const LEVL_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'Size',               byteOffset: 4,   byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'Version',            byteOffset: 8,   byteLength: 4,  color: 'var(--warning)', description: 'Format version (uint32, typically 1)' },
   { label: 'Format',             byteOffset: 12,  byteLength: 4,  color: 'var(--danger)',  description: 'Peak data format (uint32, 1 = uint8)' },
-  { label: 'Points/Value',       byteOffset: 16,  byteLength: 4,  color: '#b388ff',        description: 'Number of peak values per channel (uint32)' },
-  { label: 'Channel Count',      byteOffset: 20,  byteLength: 4,  color: '#80cbc4',        description: 'Number of channels (uint32)' },
-  { label: 'Sample Frame Count', byteOffset: 24,  byteLength: 4,  color: '#ffab40',        description: 'Total number of sample frames (uint32)' },
-  { label: 'Peak Frames',        byteOffset: 28,  byteLength: 4,  color: '#f48fb1',        description: 'Peak frame size in samples (uint32)' },
-  { label: 'Pos Type',           byteOffset: 32,  byteLength: 4,  color: '#a5d6a7',        description: 'Position type (uint32)' },
-  { label: 'Offset',             byteOffset: 36,  byteLength: 4,  color: '#ce93d8',        description: 'Offset of first peak frame (uint32)' },
-  { label: 'Timestamp',          byteOffset: 40,  byteLength: 4,  color: '#80deea',        description: 'Unix timestamp of creation (uint32)' },
+  { label: 'Points/Value',       byteOffset: 16,  byteLength: 4,  color: 'var(--highlight-10)',        description: 'Number of peak values per channel (uint32)' },
+  { label: 'Channel Count',      byteOffset: 20,  byteLength: 4,  color: 'var(--highlight-2)',        description: 'Number of channels (uint32)' },
+  { label: 'Sample Frame Count', byteOffset: 24,  byteLength: 4,  color: 'var(--highlight-6)',        description: 'Total number of sample frames (uint32)' },
+  { label: 'Peak Frames',        byteOffset: 28,  byteLength: 4,  color: 'var(--highlight-8)',        description: 'Peak frame size in samples (uint32)' },
+  { label: 'Pos Type',           byteOffset: 32,  byteLength: 4,  color: 'var(--highlight-3)',        description: 'Position type (uint32)' },
+  { label: 'Offset',             byteOffset: 36,  byteLength: 4,  color: 'var(--highlight-9)',        description: 'Offset of first peak frame (uint32)' },
+  { label: 'Timestamp',          byteOffset: 40,  byteLength: 4,  color: 'var(--highlight-1)',        description: 'Unix timestamp of creation (uint32)' },
   { label: 'Reserved',           byteOffset: 44,  byteLength: 60, color: 'var(--muted)',   description: 'Reserved – must be zeros' },
-  { label: 'Peak Data',          byteOffset: 104, byteLength: -1, color: '#ef9a9a',        description: 'Peak data – amplitude values for each channel and frame' },
+  { label: 'Peak Data',          byteOffset: 104, byteLength: -1, color: 'var(--highlight-7)',        description: 'Peak data – amplitude values for each channel and frame' },
 ];
 
 type LevlForm = {

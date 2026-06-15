@@ -1,6 +1,6 @@
 .param-card {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.07);
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 16px 18px;
   display: flex;

@@ -1,0 +1,24 @@
+.theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 200;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, border-color .15s;
+  box-shadow: var(--shadow);
+}
+
+.theme-toggle:hover {
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  border-color: color-mix(in srgb, var(--text) 14%, transparent);
+}

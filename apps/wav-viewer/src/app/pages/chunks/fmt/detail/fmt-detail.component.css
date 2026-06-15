@@ -12,9 +12,9 @@
 .warning-panel {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 190, 50, .08);
-  border: 1px solid rgba(255, 190, 50, .2);
-  color: #ffd070;
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warning) 20%, transparent);
+  color: var(--warning);
   font-size: 13px;
   margin-bottom: 24px;
 }
@@ -43,7 +43,7 @@
   justify-content: space-between;
   gap: 24px;
   padding: 10px 20px;
-  border-bottom: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid var(--surface-tint);
 }
 
 .ext-row:last-child {

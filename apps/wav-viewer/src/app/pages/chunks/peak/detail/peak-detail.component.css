@@ -10,7 +10,7 @@
 .peak-bar-wrap {
   width: 120px;
   height: 10px;
-  background: rgba(255,255,255,.07);
+  background: var(--surface-tint);
   border-radius: 3px;
   overflow: hidden;
   flex-shrink: 0;
@@ -22,9 +22,9 @@
   transition: width .2s;
 }
 
-.bar-green  { background: rgba(80, 210, 120, .75); }
-.bar-amber  { background: rgba(255, 200, 80, .75); }
-.bar-red    { background: rgba(255, 80, 80, .75); }
+.bar-green  { background: color-mix(in srgb, var(--success) 75%, transparent); }
+.bar-amber  { background: color-mix(in srgb, var(--warning) 75%, transparent); }
+.bar-red    { background: color-mix(in srgb, var(--danger)  75%, transparent); }
 
 .peak-value { white-space: nowrap; }
 

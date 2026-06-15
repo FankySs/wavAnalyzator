@@ -62,7 +62,7 @@ export class CueDetailComponent {
     ];
     const parsed = this.chunk().parsed as CueParsed | null;
     const points = parsed?.chunkType === 'cue' ? parsed.points : [];
-    const colors = ['#b388ff', '#80cbc4', '#ffab40', '#f48fb1', '#a5d6a7', '#ce93d8', '#80deea', '#ef9a9a'];
+    const colors = ['var(--highlight-10)', 'var(--highlight-2)', 'var(--highlight-6)', 'var(--highlight-8)', 'var(--highlight-3)', 'var(--highlight-9)', 'var(--highlight-1)', 'var(--highlight-7)'];
     points.forEach((_, i) => {
       const baseOffset = 12 + i * 24;
       const color = colors[i % colors.length];

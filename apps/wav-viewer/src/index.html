@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <title>WawAnalyzer</title>
     <base href="/" />
+    <script>
+      (function () {
+        var s = localStorage.getItem('theme');
+        var t = (s === 'dark' || s === 'light') ? s
+          : window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="wav-icon.png" />
   </head>

@@ -20,7 +20,7 @@ const ADTL_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'ID',         byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
   { label: 'Size',       byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'List Type',  byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "LIST chunk type – 'adtl' = associated data list" },
-  { label: 'Sub-chunks', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Sub-chunks: labl (label), note (note), ltxt (text with length) – each with its own header' },
+  { label: 'Sub-chunks', byteOffset: 12, byteLength: -1, color: 'var(--highlight-10)',        description: 'Sub-chunks: labl (label), note (note), ltxt (text with length) – each with its own header' },
 ];
 
 type EditRow = {

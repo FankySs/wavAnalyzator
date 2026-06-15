@@ -19,7 +19,7 @@ const DISP_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'ID',   byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: '4-byte ASCII chunk identifier' },
   { label: 'Size', byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'Type', byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: 'Data type – 1 = CF_TEXT (plain text), 7 = CF_OEMTEXT' },
-  { label: 'Data', byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Text content of the chunk (ASCII/UTF-8)' },
+  { label: 'Data', byteOffset: 12, byteLength: -1, color: 'var(--highlight-10)',        description: 'Text content of the chunk (ASCII/UTF-8)' },
 ];
 
 const CF_TYPE_NAMES: Record<number, string> = {

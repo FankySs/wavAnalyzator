@@ -20,8 +20,8 @@ const MEXT_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'Size',              byteOffset: 4,  byteLength: 4, color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'Sound Information', byteOffset: 8,  byteLength: 2, color: 'var(--warning)', description: 'Bit flags – homogeneous data, padding used, etc. (uint16 bitfield)' },
   { label: 'Frame Size',        byteOffset: 10, byteLength: 2, color: 'var(--danger)',  description: 'MP2 frame size in bytes (uint16)' },
-  { label: 'Ancillary Length',  byteOffset: 12, byteLength: 2, color: '#b388ff',        description: 'Ancillary data length in bits (uint16)' },
-  { label: 'Ancillary Data',    byteOffset: 14, byteLength: 2, color: '#80cbc4',        description: 'Ancillary data definition (uint16 bitfield)' },
+  { label: 'Ancillary Length',  byteOffset: 12, byteLength: 2, color: 'var(--highlight-10)',        description: 'Ancillary data length in bits (uint16)' },
+  { label: 'Ancillary Data',    byteOffset: 14, byteLength: 2, color: 'var(--highlight-2)',        description: 'Ancillary data definition (uint16 bitfield)' },
 ];
 
 type MextForm = {

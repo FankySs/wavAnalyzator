@@ -24,7 +24,7 @@ const LIST_INFO_HIGHLIGHTS: ChunkHighlight[] = [
   { label: 'ID',        byteOffset: 0,  byteLength: 4,  color: 'var(--brand)',   description: 'LIST chunk identifier' },
   { label: 'Size',      byteOffset: 4,  byteLength: 4,  color: 'var(--success)', description: 'Chunk body size in bytes' },
   { label: 'List Type', byteOffset: 8,  byteLength: 4,  color: 'var(--warning)', description: "LIST chunk type – 'INFO' = text metadata" },
-  { label: 'Entries',   byteOffset: 12, byteLength: -1, color: '#b388ff',        description: 'Individual INFO sub-chunks (each with its own 4B ID + 4B size + data)' },
+  { label: 'Entries',   byteOffset: 12, byteLength: -1, color: 'var(--highlight-10)',        description: 'Individual INFO sub-chunks (each with its own 4B ID + 4B size + data)' },
 ];
 
 type EditEntry = { id: string; value: string };
