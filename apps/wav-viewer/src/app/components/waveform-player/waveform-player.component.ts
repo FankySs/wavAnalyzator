@@ -9,6 +9,7 @@ import {
   input,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -60,15 +61,7 @@ export class WaveformPlayerComponent {
   protected readonly isPlaying = signal(false);
   private readonly canvasWidth = signal(800);
 
-  private resolvedColors: ResolvedColors = this.resolveColors();
-
-  private readonly themeEffect = effect(() => {
-    this.themeService.theme();
-    this.resolvedColors = this.resolveColors();
-    if (this.waveform()) {
-      requestAnimationFrame(() => this.drawWaveform());
-    }
-  });
+  private resolvedColors: ResolvedColors | null = null;
 
   protected readonly canvasHeight = computed(() => {
     const channelCount = this.waveform()?.channels.length ?? 1;
@@ -100,6 +93,14 @@ export class WaveformPlayerComponent {
       }
     });
 
+    effect(() => {
+      this.themeService.theme();
+      if (untracked(() => this.waveform())) {
+        this.resolvedColors = this.resolveColors();
+        requestAnimationFrame(() => this.drawWaveform());
+      }
+    });
+
     afterNextRender(() => {
       const width = this.container()?.nativeElement.clientWidth || 800;
       this.canvasWidth.set(width);
@@ -113,6 +114,7 @@ export class WaveformPlayerComponent {
             this.duration.set(data.durationSec);
             this.sampleRateChange.emit(data.sampleRate);
             this.isLoading.set(false);
+            this.resolvedColors = this.resolveColors();
             requestAnimationFrame(() => this.drawWaveform());
           },
           error: () => {
@@ -212,6 +214,7 @@ export class WaveformPlayerComponent {
     const canvas = canvasRef.nativeElement;
     const wf = this.waveform();
     if (!wf) return;
+    if (!this.resolvedColors) return;
 
     const dpr = window.devicePixelRatio || 1;
     const width = canvas.clientWidth || this.canvasWidth();
